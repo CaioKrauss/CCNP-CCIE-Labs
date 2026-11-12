@@ -1,0 +1,453 @@
+CCNP SP - MULTICAST | LAB 03 - PIM BIDIRECTIONAL / DF
+======================================================
+REGISTROS REAIS ENVIADOS NA CONVERSA
+Grupo BIDIR: 239.2.2.2 | RP: 10.255.0.2 (RR-P)
+Origem 1: CE1 Loopback0 10.255.0.11
+Origem 2: CE3 FastEthernet0/0 10.0.3.2
+Receptor PE2 -> CE2
+
+=== TESTE 1 - PE2 / SHOW IP MROUTE 239.2.2.2 ===
+PE2#show ip mroute 239.2.2.2
+(*,239.2.2.2), 00:10:59/-, RP 10.255.0.2, flags: BC
+  Bidir-Upstream: FastEthernet0/0, RPF nbr: 10.0.23.1
+  Incoming interface list:
+    FastEthernet1/0, Accepting/Sparse
+    FastEthernet0/0, Accepting/Sparse
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:10:02/00:03:21
+    FastEthernet0/0, Bidir-Upstream/Sparse, 00:10:02/stopped
+
+=== TESTE 2 - PE2 / SHOW IP MROUTE COUNT (SÉRIE ENVIADA EM CHAT) ===
+PE2#show ip mroute count
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 14, Packets received: 14
+  RP-tree: Forwarding: 14/0/100/0, Other: 14/0/0
+
+PE2#show ip mroute count
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 15, Packets received: 15
+  RP-tree: Forwarding: 15/0/100/0, Other: 15/0/0
+
+PE2#show ip mroute count
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 17, Packets received: 17
+  RP-tree: Forwarding: 17/0/100/0, Other: 17/0/0
+
+=== TESTE 3 - ELEIÇÃO DF / AMOSTRA DE SAÍDA ===
+PE2#show ip pim interface df
+* implies this system is the DF
+Interface                RP               DF Winner        Metric     Uptime
+FastEthernet0/0          10.255.0.2        10.0.23.1        0          00:01:41
+FastEthernet1/0          10.255.0.2       *10.0.2.1         2          00:06:50
+
+=== TESTE 4 - DUAS ORIGENS ===
+O usuário confirmou em chat que os contadores incrementam nos testes de origens CE1 e CE3.
+Não foi enviado um contador separado rotulado por cada transmissão; não são atribuídos valores individuais inventados.
+
+=== CONCLUSÃO DO TESTE ===
+- Grupo com flag B, entradas (*,G) e interfaces bidirecionais.
+- DF Fa0/0 do enlace RR-P <-> PE2: RR-P (10.0.23.1).
+- DF Fa1/0 do enlace PE2 <-> CE2: PE2 (10.0.2.1).
+- Contadores do grupo incrementam; source count permanece 0; RP-tree é utilizada.
+- Logs originais extensos de PE2 com medições repetidas seguem integralmente abaixo.
+
+=== ANEXO - LOG BRUTO ENVIADO PELO USUÁRIO (SEM LIMPEZA) ===
+PE2# 
+PE2#
+PE2#show ip pim interface df
+* implies this system is the DF
+Interface                RP               DF Winner        Metric     Uptime
+FastEthernet1/0          10.255.0.2       *10.0.2.1         2          00:03:15
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 0, Packets received: 0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 0, Packets received: 0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#show ip pim interface df
+* implies this system is the DF
+Interface                RP               DF Winner        Metric     Uptime
+FastEthernet0/0          10.255.0.2        10.0.23.1        0          00:01:41
+FastEthernet1/0          10.255.0.2       *10.0.2.1         2          00:06:50
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count    
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 2, Packets received: 2
+  RP-tree: Forwarding: 2/0/100/0, Other: 2/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+3 routes using 2196 bytes of memory
+3 groups, 0.33 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 4, Packets received: 4
+  RP-tree: Forwarding: 4/0/100/0, Other: 4/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#

@@ -1,0 +1,609 @@
+CCNP SP - MULTICAST | LAB 04 - ANYCAST RP + MSDP
+=================================================
+REGISTROS REAIS ENVIADOS NA CONVERSA
+Grupo ASM Anycast: 239.3.3.3 | Anycast RP: 10.255.0.100
+RP1: RR-P (Loopback0 10.255.0.1, Loopback10 10.255.0.100)
+RP2: PE3  (Loopback0 10.255.0.33, Loopback10 10.255.0.100)
+MSDP peer: 10.255.0.1 <-> 10.255.0.33
+Source CE1: 10.255.0.11 | Receptores: CE2 / CE3
+
+=== TESTE 1 - RR-P / ROTA LOCAL E MSDP ANTES DE FALHA ===
+RR-P#show ip route 10.255.0.100
+Routing entry for 10.255.0.100/32
+  Known via "connected", distance 0, metric 0 (connected, via interface)
+  Routing Descriptor Blocks:
+  * directly connected, via Loopback10
+      Route metric is 0, traffic share count is 1
+
+RR-P#show ip msdp summary
+MSDP Peer Status Summary
+Peer Address     AS    State    Uptime/  Reset SA    Peer Name
+                                Downtime Count Count
+10.255.0.33      ?     Up       00:01:30 0     0     ?
+
+RR-P#show ip msdp peer
+MSDP Peer 10.255.0.33 (?), AS ?
+  Connection status:
+    State: Up, Resets: 0, Connection source: Loopback0 (10.255.0.1)
+    Uptime(Downtime): 00:01:48, Messages sent/received: 2/2
+    Output messages discarded: 0
+    Connection and counters cleared 00:02:48 ago
+  SA Filtering:
+    Input (S,G) filter: none, route-map: none
+    Input RP filter: none, route-map: none
+    Output (S,G) filter: none, route-map: none
+    Output RP filter: none, route-map: none
+  SAs learned from this peer: 0
+  Number of connection transitions to Established state: 1
+  MD5 signature protection on MSDP TCP connection: not enabled
+  Message counters:
+    RPF Failure count: 0
+    SA Messages in/out: 0/0
+    SA Requests in: 0
+    SA Responses out: 0
+
+RR-P#show ip pim rp mapping
+PIM Group-to-RP Mappings
+
+Acl: ASM_GROUPS, Static
+    RP: 10.255.0.1 (?)
+Acl: BIDIR_GROUPS, Static, Bidir Mode
+    RP: 10.255.0.2 (?)
+Acl: ANYCAST_GROUPS, Static
+    RP: 10.255.0.100 (?)
+
+=== TESTE 2 - PE3 / ROTA LOCAL E MSDP ANTES DE FALHA ===
+PE3#show ip route 10.255.0.100
+Routing entry for 10.255.0.100/32
+  Known via "connected", distance 0, metric 0 (connected, via interface)
+  Routing Descriptor Blocks:
+  * directly connected, via Loopback10
+      Route metric is 0, traffic share count is 1
+
+PE3#show ip msdp summary
+MSDP Peer Status Summary
+Peer Address     AS    State    Uptime/  Reset SA    Peer Name
+                                Downtime Count Count
+10.255.0.1       ?     Up       00:02:16 0     0     ?
+
+PE3#show ip msdp peer
+MSDP Peer 10.255.0.1 (?), AS ?
+  Connection status:
+    State: Up, Resets: 0, Connection source: Loopback0 (10.255.0.33)
+    Uptime(Downtime): 00:02:37, Messages sent/received: 2/3
+    Output messages discarded: 0
+  SAs learned from this peer: 0
+  Number of connection transitions to Established state: 1
+  Message counters:
+    RPF Failure count: 0
+    SA Messages in/out: 0/0
+
+PE3#show ip pim rp mapping
+PIM Group-to-RP Mappings
+
+Acl: ASM_GROUPS, Static
+    RP: 10.255.0.1 (?)
+Acl: BIDIR_GROUPS, Static, Bidir Mode
+    RP: 10.255.0.2 (?)
+Acl: ANYCAST_GROUPS, Static
+    RP: 10.255.0.100 (?)
+
+=== TESTE 3 - SOURCE ACTIVE E MSDP CACHE ===
+PE3#show ip msdp sa-cache
+MSDP Source-Active Cache - 1 entries
+(10.255.0.11, 239.3.3.3), RP 10.255.0.1, AS ?,00:01:17/00:05:53, Peer 10.255.0.1
+
+PE3#show ip msdp peer
+MSDP Peer 10.255.0.1 (?), AS ?
+  Connection status:
+    State: Up, Resets: 0, Connection source: Loopback0 (10.255.0.33)
+    Uptime(Downtime): 00:06:07, Messages sent/received: 6/8
+  SAs learned from this peer: 1
+  Message counters:
+    RPF Failure count: 0
+    SA Messages in/out: 3/0
+    Data Packets in/out: 1/0
+
+PE3#show ip mroute 239.3.3.3
+(*, 239.3.3.3), 00:05:13/00:03:03, RP 10.255.0.100, flags: SJC
+  Incoming interface: Null, RPF nbr 0.0.0.0
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:05:13/00:03:03
+
+(10.255.0.11, 239.3.3.3), 00:01:52/00:01:07, flags: MT
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.34.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:01:52/00:03:03
+
+RR-P#show ip mroute 239.3.3.3
+(*, 239.3.3.3), 00:03:39/stopped, RP 10.255.0.100, flags: S
+  Incoming interface: Null, RPF nbr 0.0.0.0
+  Outgoing interface list:
+    Ethernet1/1, Forward/Sparse, 00:03:39/00:02:42
+
+(10.255.0.11, 239.3.3.3), 00:00:16/00:02:43, flags: A
+  Incoming interface: Ethernet1/2, RPF nbr 10.0.12.1
+  Outgoing interface list:
+
+RR-P#show ip msdp peer
+MSDP Peer 10.255.0.33 (?), AS ?
+  Connection status:
+    State: Up, Resets: 0, Connection source: Loopback0 (10.255.0.1)
+    Uptime(Downtime): 00:05:15, Messages sent/received: 7/5
+  SAs learned from this peer: 0
+  Message counters:
+    RPF Failure count: 0
+    SA Messages in/out: 0/1
+    Data Packets in/out: 0/1
+
+=== TESTE 4 - FALHA DO RP1 / LOOPBACK10 SHUTDOWN NO RR-P ===
+RR-P#show ip route 10.255.0.100
+Routing entry for 10.255.0.100/32
+  Known via "connected", distance 0, metric 0 (connected, via interface)
+  Routing Descriptor Blocks:
+  * directly connected, via Loopback10
+      Route metric is 0, traffic share count is 1
+
+RR-P#show ip rpf 10.255.0.100
+RPF information for ? (10.255.0.100)
+  RPF interface: Loopback10
+  RPF neighbor: ? (10.255.0.100) - directly connected
+  RPF route/mask: 10.255.0.100/32
+  RPF type: multicast (connected)
+  Doing distance-preferred lookups across tables
+  RPF topology: ipv4 multicast base
+
+RR-P#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+RR-P(config)#interface Loopback10
+RR-P(config-if)# shutdown
+RR-P(config-if)#end
+RR-P#
+*Nov 12 19:43:23.363: %SYS-5-CONFIG_I: Configured from console by console
+*Nov 12 19:43:24.887: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback10, changed state to down
+*Nov 12 19:43:24.891: %LINK-5-CHANGED: Interface Loopback10, changed state to administratively down
+
+RR-P#show ip route 10.255.0.100
+Routing entry for 10.255.0.100/32
+  Known via "ospf 1", distance 110, metric 11, type intra area
+  Last update from 10.0.34.2 on Ethernet1/0, 00:00:11 ago
+  Routing Descriptor Blocks:
+  * 10.0.34.2, from 10.255.0.33, 00:00:11 ago, via Ethernet1/0
+      Route metric is 11, traffic share count is 1
+
+RR-P#show ip rpf 10.255.0.100
+RPF information for ? (10.255.0.100)
+  RPF interface: Ethernet1/0
+  RPF neighbor: ? (10.0.34.2)
+  RPF route/mask: 10.255.0.100/32
+  RPF type: unicast (ospf 1)
+  Doing distance-preferred lookups across tables
+  RPF topology: ipv4 multicast base, originated from ipv4 unicast base
+
+=== TESTE 5 - PE3 / TREE E CONTADORES DURANTE FAILOVER ===
+PE3#show ip mroute 239.3.3.3
+(*, 239.3.3.3), 00:09:38/00:02:38, RP 10.255.0.100, flags: SJC
+  Incoming interface: Null, RPF nbr 0.0.0.0
+  Outgoing interface list:
+    FastEthernet0/0, Forward/Sparse, 00:01:10/00:02:36
+    FastEthernet1/0, Forward/Sparse, 00:09:38/00:02:38
+
+(10.255.0.11, 239.3.3.3), 00:06:17/00:02:57, flags: MTA
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.34.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:06:17/00:03:12
+
+PE3#show ip mroute count
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 16, Packets received: 16
+  RP-tree: Forwarding: 1/0/100/0, Other: 1/0/0
+  Source: 10.255.0.11/32, Forwarding: 15/0/100/0, Other: 15/0/0
+
+PE3#show ip mroute count
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 18, Packets received: 18
+  RP-tree: Forwarding: 1/0/100/0, Other: 1/0/0
+  Source: 10.255.0.11/32, Forwarding: 17/0/100/0, Other: 17/0/0
+
+PE3#show ip msdp peer
+MSDP Peer 10.255.0.1 (?), AS ?
+  Connection status:
+    State: Up, Resets: 0, Connection source: Loopback0 (10.255.0.33)
+    Uptime(Downtime): 00:11:19, Messages sent/received: 13/13
+  SAs learned from this peer: 1
+  Message counters:
+    RPF Failure count: 0
+    SA Messages in/out: 6/2
+    Data Packets in/out: 1/1
+
+=== TESTE 6 - CE2 / NOVA INSCRIÇÃO IGMP APÓS FALHA ===
+CE2#sh run interface FastEthernet0/0
+Building configuration...
+
+Current configuration : 226 bytes
+!
+interface FastEthernet0/0
+ description LINK-TO-PE2
+ ip address 10.0.2.2 255.255.255.252
+ ip pim sparse-mode
+ ip igmp join-group 239.2.2.2
+ ip igmp join-group 232.1.1.1 source 10.255.0.11
+ ip igmp version 3
+ duplex full
+end
+
+CE2#sh ip igmp groups
+IGMP Connected Group Membership
+Group Address    Interface                Uptime    Expires   Last Reporter   Group Accounted
+239.2.2.2        FastEthernet0/0          00:33:08  00:02:34  10.0.2.2
+232.1.1.1        FastEthernet0/0          00:50:11  stopped   10.0.2.2
+224.0.1.40       FastEthernet0/0          00:51:54  00:02:34  10.0.2.2
+
+CE2#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+CE2(config)#interface FastEthernet0/0
+CE2(config-if)# ip igmp join-group 239.3.3.3
+CE2(config-if)#end
+
+=== TESTE 7 - PE3 / ESTADO APÓS NOVO JOIN ===
+PE3#show ip mroute 239.3.3.3
+(*, 239.3.3.3), 00:16:13/00:02:47, RP 10.255.0.100, flags: SJC
+  Incoming interface: Null, RPF nbr 0.0.0.0
+  Outgoing interface list:
+    FastEthernet0/0, Forward/Sparse, 00:01:29/00:02:47
+    FastEthernet1/0, Forward/Sparse, 00:16:13/00:02:10
+
+(10.255.0.11, 239.3.3.3), 00:12:52/00:01:57, flags: TA
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.34.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:12:52/00:03:02
+
+=== TESTE 8 - PE2 / RESULTADO DO NOVO JOIN E FORWARDING ===
+O log PE2 completo está anexado abaixo; pontos verificados:
+PE2#show ip mroute 239.3.3.3
+(*, 239.3.3.3), 00:13:49/00:03:13, RP 10.255.0.100, flags: SJC
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:00:16/00:03:13
+
+(10.255.0.11, 239.3.3.3), 00:10:20/00:01:37, flags: T
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:00:16/00:03:17
+
+PE2#show ip mroute count
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+PE2#show ip mroute count
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 26, Packets received: 26
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 26/0/100/0, Other: 26/0/0
+
+PE2#show ip rpf 10.255.0.100
+RPF information for ? (10.255.0.100)
+  RPF interface: FastEthernet0/0
+  RPF neighbor: ? (10.0.23.1)
+  RPF route/mask: 10.255.0.100/32
+  RPF type: unicast (ospf 1)
+  Doing distance-preferred lookups across tables
+  RPF topology: ipv4 multicast base, originated from ipv4 unicast base
+
+=== CONCLUSÃO DO TESTE ===
+- Sessão MSDP RR-P / PE3 Up e sem reset antes e durante a falha da Loopback10.
+- SA cache do PE3 contém (10.255.0.11,239.3.3.3) originada em RR-P.
+- RR-P muda rota/RPF do Anycast RP 10.255.0.100 de connected Loopback10 para OSPF via PE3 (10.0.34.2).
+- PE2 mantém Join ao grupo, (S,G) com flag T e contadores avançam 24 -> 26.
+- Este cenário comprova a mudança de RP no roteamento e forwarding durante falha da loopback.
+- O registro de uma nova source inédita após a falha não foi realizado nesta conversa.
+- A restauração 'no shutdown' da Loopback10 foi recomendada, mas não há log do usuário confirmando execução.
+
+=== ANEXO - LOG BRUTO PE2 (SEM LIMPEZA) ===
+
+PE2#
+PE2#show ip mroute 239.3.3.3
+IP Multicast Routing Table
+Flags: D - Dense, S - Sparse, B - Bidir Group, s - SSM Group, C - Connected,
+       L - Local, P - Pruned, R - RP-bit set, F - Register flag,
+       T - SPT-bit set, J - Join SPT, M - MSDP created entry, E - Extranet,
+       X - Proxy Join Timer Running, A - Candidate for MSDP Advertisement,
+       U - URD, I - Received Source Specific Host Report, 
+       Z - Multicast Tunnel, z - MDT-data group sender, 
+       Y - Joined MDT-data group, y - Sending to MDT-data group, 
+       G - Received BGP C-Mroute, g - Sent BGP C-Mroute, 
+       Q - Received BGP S-A Route, q - Sent BGP S-A Route, 
+       V - RD & Vector, v - Vector
+Outgoing interface flags: H - Hardware switched, A - Assert winner
+ Timers: Uptime/Expires
+ Interface state: Interface, Next-Hop or VCD, State/Mode
+
+(*, 239.3.3.3), 00:13:49/00:03:13, RP 10.255.0.100, flags: SJC
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:00:16/00:03:13
+
+(10.255.0.11, 239.3.3.3), 00:10:20/00:01:37, flags: T
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:00:16/00:03:17
+
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 24, Packets received: 24
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 24/0/100/0, Other: 24/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#
+PE2#show ip mroute count
+Use "show ip mfib count" to get better response time for a large number of mroutes.
+
+IP Multicast Statistics
+5 routes using 3268 bytes of memory
+4 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 239.3.3.3, Source count: 1, Packets forwarded: 26, Packets received: 26
+  RP-tree: Forwarding: 0/0/0/0, Other: 0/0/0
+  Source: 10.255.0.11/32, Forwarding: 26/0/100/0, Other: 26/0/0
+
+Group: 239.2.2.2, Source count: 0, Packets forwarded: 59, Packets received: 59
+  RP-tree: Forwarding: 59/0/100/0, Other: 59/0/0
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 40, Packets received: 40
+  Source: 10.255.0.11/32, Forwarding: 40/0/100/0, Other: 40/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+PE2#
+PE2#
+PE2#show ip rpf 10.255.0.100
+RPF information for ? (10.255.0.100)
+  RPF interface: FastEthernet0/0
+  RPF neighbor: ? (10.0.23.1)
+  RPF route/mask: 10.255.0.100/32
+  RPF type: unicast (ospf 1)
+  Doing distance-preferred lookups across tables
+  RPF topology: ipv4 multicast base, originated from ipv4 unicast base
+PE2#

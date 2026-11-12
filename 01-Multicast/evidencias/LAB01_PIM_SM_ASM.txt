@@ -1,0 +1,86 @@
+CCNP SP - MULTICAST | LAB 01 - PIM SPARSE MODE (ASM)
+=================================================
+REGISTROS REAIS ENVIADOS NA CONVERSA
+Origem: CE1 (10.0.1.1 / Loopback0 10.255.0.11)
+Grupo: 239.1.1.1 | RP: RR-P 10.255.0.1
+Receptor observado: CE2 (10.0.2.2), conectado ao PE2 (10.0.2.1)
+
+Este TXT reúne comandos e saídas efetivamente fornecidos pelo usuário.
+Não é um 'show running-config' completo nem contém saídas inventadas.
+
+=== TESTE 1 - CE2 / SHOW IP IGMP GROUPS ===
+CE2#show ip igmp groups
+IGMP Connected Group Membership
+Group Address    Interface                Uptime    Expires   Last Reporter   Group Accounted
+239.1.1.1        FastEthernet0/0          00:02:10  00:02:28  10.0.2.2
+224.0.1.40       FastEthernet0/0          00:06:21  00:02:22  10.0.2.2
+
+=== TESTE 2 - CE2 / SHOW IP MROUTE (TRECHO ENVIADO) ===
+CE2#show ip mroute
+(*, 239.1.1.1), 00:02:22/stopped, RP 10.255.0.1, flags: SJPCL
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.2.1
+  Outgoing interface list: Null
+
+(10.0.1.1, 239.1.1.1), 00:01:58/00:01:01, flags: PLTX
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.2.1
+  Outgoing interface list: Null
+
+(10.255.0.11, 239.1.1.1), 00:01:58/00:01:01, flags: PLTX
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.2.1
+  Outgoing interface list: Null
+
+(*, 224.0.1.40), 00:06:32/00:02:10, RP 10.255.0.1, flags: SJPCL
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.2.1
+  Outgoing interface list: Null
+
+=== TESTE 3 - PE2 / SHOW IP IGMP GROUPS ===
+PE2#show ip igmp groups
+IGMP Connected Group Membership
+Group Address    Interface                Uptime    Expires   Last Reporter   Group Accounted
+239.1.1.1        FastEthernet1/0          00:06:09  00:02:30  10.0.2.2
+224.0.1.40       FastEthernet1/0          00:10:20  00:02:22  10.0.2.2
+224.0.1.40       FastEthernet0/0          00:10:38  00:02:07  10.0.23.2
+
+=== TESTE 4 - PE2 / SHOW IP MROUTE (PRIMEIRA COLETA) ===
+PE2#show ip mroute
+(*, 239.1.1.1), 00:06:10/00:03:16, RP 10.255.0.1, flags: SJC
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:06:10/00:03:16
+
+(10.0.1.1, 239.1.1.1), 00:05:46/00:02:13, flags: T
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:05:46/00:03:16
+
+(10.255.0.11, 239.1.1.1), 00:05:46/00:02:18, flags: T
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:05:46/00:03:16
+
+(*, 224.0.1.40), 00:10:39/00:03:05, RP 10.255.0.1, flags: SJCL
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:10:21/00:03:05
+
+=== TESTE 5 - PE2 / SHOW IP MROUTE 239.1.1.1 (COLETA POSTERIOR) ===
+PE2#show ip mroute 239.1.1.1
+(*, 239.1.1.1), 00:01:51/00:02:33, RP 10.255.0.1, flags: SJC
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:01:51/00:02:33
+
+(10.255.0.11, 239.1.1.1), 00:01:13/00:01:46, flags: T
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:01:13/00:03:17
+
+=== INTERPRETAÇÃO / CONCLUSÃO DO TESTE ===
+- O CE2 está inscrito em 239.1.1.1.
+- O PE2 apresenta (*,G) com IIF Fa0/0 em direção ao RP e OIL Fa1/0 em direção ao CE2.
+- O PE2 apresenta entradas (S,G) com flag T (SPT-bit), incluindo a origem Loopback0 10.255.0.11.
+- A existência da entrada (S,G) sozinha não comprova SPT; a flag T é a evidência pertinente nestas saídas.
+- O CE2 tem OIL Null por participar localmente como receptor via join-group.
+- Não foram fornecidas saídas completas dos demais roteadores para este LAB.
+
+FIM LAB 01

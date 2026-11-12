@@ -1,0 +1,88 @@
+CCNP SP - MULTICAST | LAB 02 - PIM SSM / IGMPv3
+================================================
+REGISTROS REAIS ENVIADOS NA CONVERSA
+Grupo SSM: 232.1.1.1
+Origem A: 10.255.0.11 (CE1 Loopback0); receptor: CE2 via PE2
+Origem B: 10.0.1.1 (CE1 FastEthernet0/0); receptor: CE3 via PE3
+
+Este TXT reúne comandos e saídas efetivamente fornecidos pelo usuário.
+Não substitui um show running-config completo.
+
+=== TESTE 1 - PE2 / SHOW IP MROUTE 232.1.1.1 ===
+PE2#show ip mroute 232.1.1.1
+(10.255.0.11, 232.1.1.1), 00:02:38/00:03:07, flags: sTI
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:02:38/00:03:07
+
+=== TESTE 2 - PE2 / SHOW IP RPF 10.255.0.11 ===
+PE2#show ip rpf 10.255.0.11
+RPF information for ? (10.255.0.11)
+  RPF interface: FastEthernet0/0
+  RPF neighbor: ? (10.0.23.1)
+  RPF route/mask: 10.255.0.11/32
+  RPF type: unicast (ospf 1)
+  Doing distance-preferred lookups across tables
+  RPF topology: ipv4 multicast base, originated from ipv4 unicast base
+
+=== TESTE 3 - CE2 / SHOW IP IGMP GROUPS ===
+CE2#sh ip igmp groups
+IGMP Connected Group Membership
+Group Address    Interface                Uptime    Expires   Last Reporter   Group Accounted
+232.1.1.1        FastEthernet0/0          00:01:25  stopped   10.0.2.2
+224.0.1.40       FastEthernet0/0          00:03:09  00:02:50  10.0.2.2
+
+=== TESTE 4 - CE2 / SHOW IP MROUTE 232.1.1.1 ===
+CE2#show ip mroute 232.1.1.1
+(10.255.0.11, 232.1.1.1), 00:01:34/00:02:42, flags: sPLTXI
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.2.1
+  Outgoing interface list: Null
+
+=== TESTE 5 - PE2 / SHOW IP MROUTE COUNT ===
+PE2#show ip mroute count
+IP Multicast Statistics
+2 routes using 1444 bytes of memory
+2 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 26, Packets received: 26
+  Source: 10.255.0.11/32, Forwarding: 26/0/100/0, Other: 26/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+
+PE2#show ip mroute count
+IP Multicast Statistics
+2 routes using 1444 bytes of memory
+2 groups, 0.50 average sources per group
+Forwarding Counts: Pkt Count/Pkts per second/Avg Pkt Size/Kilobits per second
+Other counts: Total/RPF failed/Other drops(OIF-null, rate-limit etc)
+
+Group: 232.1.1.1, Source count: 1, Packets forwarded: 28, Packets received: 28
+  Source: 10.255.0.11/32, Forwarding: 28/0/100/0, Other: 28/0/0
+
+Group: 224.0.1.40, Source count: 0, Packets forwarded: 0, Packets received: 0
+
+=== TESTE 6 - SOURCE FILTERING / PE2 ===
+PE2#show ip mroute 232.1.1.1
+(10.255.0.11, 232.1.1.1), 00:11:17/00:03:11, flags: sTI
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:11:17/00:03:11
+
+=== TESTE 7 - SOURCE FILTERING / PE3 ===
+PE3#show ip mroute 232.1.1.1
+(10.0.1.1, 232.1.1.1), 00:03:37/00:03:09, flags: sTI
+  Incoming interface: FastEthernet0/0, RPF nbr 10.0.34.1
+  Outgoing interface list:
+    FastEthernet1/0, Forward/Sparse, 00:03:37/00:03:09
+
+=== CONCLUSÃO DO TESTE ===
+- PE2 possui (10.255.0.11,232.1.1.1) com flags sTI.
+- PE3 possui (10.0.1.1,232.1.1.1) com flags sTI.
+- Source filtering IGMPv3 refletido em árvores (S,G) distintas para o mesmo grupo.
+- O SSM não depende de RP ou PIM Register para este grupo.
+- O contador de encaminhamento PE2 aumentou de 26 para 28 para a origem A.
+- A saída dos contadores segregados por origem do teste B não foi enviada nesta conversa.
+
+FIM LAB 02

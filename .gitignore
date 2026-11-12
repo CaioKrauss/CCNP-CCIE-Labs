@@ -1,0 +1,17 @@
+# Ambiente local
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!*.env.example
+
+# Coletas de console e credenciais locais
+backups/
+**/backups/
+*.debug.txt
+*.erro.txt
+*.log
+
+# Não impede o commit consciente dos snapshots revisados em 01-Multicast/configs/
