@@ -3,9 +3,6 @@
 Hands-on networking labs focused on advanced routing, Service Provider technologies, troubleshooting, and network automation.
 
 ## Study plan
-**12 weeks | 60 sessions | 120 hours**  
-**November 16, 2026 – February 5, 2027**  
-Monday–Friday, 15:00–17:00 (America/Sao_Paulo).
 
 | Week | Focus | Folder |
 |---|---|---|
