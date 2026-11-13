@@ -1,6 +1,6 @@
 # Snapshot pós-LAB05 — 13/11/2026
 
-Origem: sete arquivos `.cfg` anexados pelo usuário (nomes originais com sufixo `(2)`). Conteúdo preservado integralmente; apenas os nomes foram normalizados. Não foi executado o script Python, não houve nova coleta nem reinicialização da VM. O horário de `Last configuration change` é do roteador, não o horário de coleta.
+Origem: sete arquivos `.cfg` anexados pelo usuário (nomes originais com sufixo `(2)`). Configurações preservadas; nomes normalizados. A publicação inicial preservou os bytes originais. Uma atualização posterior normalizou as quebras de linha para LF e removeu a quebra final, sem alterar os comandos. Não foi executado o script Python, não houve nova coleta nem reinicialização da VM. O horário de `Last configuration change` é do roteador, não o horário de coleta.
 
 ## Revisão de segurança
 
@@ -21,7 +21,7 @@ Os arquivos comprovam configuração presente no snapshot, não estado operacion
 
 ## Integridade SHA-256
 
-Hashes dos bytes originais, incluindo CRLF.
+Hashes dos bytes originais, incluindo CRLF, preservados no [commit da revisão inicial](https://github.com/CaioKrauss/CCNP-CCIE-Labs/tree/ecb52b3204de383fbc1af7928ee7c6beaa6586f4/01-Multicast/configs/snapshot-2026-11-13). Não comparar estes hashes diretamente aos arquivos normalizados em `main`. A equivalência dos sete arquivos após normalização das quebras de linha foi conferida.
 
 | Arquivo | SHA-256 |
 |---|---|
