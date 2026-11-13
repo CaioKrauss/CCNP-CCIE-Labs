@@ -27,8 +27,6 @@ CE1 is the source-side router; CE2 and CE3 are receiver-side routers. RR-P is th
 
 The L3VPN evidence covers **CE1_A–XR1–R3–R1–CE2_A**. CE1_B and CE2_B are visible but were not verified in that collection. L2_CE1 and L2_CE2 are reserved for a future L2VPN lab. A screenshot establishes layout, not operational status.
 
-Both images were supplied by the lab owner on 2026-11-13 and are published unchanged.
-
 ## How to read a lab
 
 1. Read the objective and topology to identify the intended traffic path.
