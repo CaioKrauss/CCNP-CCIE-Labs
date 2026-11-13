@@ -1,0 +1,263 @@
+Equipamento: CE2_A
+Inicio da coleta (America/Sao_Paulo): 2026-11-13T15:43:18.722454-03:00
+Origem: console do laboratorio; comandos executados nesta sessao.
+
+===== show running-config =====
+show running-config
+Building configuration...
+
+Current configuration : 829 bytes
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname CE2_A
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 192.168.102.1 255.255.255.255
+!
+interface FastEthernet0/0
+ ip address 172.16.20.2 255.255.255.252
+ duplex full
+!
+router bgp 65102
+ bgp router-id 172.16.20.2
+ bgp log-neighbor-changes
+ neighbor 172.16.20.1 remote-as 65000
+ !
+ address-family ipv4
+  network 192.168.102.1 mask 255.255.255.255
+  neighbor 172.16.20.1 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+CE2_A#
+
+===== show startup-config =====
+show startup-config
+Using 829 out of 129016 bytes
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname CE2_A
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 192.168.102.1 255.255.255.255
+!
+interface FastEthernet0/0
+ ip address 172.16.20.2 255.255.255.252
+ duplex full
+!
+router bgp 65102
+ bgp router-id 172.16.20.2
+ bgp log-neighbor-changes
+ neighbor 172.16.20.1 remote-as 65000
+ !
+ address-family ipv4
+  network 192.168.102.1 mask 255.255.255.255
+  neighbor 172.16.20.1 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+CE2_A#
+
+===== show ip interface brief =====
+show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+FastEthernet0/0        172.16.20.2     YES NVRAM  up                    up      
+Loopback0              192.168.102.1   YES NVRAM  up                    up      
+CE2_A#
+
+===== show ip bgp summary =====
+show ip bgp summary
+BGP router identifier 172.16.20.2, local AS number 65102
+BGP table version is 3, main routing table version 3
+2 network entries using 288 bytes of memory
+2 path entries using 160 bytes of memory
+2/2 BGP path/bestpath attribute entries using 272 bytes of memory
+1 BGP AS-PATH entries using 24 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 744 total bytes of memory
+BGP activity 3/1 prefixes, 3/1 paths, scan interval 60 secs
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+172.16.20.1     4        65000      12      12        3    0    0 00:07:39        1
+CE2_A#
+
+===== show ip bgp =====
+show ip bgp
+BGP table version is 3, local router ID is 172.16.20.2
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  192.168.101.1/32 172.16.20.1                            0 65000 65101 i
+ *>  192.168.102.1/32 0.0.0.0                  0         32768 i
+CE2_A#
+
+===== show ip route =====
+show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      172.16.0.0/16 is variably subnetted, 2 subnets, 2 masks
+C        172.16.20.0/30 is directly connected, FastEthernet0/0
+L        172.16.20.2/32 is directly connected, FastEthernet0/0
+      192.168.101.0/32 is subnetted, 1 subnets
+B        192.168.101.1 [20/0] via 172.16.20.1, 00:01:17
+      192.168.102.0/32 is subnetted, 1 subnets
+C        192.168.102.1 is directly connected, Loopback0
+CE2_A#
+
+===== ping 192.168.101.1 source 192.168.102.1 repeat 20 timeout 2 =====
+ping 192.168.101.1 source 192.168.102.1 repeat 20 timeout 2
+Type escape sequence to abort.
+Sending 20, 100-byte ICMP Echos to 192.168.101.1, timeout is 2 seconds:
+Packet sent with a source address of 192.168.102.1 
+!!!!!!!!!!!!!!!!!!!!
+Success rate is 100 percent (20/20), round-trip min/avg/max = 32/62/80 ms
+CE2_A#
+
+===== traceroute 192.168.101.1 source 192.168.102.1 numeric timeout 1 probe 1 =====
+traceroute 192.168.101.1 source 192.168.102.1 numeric timeout 1 probe 1
+Type escape sequence to abort.
+Tracing the route to 192.168.101.1
+VRF info: (vrf in name/id, vrf out name/id)
+  1 172.16.20.1 24 msec
+  2 10.0.0.5 [MPLS: Labels 17/24003 Exp 0] 56 msec
+  3 10.0.0.1 [MPLS: Label 24003 Exp 0] 56 msec
+  4 172.16.10.1 84 msec
+CE2_A#

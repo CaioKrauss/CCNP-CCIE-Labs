@@ -1,0 +1,341 @@
+Equipamento: XR1
+Inicio da coleta (America/Sao_Paulo): 2026-11-13T15:43:22.586351-03:00
+Origem: console do laboratorio; comandos executados nesta sessao.
+
+===== show running-config =====
+show running-config
+
+Fri Nov 13 18:43:20.312 UTC
+Building configuration...
+!! IOS XR Configuration 6.3.1
+!! Last configuration change at Tue Sep 22 04:37:22 2026 by root
+!
+hostname XR1
+logging console debugging
+vrf CUST-A
+ address-family ipv4 unicast
+  import route-target
+   65000:100
+  !
+  export route-target
+   65000:100
+  !
+ !
+!
+interface Loopback0
+ ipv4 address 10.10.10.10 255.255.255.255
+!
+interface MgmtEth0/0/CPU0/0
+ shutdown
+!
+interface GigabitEthernet0/0/0/0
+ vrf CUST-A
+ ipv4 address 172.16.10.2 255.255.255.252
+!
+interface GigabitEthernet0/0/0/1
+ shutdown
+!
+interface GigabitEthernet0/0/0/2
+ ipv4 address 10.0.0.1 255.255.255.252
+!
+interface GigabitEthernet0/0/0/3
+ shutdown
+!
+interface GigabitEthernet0/0/0/4
+ shutdown
+!
+route-policy PASS
+  pass
+end-policy
+!
+router isis CORE
+ is-type level-2-only
+ net 49.0001.0000.0010.0010.00
+ log adjacency changes
+ address-family ipv4 unicast
+  metric-style wide
+  mpls ldp auto-config
+ !
+ interface Loopback0
+  passive
+  address-family ipv4 unicast
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  point-to-point
+  address-family ipv4 unicast
+  !
+ !
+!
+router bgp 65000
+ bgp router-id 10.10.10.10
+ address-family vpnv4 unicast
+ !
+ neighbor 1.1.1.1
+  remote-as 65000
+  update-source Loopback0
+  address-family vpnv4 unicast
+  !
+ !
+ vrf CUST-A
+  rd 65000:100
+  address-family ipv4 unicast
+  !
+  neighbor 172.16.10.1
+   remote-as 65101
+   address-family ipv4 unicast
+    route-policy PASS in
+    route-policy PASS out
+   !
+  !
+ !
+!
+mpls ldp
+ router-id 10.10.10.10
+ address-family ipv4
+ !
+!
+end
+
+RP/0/0/CPU0:XR1#
+
+===== show ipv4 interface brief =====
+show ipv4 interface brief
+
+Fri Nov 13 18:43:20.632 UTC
+
+Interface                      IP-Address      Status          Protocol Vrf-Name
+Loopback0                      10.10.10.10     Up              Up       default 
+MgmtEth0/0/CPU0/0              unassigned      Shutdown        Down     default 
+GigabitEthernet0/0/0/0         172.16.10.2     Up              Up       CUST-A  
+GigabitEthernet0/0/0/1         unassigned      Shutdown        Down     default 
+GigabitEthernet0/0/0/2         10.0.0.1        Up              Up       default 
+GigabitEthernet0/0/0/3         unassigned      Shutdown        Down     default 
+GigabitEthernet0/0/0/4         unassigned      Shutdown        Down     default 
+RP/0/0/CPU0:XR1#
+
+===== show isis adjacency =====
+show isis adjacency
+
+Fri Nov 13 18:43:20.912 UTC
+
+IS-IS CORE Level-2 adjacencies:
+System Id      Interface        SNPA           State Hold Changed  NSF IPv4 IPv6
+                                                                       BFD  BFD 
+R3             Gi0/0/0/2        *PtoP*         Up    24   00:04:29 Yes None None
+
+Total adjacency count: 1
+RP/0/0/CPU0:XR1#
+
+===== show mpls ldp neighbor =====
+show mpls ldp neighbor
+
+Fri Nov 13 18:43:21.152 UTC
+
+Peer LDP Identifier: 3.3.3.3:0
+  TCP connection: 3.3.3.3:646 - 10.10.10.10:34666
+  Graceful Restart: No
+  Session Holdtime: 180 sec
+  State: Oper; Msgs sent/rcvd: 12/12; Downstream-Unsolicited
+  Up time: 00:04:17
+  LDP Discovery Sources:
+    IPv4: (1)
+      GigabitEthernet0/0/0/2
+    IPv6: (0)
+  Addresses bound to this peer:
+    IPv4: (3)
+      3.3.3.3        10.0.0.2       10.0.0.5       
+    IPv6: (0)
+
+RP/0/0/CPU0:XR1#
+
+===== show bgp vpnv4 unicast summary =====
+show bgp vpnv4 unicast summary
+
+Fri Nov 13 18:43:21.402 UTC
+BGP router identifier 10.10.10.10, local AS number 65000
+BGP generic scan interval 60 secs
+Non-stop routing is enabled
+BGP table state: Active
+Table ID: 0x0   RD version: 0
+BGP main routing table version 10
+BGP NSR Initial initsync version 8 (Reached)
+BGP NSR/ISSU Sync-Group versions 0/0
+BGP scan interval 60 secs
+
+BGP is operating in STANDALONE mode.
+
+
+Process       RcvTblVer   bRIB/RIB   LabelVer  ImportVer  SendTblVer  StandbyVer
+Speaker              10         10         10         10          10           0
+
+Neighbor        Spk    AS MsgRcvd MsgSent   TblVer  InQ OutQ  Up/Down  St/PfxRcd
+1.1.1.1           0 65000       9       8       10    0    0 00:04:22          1
+
+RP/0/0/CPU0:XR1#
+
+===== show bgp vpnv4 unicast =====
+show bgp vpnv4 unicast
+
+Fri Nov 13 18:43:21.682 UTC
+BGP router identifier 10.10.10.10, local AS number 65000
+BGP generic scan interval 60 secs
+Non-stop routing is enabled
+BGP table state: Active
+Table ID: 0x0   RD version: 0
+BGP main routing table version 10
+BGP NSR Initial initsync version 8 (Reached)
+BGP NSR/ISSU Sync-Group versions 0/0
+BGP scan interval 60 secs
+
+Status codes: s suppressed, d damped, h history, * valid, > best
+              i - internal, r RIB-failure, S stale, N Nexthop-discard
+Origin codes: i - IGP, e - EGP, ? - incomplete
+   Network            Next Hop            Metric LocPrf Weight Path
+Route Distinguisher: 65000:100 (default for vrf CUST-A)
+*> 192.168.101.1/32   172.16.10.1              0             0 65101 i
+*>i192.168.102.1/32   1.1.1.1                  0    100      0 65102 i
+
+Processed 2 prefixes, 2 paths
+RP/0/0/CPU0:XR1#
+
+===== show bgp vrf CUST-A ipv4 unicast summary =====
+show bgp vrf CUST-A ipv4 unicast summary
+
+Fri Nov 13 18:43:21.972 UTC
+BGP VRF CUST-A, state: Active
+BGP Route Distinguisher: 65000:100
+VRF ID: 0x60000001
+BGP router identifier 10.10.10.10, local AS number 65000
+Non-stop routing is enabled
+BGP table state: Active
+Table ID: 0xe0000010   RD version: 10
+BGP main routing table version 10
+BGP NSR Initial initsync version 8 (Reached)
+BGP NSR/ISSU Sync-Group versions 0/0
+
+BGP is operating in STANDALONE mode.
+
+
+Process       RcvTblVer   bRIB/RIB   LabelVer  ImportVer  SendTblVer  StandbyVer
+Speaker              10         10         10         10          10           0
+
+Neighbor        Spk    AS MsgRcvd MsgSent   TblVer  InQ OutQ  Up/Down  St/PfxRcd
+172.16.10.1       0 65101       8       8       10    0    0 00:04:19          1
+
+RP/0/0/CPU0:XR1#
+
+===== show route vrf CUST-A =====
+show route vrf CUST-A
+
+Fri Nov 13 18:43:22.242 UTC
+
+Codes: C - connected, S - static, R - RIP, B - BGP, (>) - Diversion path
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - ISIS, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, su - IS-IS summary null, * - candidate default
+       U - per-user static route, o - ODR, L - local, G  - DAGR, l - LISP
+       A - access/subscriber, a - Application route
+       M - mobile route, r - RPL, t - Traffic Engineering, (!) - FRR Backup path
+
+Gateway of last resort is not set
+
+C    172.16.10.0/30 is directly connected, 00:04:31, GigabitEthernet0/0/0/0
+L    172.16.10.2/32 is directly connected, 00:04:31, GigabitEthernet0/0/0/0
+B    192.168.101.1/32 [20/0] via 172.16.10.1, 00:01:30
+B    192.168.102.1/32 [200/0] via 1.1.1.1 (nexthop in vrf default), 00:03:19
+RP/0/0/CPU0:XR1#
+
+===== show route =====
+show route
+
+Fri Nov 13 18:43:22.522 UTC
+
+Codes: C - connected, S - static, R - RIP, B - BGP, (>) - Diversion path
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - ISIS, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, su - IS-IS summary null, * - candidate default
+       U - per-user static route, o - ODR, L - local, G  - DAGR, l - LISP
+       A - access/subscriber, a - Application route
+       M - mobile route, r - RPL, t - Traffic Engineering, (!) - FRR Backup path
+
+Gateway of last resort is not set
+
+i L2 1.1.1.1/32 [115/20] via 10.0.0.2, 00:04:25, GigabitEthernet0/0/0/2
+i L2 3.3.3.3/32 [115/10] via 10.0.0.2, 00:04:25, GigabitEthernet0/0/0/2
+C    10.0.0.0/30 is directly connected, 00:04:31, GigabitEthernet0/0/0/2
+L    10.0.0.1/32 is directly connected, 00:04:31, GigabitEthernet0/0/0/2
+i L2 10.0.0.4/30 [115/20] via 10.0.0.2, 00:04:25, GigabitEthernet0/0/0/2
+L    10.10.10.10/32 is directly connected, 00:04:31, Loopback0
+RP/0/0/CPU0:XR1#
+
+===== show cef vrf CUST-A 192.168.102.1 detail =====
+show cef vrf CUST-A 192.168.102.1 detail
+
+Fri Nov 13 18:43:22.812 UTC
+192.168.102.1/32, version 5, internal 0x5000001 0x0 (ptr 0xa148bdbc) [1], 0x0 (0x0), 0x208 (0xa15270f0)
+ Updated Nov 13 18:40:02.836
+ Prefix Len 32, traffic index 0, precedence n/a, priority 3
+  gateway array (0xa13d5db8) reference count 1, flags 0x2038, source rib (7), 0 backups
+                [1 type 1 flags 0x40441 (0xa1541230) ext 0x0 (0x0)]
+  LW-LDI[type=0, refc=0, ptr=0x0, sh-ldi=0x0]
+  gateway array update type-time 3 Nov 13 18:40:51.472
+ LDI Update time Nov 13 18:40:51.472
+   via 1.1.1.1/32, 3 dependencies, recursive [flags 0x6000]
+    path-idx 0 NHID 0x0 [0xa158f64c 0x0]
+    recursion-via-/32
+    next hop VRF - 'default', table - 0xe0000000
+    next hop 1.1.1.1/32 via 24001/0/21
+     next hop 10.0.0.2/32 Gi0/0/0/2    labels imposed {16 18}
+
+
+    Load distribution: 0 (refcount 1)
+
+    Hash  OK  Interface                 Address
+    0     Y   Unknown                   24001/0        
+RP/0/0/CPU0:XR1#
+
+===== show mpls forwarding =====
+show mpls forwarding
+
+Fri Nov 13 18:43:23.092 UTC
+Local  Outgoing    Prefix             Outgoing     Next Hop        Bytes       
+Label  Label       or ID              Interface                    Switched    
+------ ----------- ------------------ ------------ --------------- ------------
+24000  Pop         3.3.3.3/32         Gi0/0/0/2    10.0.0.2        450         
+24001  16          1.1.1.1/32         Gi0/0/0/2    10.0.0.2        5482        
+24002  Pop         10.0.0.4/30        Gi0/0/0/2    10.0.0.2        0           
+24003  Unlabelled  192.168.101.1/32[V]   \
+                                      Gi0/0/0/0    172.16.10.1     4882        
+RP/0/0/CPU0:XR1#
+
+===== show configuration commit list =====
+show configuration commit list
+
+Fri Nov 13 18:43:23.372 UTC
+SNo. Label/ID              User      Line                Client      Time Stamp
+~~~~ ~~~~~~~~              ~~~~      ~~~~                ~~~~~~      ~~~~~~~~~~
+1    1000000019            root      con0_0_CPU0         CLI         Tue Sep 22 04:37:22 2026
+2    1000000018            root      con0_0_CPU0         CLI         Tue Sep 22 04:09:31 2026
+3    1000000017            root      con0_0_CPU0         CLI         Tue Sep 22 04:06:21 2026
+4    1000000016            root      con0_0_CPU0         CLI         Tue Sep 22 04:01:29 2026
+5    1000000015            root      con0_0_CPU0         CLI         Tue Sep 22 04:00:38 2026
+6    1000000014            root      con0_0_CPU0         CLI         Tue Sep 22 04:00:04 2026
+7    1000000013            root      con0_0_CPU0         CLI         Tue Sep 22 03:57:33 2026
+8    1000000012            root      con0_0_CPU0         CLI         Tue Sep 22 03:56:37 2026
+9    1000000011            root      con0_0_CPU0         CLI         Tue Sep 22 03:55:29 2026
+10   1000000010            root      con0_0_CPU0         CLI         Tue Sep 22 03:54:26 2026
+11   1000000009            root      con0_0_CPU0         CLI         Tue Sep 22 03:54:19 2026
+12   1000000008            root      con0_0_CPU0         CLI         Tue Sep 22 03:53:48 2026
+13   1000000007            root      con0_0_CPU0         CLI         Tue Sep 22 03:52:39 2026
+14   1000000006            root      con0_0_CPU0         CLI         Tue Sep 22 03:52:33 2026
+15   1000000005            root      con0_0_CPU0         CLI         Tue Sep 22 03:52:17 2026
+16   1000000004            root      con0_0_CPU0         CLI         Tue Sep 22 03:46:06 2026
+17   1000000003            root      con0_0_CPU0         CLI         Tue Sep 22 03:45:45 2026
+18   1000000002            root      con0_0_CPU0         CLI         Tue Sep 22 03:44:21 2026
+19   1000000001            root      con0_0_CPU0         CLI         Tue Sep 22 03:42:42 2026
+RP/0/0/CPU0:XR1#

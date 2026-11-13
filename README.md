@@ -28,3 +28,7 @@ Use [LAB-TEMPLATE.md](LAB-TEMPLATE.md) to document each lab. Prefer Cisco IOS-XE
 > **Security:** Only publish synthetic IP addresses, credentials and configurations. Do not commit production/customer data, passwords, tokens, or confidential logs.
 
 This is an independent study project, not an official Cisco training course.
+
+## Validated labs
+
+- [L3VPN MPLS — IOS/IOS XR, IS-IS, LDP and VPNv4](02-MPLS-TE/LAB01-L3VPN-ISIS-LDP-IOS-XR.md): validated on 2026-11-13, with 20/20 ICMP replies in each direction and collected configurations/evidence.
