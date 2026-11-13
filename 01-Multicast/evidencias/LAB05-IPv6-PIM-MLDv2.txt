@@ -1,0 +1,112 @@
+LAB 05 — IPv6 Multicast — evidências recortadas das saídas enviadas na conversa
+Data: 13/11/2026
+Fonte: outputs observados em console EVE-NG durante o estudo, não coletados por script nesta sessão.
+Snapshots de 12/11/2026 não representam este estado.
+
+=== OSPFv3 (RR-P) ===
+RR-P#show ipv6 ospf neighbor
+10.255.0.33  FULL/BDR  Ethernet1/0
+10.255.0.23  FULL/DR   Ethernet1/1
+10.255.0.12  FULL/DR   Ethernet1/2
+
+=== PIM IPv6 (RR-P) ===
+RR-P#show ipv6 pim group-map FF1E::1234
+FF00::/8*
+    SM, RP: 2001:DB8:100::1
+    RPF: Tu6,2001:DB8:100::1 (us)
+    Info source: Static
+
+=== MLD (CE3) ===
+CE3#show ipv6 mld interface FastEthernet0/0
+  MLD is enabled on interface
+  Current MLD version is 2
+
+=== ASM RP state ===
+RR-P#show ipv6 mroute FF1E::1234
+(*, FF1E::1234), RP 2001:DB8:100::1, flags: S
+  Incoming interface: Tunnel6
+  Immediate Outgoing interface list:
+    Ethernet1/0, Forward
+    Ethernet1/1, Forward
+(2001:DB8:1::1, FF1E::1234), flags: ST
+  Incoming interface: Ethernet1/2
+  RPF nbr: FE80::C802:20FF:FE14:0
+  Immediate Outgoing interface list:
+    Ethernet1/1, Forward
+
+PE3#show ipv6 mroute FF1E::1234
+(2001:DB8:1::1, FF1E::1234), flags: ST
+  Incoming interface: FastEthernet0/0
+  RPF nbr: FE80::C806:1EFF:FEB0:1C
+  Immediate Outgoing interface list:
+    FastEthernet1/0, Forward
+
+=== ASM PIM Register counts ===
+RR-P#show ipv6 pim traffic
+Data Register Received          3
+Null Register Received          1
+Register Stop Sent              2
+Packet Sent on Loopback Errors  33
+
+PE1#show ipv6 pim traffic
+Register Stop Received          2
+Null Register Sent              1
+Packet Sent on Loopback Errors  33
+
+=== ASM multicast ping ===
+CE1#ping ipv6 FF1E::1234 source FastEthernet0/0 repeat 5
+Packet sent with a source address of 2001:DB8:1::1
+Success rate is 100 percent (5/5), round-trip min/avg/max = 52/74/168 ms
+11 multicast replies and 0 errors.
+Respostas observadas de 2001:DB8:2::2 (CE2) e 2001:DB8:3::2 (CE3).
+
+=== SSM mroute ===
+CE2#show ipv6 mroute FF3E::1234
+(2001:DB8:1::1, FF3E::1234), flags: sPLTI
+  Incoming interface: FastEthernet0/0
+  Outgoing interface list: Null
+
+PE2#show ipv6 mroute FF3E::1234
+(2001:DB8:1::1, FF3E::1234), flags: sTI
+  Incoming interface: FastEthernet0/0
+  RPF nbr: FE80::C806:1EFF:FEB0:1D
+  Immediate Outgoing interface list:
+    FastEthernet1/0, Forward
+
+PE3#show ipv6 mroute FF3E::1234
+(2001:DB8:1::1, FF3E::1234), flags: sTI
+  Incoming interface: FastEthernet0/0
+  RPF nbr: FE80::C806:1EFF:FEB0:1C
+  Immediate Outgoing interface list:
+    FastEthernet1/0, Forward
+
+=== SSM positive ping ===
+CE1#ping ipv6 FF3E::1234 source FastEthernet0/0 repeat 5
+Packet sent with a source address of 2001:DB8:1::1
+Success rate is 100 percent (5/5), round-trip min/avg/max = 52/67/100 ms
+10 multicast replies and 0 errors.
+Cinco respostas CE2; cinco CE3.
+
+=== SSM negative/positive source filtering ===
+CE1#show running-config interface FastEthernet0/0
+ ipv6 address 2001:DB8:1::1/64
+ ipv6 address 2001:DB8:1::99/64
+ ipv6 ospf 10 area 0
+
+CE1#ping ipv6 FF3E::1234 source 2001:DB8:1::99 repeat 5
+Success rate is 0 percent (0/5)
+0 multicast replies and 0 errors.
+
+CE1#ping ipv6 FF3E::1234 source 2001:DB8:1::1 repeat 5
+Success rate is 100 percent (5/5), round-trip min/avg/max = 52/62/84 ms
+10 multicast replies and 0 errors.
+
+PE2#show ipv6 mroute FF3E::1234 count
+Source: 2001:DB8:1::1,
+ SW Forwarding: 8/0/100/0, Other: 0/0/0
+ Totals - Source count: 1, Packet count: 8
+
+=== PENDÊNCIAS ===
+- MLDv1 não testado: interface reportou MLDv2, sem opção 'version' em ipv6 mld ?.
+- Não há show running-config coletado após LAB05. Remove do CE1 o ::99 temporário e salva configuração; limpeza ainda não confirmada.
+- Teste ::99 é consistente com INCLUDE, mas a captura não identifica ponto exato de descarte.

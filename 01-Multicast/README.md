@@ -1,6 +1,6 @@
-# Multicast IPv4 — Labs 01–04 (CCNP/CCIE SP)
+# Multicast IPv4 e IPv6 — Labs 01–05 (CCNP/CCIE SP)
 
-Topologia Cisco IOS no EVE-NG, com sete roteadores e OSPF área 0. Evidências coletadas em 12/11/2026. Os comandos e saídas em `evidencias/` são registros do laboratório; não são exemplos inventados.
+Topologia Cisco IOS no EVE-NG, com sete roteadores, OSPFv2 (IPv4) e OSPFv3 (IPv6). Evidências dos Labs 01–04 coletadas em 12/11/2026; LAB 05 documentado a partir de saídas do console em 13/11/2026. Os arquivos de evidências registram saídas reais, não exemplos inventados.
 
 ```text
 CE1 (source) --- PE1 --- RR-P (RP ASM / BIDIR / Anycast 1)
@@ -18,10 +18,11 @@ CE1 (source) --- PE1 --- RR-P (RP ASM / BIDIR / Anycast 1)
 | [02 — PIM-SSM + IGMPv3](LAB02-PIM-SSM-IGMPv3.md) | `232.1.1.1` | Sem RP | source filtering e contadores 26→28 no PE2 |
 | [03 — PIM-BIDIR](LAB03-PIM-BIDIR.md) | `239.2.2.2` | RP `10.255.0.2` | DF, `(*,G)`, RP-tree 14→17; fontes CE1/CE3 testadas |
 | [04 — Anycast RP + MSDP](LAB04-Anycast-RP-MSDP.md) | `239.3.3.3` | Anycast `10.255.0.100` | MSDP Up, SA, failover OSPF e novo Join; PE2 24→26 |
+| [05 — IPv6 ASM + SSM / MLDv2](LAB05-IPv6-Multicast.md) | `FF1E::1234` e `FF3E::1234` | RP IPv6 (ASM), INCLUDE (SSM) | OSPFv3, PIM Register, SPT, 2 receptores, filtro de fonte positivo/negativo |
 
 - [Comandos de consulta](comandos.md)
 - [Validação e troubleshooting](troubleshooting.md)
-- [Evidências TXT dos 4 labs](evidencias/)
+- [Evidências TXT dos 5 labs](evidencias/) (LAB05 extraído das saídas compartilhadas no chat)
 - [Snapshot integral dos 7 show running-configs](configs/snapshot-2026-11-12/)
 - [Topologia e endereçamento](topology/enderecamento.md)
 - [Backup automatizado de show run](../09-Automation/backup_show_run_eve.py)
@@ -40,7 +41,9 @@ CE1 (source) --- PE1 --- RR-P (RP ASM / BIDIR / Anycast 1)
 - Para o PIM-SM inicial, existem tabelas `(S,G)` com flag T, mas o registro enviado não inclui contadores comparáveis de entrega ao receptor para esse grupo.
 - O teste de failover Anycast comprovou reconvergência do RP, nova inscrição e contadores no PE2; **não** demonstrou registro de uma *nova source inédita* após a falha.
 - O teste BIDIR de duas fontes foi confirmado na conversa, sem uma captura de contador individual rotulada por cada origem.
-- **Pendentes:** MLD IPv6, mVPN/MPLS e troubleshooting de RPF com redundância física.
+- **LAB05 IPv6:** ASM + MLDv2 e SSM + filtragem de fontes verificados; **MLDv1 específico não foi testado**.
+- **Pendente:** novo `show running-config` pós-LAB05; o snapshot 12/11/2026 não inclui IPv6 deste lab. Limpeza do endereço `2001:DB8:1::99` ainda não confirmada.
+- **Próximos labs:** mVPN/MPLS e troubleshooting de RPF com redundância física.
 
 ## Segurança
 
