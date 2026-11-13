@@ -1,10 +1,12 @@
-# Topologia e endereçamento — Multicast PIM-SM
+# Multicast Topology and Addressing
 
-Fonte: configurações `show running-config` de CE1, CE2, CE3, PE1, PE2, PE3 e RR-P, coletadas em 12/11/2026.
+Source: seven Cisco IOS configuration snapshots collected on 2026-11-12, with the IPv6 extension documented in LAB 05. The screenshot was supplied by the lab owner on 2026-11-13.
 
-## Enlaces ponto a ponto
+![EVE-NG multicast topology](multicast-eve-ng.png)
 
-| Origem | Interface / IP | Destino | Interface / IP | Rede |
+## IPv4 transit links
+
+| Endpoint | Interface / address | Endpoint | Interface / address | Subnet |
 |---|---|---|---|---|
 | CE1 | Fa0/0 — 10.0.1.1/30 | PE1 | Fa1/0 — 10.0.1.2/30 | 10.0.1.0/30 |
 | PE1 | Fa0/0 — 10.0.12.1/30 | RR-P | Et1/2 — 10.0.12.2/30 | 10.0.12.0/30 |
@@ -13,27 +15,26 @@ Fonte: configurações `show running-config` de CE1, CE2, CE3, PE1, PE2, PE3 e R
 | RR-P | Et1/0 — 10.0.34.1/30 | PE3 | Fa0/0 — 10.0.34.2/30 | 10.0.34.0/30 |
 | PE3 | Fa1/0 — 10.0.3.1/30 | CE3 | Fa0/0 — 10.0.3.2/30 | 10.0.3.0/30 |
 
-## Loopbacks e papéis
+## Loopbacks and roles
 
-| Nó | Loopback0 / Router ID OSPF | Papel |
+| Node | Loopback0 / OSPF router ID | Role |
 |---|---|---|
-| CE1 | 10.255.0.11/32 | Fonte prevista |
-| PE1 | 10.255.0.12/32 | Trânsito |
-| RR-P | 10.255.0.1/32 | RP estático |
-| PE2 | 10.255.0.23/32 | Trânsito |
-| CE2 | 10.255.0.22/32 | Receptor IGMP |
-| PE3 | 10.255.0.33/32 | Trânsito |
-| CE3 | 10.255.0.32/32 | Receptor IGMP |
+| CE1 | 10.255.0.11/32 | Source-side router |
+| PE1 | 10.255.0.12/32 | Transit |
+| RR-P | 10.255.0.1/32 | Central transit and static ASM RP |
+| PE2 | 10.255.0.23/32 | Transit toward CE2 |
+| CE2 | 10.255.0.22/32 | Local test receiver |
+| PE3 | 10.255.0.33/32 | Transit; second Anycast RP in LAB 04 |
+| CE3 | 10.255.0.32/32 | Local receiver; also a source in BIDIR tests |
 
-## Características da baseline
-- Cisco IOS 15.2, imagens C7200/Dynamips.
-- `ip multicast-routing` em todos os nós.
-- `router ospf 1` com `network 10.0.0.0 0.255.255.255 area 0` em todos os nós.
-- `ip pim rp-address 10.255.0.1` em todos os nós.
-- PIM Sparse Mode em todos os enlaces da tabela.
-- CE1 e RR-P também possuem PIM Sparse Mode na Loopback0.
-- CE2 e CE3 possuem `ip igmp join-group 239.1.1.1` em Fa0/0.
-- A Loopback0 de CE2 e CE3 **não** possui PIM configurado na baseline.
-- RR-P possui interfaces adicionais administrativamente desligadas, não utilizadas neste laboratório.
+RR-P uses Loopback1 10.255.0.2/32 for BIDIR. RR-P and PE3 share Loopback10 10.255.0.100/32 in the Anycast lab.
 
-A topologia é uma árvore sem enlaces redundantes. Para estudar ECMP, FRR e caminhos alternativos será necessário adicionar conexões e rever a configuração.
+## Baseline and evolution
+
+The initial ASM baseline uses Cisco IOS 15.2, ip multicast-routing, OSPF process 1/area 0 and PIM sparse mode on the transit interfaces. CE1 and RR-P also enable PIM on Loopback0. Initial CE2/CE3 membership is 239.1.1.1 on Fa0/0; their Loopback0 interfaces do not need to be mistaken for the receiver-facing interfaces.
+
+Later snapshots contain SSM, BIDIR, Anycast and IPv6 additions. Group-scoped RP mappings supersede the simplest initial unscoped RP example. Consult the matching lab and date before reproducing a state.
+
+The physical tree has no redundant links. RPF paths can be inspected, but changing a metric alone cannot create ECMP or a bypass around RR-P. Unused RR-P interfaces are administratively down.
+
+[IPv6 address plan](../LAB05-IPv6-Multicast.md#addressing-and-prerequisites) · [Snapshot provenance](../configs/README.md)

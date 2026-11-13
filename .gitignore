@@ -1,4 +1,4 @@
-# Ambiente local
+# Local environment
 .venv/
 venv/
 __pycache__/
@@ -7,11 +7,12 @@ __pycache__/
 .env.*
 !*.env.example
 
-# Coletas de console e credenciais locais
+# Local console captures and credentials
 backups/
 **/backups/
 *.debug.txt
 *.erro.txt
 *.log
 
-# Não impede o commit consciente dos snapshots revisados em 01-Multicast/configs/
+# Reviewed snapshots under 01-Multicast/configs/ may be committed intentionally
+

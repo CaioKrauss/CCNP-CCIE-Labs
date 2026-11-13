@@ -1,6 +1,6 @@
-Equipamento: R1
-Inicio da coleta (America/Sao_Paulo): 2026-11-13T15:43:26.226604-03:00
-Origem: console do laboratorio; comandos executados nesta sessao.
+Device: R1
+Collection start (America/Sao_Paulo): 2026-11-13T15:43:26.226604-03:00
+Source: lab console; commands executed during the recorded collection.
 
 ===== show running-config =====
 show running-config
@@ -394,3 +394,4 @@ Label      Label      or Tunnel Id     Switched      interface
                                        5226          Fa3/0      172.16.20.2 
 19         17         10.10.10.10/32   0             Fa2/0      10.0.0.5    
 R1#
+

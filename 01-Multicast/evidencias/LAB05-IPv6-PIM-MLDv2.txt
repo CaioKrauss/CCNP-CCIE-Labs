@@ -1,7 +1,7 @@
-LAB 05 — IPv6 Multicast — evidências recortadas das saídas enviadas na conversa
-Data: 13/11/2026
-Fonte: outputs observados em console EVE-NG durante o estudo, não coletados por script nesta sessão.
-Snapshots de 12/11/2026 não representam este estado.
+LAB 05 - IPv6 Multicast - excerpts from user-supplied console output
+Date: 2026-11-13
+Source: EVE-NG console output observed during the study, not collected by a script in that session.
+The 2026-11-12 snapshots do not represent this IPv6 state.
 
 === OSPFv3 (RR-P) ===
 RR-P#show ipv6 ospf neighbor
@@ -106,7 +106,10 @@ Source: 2001:DB8:1::1,
  SW Forwarding: 8/0/100/0, Other: 0/0/0
  Totals - Source count: 1, Packet count: 8
 
-=== PENDÊNCIAS ===
-- MLDv1 não testado: interface reportou MLDv2, sem opção 'version' em ipv6 mld ?.
-- Não há show running-config coletado após LAB05. Remove do CE1 o ::99 temporário e salva configuração; limpeza ainda não confirmada.
-- Teste ::99 é consistente com INCLUDE, mas a captura não identifica ponto exato de descarte.
+=== OPEN ITEMS AT THE TIME OF THIS CAPTURE ===
+- MLDv1 was not tested: the interface reported MLDv2 and ipv6 mld ? did not offer a version option.
+- Historical note: post-LAB05 running-config had not yet been supplied; remove temporary CE1 ::99 and save the configuration. Cleanup was not yet confirmed at that time.
+- The ::99 test is consistent with INCLUDE filtering, but the capture does not identify the exact discard point.
+
+
+EDITORIAL UPDATE 2026-11-13: The later configs/snapshot-2026-11-13 review confirmed that CE1 ::99 was absent from running-config. Startup-config persistence remains unverified. This update does not alter the captured router output.

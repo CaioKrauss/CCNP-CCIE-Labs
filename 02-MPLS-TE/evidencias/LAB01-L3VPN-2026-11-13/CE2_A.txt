@@ -1,6 +1,6 @@
-Equipamento: CE2_A
-Inicio da coleta (America/Sao_Paulo): 2026-11-13T15:43:18.722454-03:00
-Origem: console do laboratorio; comandos executados nesta sessao.
+Device: CE2_A
+Collection start (America/Sao_Paulo): 2026-11-13T15:43:18.722454-03:00
+Source: lab console; commands executed during the recorded collection.
 
 ===== show running-config =====
 show running-config
@@ -261,3 +261,4 @@ VRF info: (vrf in name/id, vrf out name/id)
   3 10.0.0.1 [MPLS: Label 24003 Exp 0] 56 msec
   4 172.16.10.1 84 msec
 CE2_A#
+

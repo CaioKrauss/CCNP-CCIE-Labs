@@ -1,29 +1,29 @@
-# Snapshot pós-LAB05 — 13/11/2026
+# Post-LAB05 Snapshot — 2026-11-13
 
-Origem: sete arquivos `.cfg` anexados pelo usuário (nomes originais com sufixo `(2)`). Configurações preservadas; nomes normalizados. A publicação inicial preservou os bytes originais. Uma atualização posterior normalizou as quebras de linha para LF e removeu a quebra final, sem alterar os comandos. Não foi executado o script Python, não houve nova coleta nem reinicialização da VM. O horário de `Last configuration change` é do roteador, não o horário de coleta.
+Source: seven user-uploaded .cfg files, originally named with a (2) suffix. Names were normalized. The initial publication preserved original bytes; a later revision normalized line endings to LF and removed the final newline without changing commands. That review did not run the Python collector, make a fresh device collection or restart the VM. Last configuration change is the device timestamp, not the collection timestamp.
 
-## Revisão de segurança
+## Publication review
 
-Leitura integral e busca por senhas/segredos, usuários, comunidades SNMP, chaves, certificados, AAA/RADIUS/TACACS, URLs e identificadores pessoais. Nenhum segredo ou dado pessoal foi identificado; nenhuma redação foi necessária. Endereços unicast IPv4 em 10.0.0.0/8 e IPv6 em 2001:DB8::/32; demais grupos são multicast de laboratório. Configurações destinam-se ao laboratório: a ausência de credenciais publicadas não constitui validação de endurecimento de acesso.
+The review checked passwords/secrets, usernames, SNMP communities, keys, certificates, AAA/RADIUS/TACACS, URLs and personal identifiers. No secret or personal information was identified and no redaction was required. IPv4 unicast values are in 10.0.0.0/8; IPv6 values are in 2001:DB8::/32. Absence of published credentials is not an access-hardening assessment.
 
-## Conferência estática
+## Static checks
 
-- Sete arquivos com hostname esperado e término `end`, sem marcador de paginação ou erro de comando.
-- IPv6 unicast-routing, multicast-routing e CEF presentes em todos.
-- OSPFv3 processo 10, área 0 nos enlaces e Loopback0; router-ids distintos e Loopback0 passiva.
-- Seis enlaces com endereços /64 coerentes entre as pontas; loopbacks /128 distintas.
-- RP estático 2001:DB8:100::1 em todos; endereço presente em RR-P Loopback0.
-- CE2 e CE3: `ipv6 mld join-group FF1E::1234` e `ipv6 mld join-group FF3E::1234 2001:DB8:1::1`. O IOS salva o segundo comando sem a palavra `include`.
-- CE1: fonte 2001:DB8:1::1/64 presente; endereço temporário 2001:DB8:1::99/64 ausente.
-- Configurações IPv4 dos labs anteriores preservadas. Divergência legada: CE2 solicita SSM IPv4 232.1.1.1 de 10.255.0.11; CE3 solicita o mesmo grupo de 10.0.1.1. Não alterada nesta revisão do LAB05 IPv6.
+- Seven expected hostnames and final end markers; no pagination marker or command error.
+- IPv6 unicast routing, multicast routing and CEF on all nodes.
+- OSPFv3 process 10/area 0, distinct router IDs and passive Loopback0.
+- Six matching /64 transit subnets and distinct /128 loopbacks.
+- Static RP 2001:DB8:100::1 on all nodes, assigned to RR-P Loopback0.
+- CE2/CE3 join FF1E::1234 and source-specific FF3E::1234 from 2001:DB8:1::1. IOS saves the latter without the word include.
+- CE1 retains 2001:DB8:1::1/64; temporary 2001:DB8:1::99/64 is absent.
+- Prior IPv4 configuration remains. CE2 selects 10.255.0.11 for IPv4 SSM while CE3 selects 10.0.1.1; that historical difference was not changed.
 
-Os arquivos comprovam configuração presente no snapshot, não estado operacional atual, persistência em startup-config ou novos testes de tráfego. MLDv2 e resultados de ASM/SSM permanecem fundamentados nas [evidências de console](../../evidencias/LAB05-IPv6-PIM-MLDv2.txt); MLDv1 não foi testado.
+These files establish snapshot configuration, not current operation, startup-config persistence or new traffic tests. MLDv2/ASM/SSM results remain grounded in the [console evidence](../../evidencias/LAB05-IPv6-PIM-MLDv2.txt). MLDv1 was not tested.
 
-## Integridade SHA-256
+## Original-byte SHA-256 hashes
 
-Hashes dos bytes originais, incluindo CRLF, preservados no [commit da revisão inicial](https://github.com/CaioKrauss/CCNP-CCIE-Labs/tree/ecb52b3204de383fbc1af7928ee7c6beaa6586f4/01-Multicast/configs/snapshot-2026-11-13). Não comparar estes hashes diretamente aos arquivos normalizados em `main`. A equivalência dos sete arquivos após normalização das quebras de linha foi conferida.
+The following hashes describe the original CRLF bytes preserved in the [initial review commit](https://github.com/CaioKrauss/CCNP-CCIE-Labs/tree/ecb52b3204de383fbc1af7928ee7c6beaa6586f4/01-Multicast/configs/snapshot-2026-11-13). Do not compare them directly with normalized files on main. Equivalence after line-ending normalization was checked in the earlier review. This English revision preserves the current configuration bytes.
 
-| Arquivo | SHA-256 |
+| File | SHA-256 |
 |---|---|
 | [CE1.cfg](CE1.cfg) | `fced1e4fe38b14c20ef8f6ef479de0cca94fefb07d3024925a74c3aef5e76a9d` |
 | [CE2.cfg](CE2.cfg) | `bc4e7bba47dd029571427ff53172603f7b1d849ab5319aae84d67134aa6a2bf8` |

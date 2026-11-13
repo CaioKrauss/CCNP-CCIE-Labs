@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Backup confiavel de 'show running-config' por console Telnet EVE-NG (Cisco IOS).
+"""Capture validated 'show running-config' output over EVE-NG Telnet consoles (Cisco IOS).
 
-Sem bibliotecas externas; Python 3.9+.
+Standard library only; Python 3.10+.
 
-Exemplos:
+Examples:
     python backup_show_run_eve.py
     python backup_show_run_eve.py --only PE1 PE2 PE3
     python backup_show_run_eve.py --attempts 4 --timeout 180
 
-Proteja o diretorio de backups: as configuracoes e logs podem conter senhas.
+Keep the backup directory private: configurations and logs may contain passwords.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ import socket
 import sys
 import time
 
-EVE_HOST = "192.168.238.128"
+EVE_HOST = "192.0.2.10"  # Documentation placeholder; override with --host.
 EQUIPAMENTOS = [
     ("CE1", 32769),
     ("PE1", 32770),
@@ -34,7 +34,7 @@ EQUIPAMENTOS = [
     ("PE2", 32775),
 ]
 
-# Detecta o prompt no fim do texto (nao em uma linha antiga do buffer).
+# Detect the prompt at the end of the text, not on an earlier buffered line.
 PROMPT_RE = re.compile(r"(?m)^[ \t]*([A-Za-z0-9_.:/()-]+[>#])[ \t]*$")
 PASSWORD_RE = re.compile(r"(?i)(?:^|\n)[ \t]*(?:password|senha):[ \t]*$")
 USERNAME_RE = re.compile(r"(?i)(?:^|\n)[ \t]*(?:username|login):[ \t]*$")
@@ -60,7 +60,7 @@ def normalizar(raw: bytes | str) -> str:
 
 
 def ultimo_prompt(texto: str) -> str | None:
-    """Somente considera o prompt quando esta na ULTIMA linha."""
+    """Only accept a prompt on the LAST line."""
     m = list(PROMPT_RE.finditer(texto))
     if m and not texto[m[-1].end():].strip():
         return m[-1].group(1)
@@ -92,7 +92,7 @@ class Console:
         self.sock.sendall(texto.encode("utf-8") + b"\r\n")
 
     def _telnet(self, dados: bytes) -> bytes:
-        """Negocia opcoes basicas do Telnet sem depender do telnetlib (Python 3.13)."""
+        """Negotiate basic Telnet options without depending on telnetlib."""
         out = bytearray()
         for b in dados:
             if self.state == "normal":
@@ -112,7 +112,7 @@ class Console:
                 else:
                     self.state = "normal"
             elif self.state == "option":
-                # Recusa extensoes opcionais e evita enviar os bytes de negociacao ao IOS.
+                # Reject optional extensions and keep negotiation bytes out of IOS input.
                 if self.iac_cmd == self.DO:
                     self.sock.sendall(bytes([self.IAC, self.WONT, b]))
                 elif self.iac_cmd == self.WILL:
@@ -126,7 +126,7 @@ class Console:
         return bytes(out)
 
     def ler(self, *, autenticar: bool = False, estimular: bool = False) -> tuple[str, str]:
-        """Le ate o prompt (ou pedido de login/senha quando autenticar=True)."""
+        """Read until the prompt, or a login/password request when autenticar=True."""
         assert self.sock is not None
         prazo = time.monotonic() + self.timeout
         ultimo_dado = time.monotonic()
@@ -139,7 +139,7 @@ class Console:
             try:
                 bloco = self.sock.recv(65536)
                 if not bloco:
-                    raise ConnectionError("Conexao Telnet encerrada pelo console")
+                    raise ConnectionError("Telnet connection closed by the console")
             except socket.timeout:
                 bloco = b""
 
@@ -148,7 +148,7 @@ class Console:
                 bruto.extend(parte)
                 ultimo_dado = time.monotonic()
                 if len(bruto) > 5_000_000:
-                    raise RuntimeError("Saida maior que 5MB; interrompido por seguranca")
+                    raise RuntimeError("Output exceeds 5 MB; collection stopped")
 
                 texto_bruto = bruto.decode("latin1", errors="replace")
                 paginacoes = list(MORE_RE.finditer(texto_bruto))
@@ -167,21 +167,21 @@ class Console:
                 if autenticar and USERNAME_RE.search(limpo):
                     return limpo, "username"
             else:
-                # Apos reboot alguns roteadores exibem banner e aguardam Enter.
-                # Limita o numero de nudges e apenas na leitura inicial.
+                # After boot, some routers display a banner and wait for Enter.
+                # Limit prompt nudges and use them only during the initial read.
                 if (estimular and tentativas_enter < 3
                         and time.monotonic() - max(ultimo_enter, ultimo_dado) >= 2):
                     self.enviar()
                     ultimo_enter = time.monotonic()
                     tentativas_enter += 1
                 if bruto and time.monotonic() - ultimo_dado > self.idle:
-                    raise TimeoutError(f"Sem resposta por {self.idle:g}s; trecho final: {self.last_response[-180:]!r}")
+                    raise TimeoutError(f"No response for {self.idle:g}s; trailing output: {self.last_response[-180:]!r}")
 
-        raise TimeoutError(f"Timeout total {self.timeout:g}s; trecho final: {self.last_response[-180:]!r}")
+        raise TimeoutError(f"Total timeout {self.timeout:g}s; trailing output: {self.last_response[-180:]!r}")
 
     def preparar(self, autenticacao: "Credenciais"):
-        # Nao envia Enter imediatamente: se o console ja imprimiu o prompt,
-        # um segundo prompt pode ficar no buffer e confundir a etapa enable.
+        # Do not send Enter immediately if the console already printed a prompt:
+        # an extra buffered prompt could confuse the enable step.
         resposta, tipo = self.ler(autenticar=True, estimular=True)
         for _ in range(6):
             if tipo == "username":
@@ -192,11 +192,11 @@ class Console:
                 break
             resposta, tipo = self.ler(autenticar=True)
         if tipo != "prompt":
-            raise RuntimeError("Nao foi possivel chegar ao prompt do equipamento")
+            raise RuntimeError("Could not reach the device prompt")
 
         prompt = ultimo_prompt(resposta)
         if prompt is None:
-            raise RuntimeError("Prompt Cisco nao identificado")
+            raise RuntimeError("Cisco prompt not recognized")
         if prompt.endswith(">"):
             self.enviar("enable")
             resposta, tipo = self.ler(autenticar=True)
@@ -205,27 +205,27 @@ class Console:
                 resposta, tipo = self.ler(autenticar=True)
             prompt = ultimo_prompt(resposta)
             if tipo != "prompt" or prompt is None or not prompt.endswith("#"):
-                raise RuntimeError("Nao entrou em modo privilegiado: verifique enable/secret")
+                raise RuntimeError("Could not enter privileged EXEC: check enable credentials")
         elif not prompt.endswith("#"):
-            raise RuntimeError(f"Prompt nao esperado: {prompt!r}")
+            raise RuntimeError(f"Unexpected prompt: {prompt!r}")
 
-        # Executar a cada conexao: depois do reboot o terminal volta a paginar.
+        # Set pagination for each connection; it may reset after a reboot.
         self.executar("terminal length 0", exigir_sucesso=True)
-        # 'terminal width' e opcional em alguns IOS; se nao suportado, ignorar.
+        # 'terminal width' is optional; ignore it if unsupported by the IOS image.
         self.executar("terminal width 512", exigir_sucesso=False)
 
     def executar(self, comando: str, exigir_sucesso: bool = False) -> str:
         self.enviar(comando)
         resposta, tipo = self.ler()
         if tipo != "prompt":
-            raise RuntimeError(f"Nao retornou prompt apos {comando}")
+            raise RuntimeError(f"No prompt returned after {comando}")
         if exigir_sucesso and ("% Invalid input" in resposta or "% Unrecognized" in resposta):
-            raise RuntimeError(f"Comando nao suportado: {comando}")
+            raise RuntimeError(f"Unsupported command: {comando}")
         return resposta
 
 
 class Credenciais:
-    """Consulta variaveis de ambiente ou pergunta com getpass sem expor senha."""
+    """Read environment variables or prompt with getpass without echoing passwords."""
 
     def __init__(self):
         self._login = os.environ.get("EVE_LOGIN_PASSWORD")
@@ -234,17 +234,17 @@ class Credenciais:
 
     def usuario(self) -> str:
         if self._usuario is None:
-            self._usuario = input("Usuario do console Cisco: ").strip()
+            self._usuario = input("Cisco console username: ").strip()
         return self._usuario
 
     def senha_login(self) -> str:
         if self._login is None:
-            self._login = getpass.getpass("Senha de login do console: ")
+            self._login = getpass.getpass("Console login password: ")
         return self._login
 
     def senha_enable(self) -> str:
         if self._enable is None:
-            self._enable = getpass.getpass("Senha de enable (se configurada): ")
+            self._enable = getpass.getpass("Enable password (if configured): ")
         return self._enable
 
 
@@ -252,29 +252,29 @@ def extrair_running_config(resposta: str) -> str:
     txt = normalizar(resposta)
     cabecalho = HEADER_RE.search(txt)
     if cabecalho is None:
-        raise ValueError("Nao encontrei o cabecalho 'Current configuration : N bytes'")
+        raise ValueError("Missing 'Current configuration : N bytes' header")
     conteudo = txt[cabecalho.start():]
     fins = list(END_RE.finditer(conteudo))
     if not fins:
-        raise ValueError("Saida truncada: linha final 'end' ausente")
+        raise ValueError("Truncated output: final 'end' line missing")
     fim = fins[-1]
     depois = conteudo[fim.end():].strip()
     if not re.fullmatch(r"[A-Za-z0-9_.:/()-]+#", depois):
-        raise ValueError(f"Saida truncada: prompt ausente apos 'end' ({depois[-90:]!r})")
+        raise ValueError(f"Truncated output: prompt missing after 'end' ({depois[-90:]!r})")
     config = conteudo[:fim.end()].strip() + "\n"
     if len(config) < 80 or "\n" not in config:
-        raise ValueError("Running-config incompleto/curto")
+        raise ValueError("Incomplete or unexpectedly short running-config")
     return config
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Faz backup do show run dos roteadores Cisco no EVE-NG")
-    p.add_argument("--host", default=EVE_HOST, help="Host EVE-NG")
-    p.add_argument("--only", nargs="+", help="Coletar somente estes roteadores, ex.: --only PE1 PE2 PE3")
-    p.add_argument("--attempts", type=int, default=3, help="Tentativas por roteador (padrao: 3)")
-    p.add_argument("--timeout", type=float, default=150, help="Timeout total por comando (s)")
-    p.add_argument("--idle", type=float, default=30, help="Tempo sem dados antes de erro (s)")
-    p.add_argument("--out", help="Pasta de destino alternativa")
+    p = argparse.ArgumentParser(description="Back up show running-config from Cisco IOS routers in EVE-NG")
+    p.add_argument("--host", default=EVE_HOST, help="EVE-NG host")
+    p.add_argument("--only", nargs="+", help="Collect only these routers, e.g. --only PE1 PE2 PE3")
+    p.add_argument("--attempts", type=int, default=3, help="Attempts per router (default: 3)")
+    p.add_argument("--timeout", type=float, default=150, help="Total timeout per command (seconds)")
+    p.add_argument("--idle", type=float, default=30, help="Idle time before failure (seconds)")
+    p.add_argument("--out", help="Alternative output directory")
     a = p.parse_args()
 
     equipamentos = EQUIPAMENTOS
@@ -282,21 +282,21 @@ def main() -> int:
         escolhidos = {x.upper() for x in a.only}
         desconhecidos = escolhidos - {x for x, _ in EQUIPAMENTOS}
         if desconhecidos:
-            p.error(f"Roteadores desconhecidos: {', '.join(sorted(desconhecidos))}")
+            p.error(f"Unknown routers: {', '.join(sorted(desconhecidos))}")
         equipamentos = [(x, y) for x, y in EQUIPAMENTOS if x in escolhidos]
 
     agora = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     raiz = Path(__file__).resolve().parent
     pasta = Path(a.out) if a.out else raiz / "backups" / "01-Multicast" / agora
     pasta.mkdir(parents=True, exist_ok=True)
-    print(f"Backup running-config | {len(equipamentos)} roteadores | {agora}")
-    print("O script entra em enable se encontrar prompt '>' e desativa paginacao a cada conexao.")
-    print("Feche outros consoles Telnet/SecureCRT desses roteadores antes de iniciar.\n")
+    print(f"Running-config backup | {len(equipamentos)} routers | {agora}")
+    print("The script enters enable from a '>' prompt and disables pagination per connection.")
+    print("Close other Telnet/SecureCRT sessions to these routers before starting.\n")
     credenciais = Credenciais()
     ok, erros = 0, 0
 
     for nome, porta in equipamentos:
-        print(f"Coletando {nome} ({a.host}:{porta})...", flush=True)
+        print(f"Collecting {nome} ({a.host}:{porta})...", flush=True)
         motivos = []
         for tentativa in range(1, max(1, a.attempts) + 1):
             terminal = Console(a.host, porta, a.timeout, a.idle)
@@ -307,7 +307,7 @@ def main() -> int:
                     try:
                         config = extrair_running_config(resposta)
                     except ValueError:
-                        # Preserva a saida real para diagnosticar sem guardar arquivo .cfg invalido.
+                        # Preserve actual diagnostic output without saving an invalid .cfg file.
                         (pasta / f"{nome}.debug.txt").write_text(resposta, encoding="utf-8")
                         raise
                 destino = pasta / f"{nome}.cfg"
@@ -316,24 +316,24 @@ def main() -> int:
                 ok += 1
                 break
             except (OSError, ConnectionError, TimeoutError, RuntimeError, ValueError) as exc:
-                motivo = f"tentativa {tentativa}: {type(exc).__name__}: {exc}"
+                motivo = f"attempt {tentativa}: {type(exc).__name__}: {exc}"
                 motivos.append(motivo)
                 if terminal.last_response:
-                    # Guardar saida parcial mesmo se ocorreu timeout.
+                    # Preserve partial output even after a timeout.
                     (pasta / f"{nome}.debug.txt").write_text(terminal.last_response, encoding="utf-8")
                 if tentativa < max(1, a.attempts):
                     print(f"  [RETRY] {nome}: {motivo}", flush=True)
                     time.sleep(1.5)
         else:
             erros += 1
-            print(f"[ERRO] {nome}: {motivos[-1]}")
+            print(f"[ERROR] {nome}: {motivos[-1]}")
             (pasta / f"{nome}.erro.txt").write_text("\n".join(motivos) + "\n", encoding="utf-8")
 
-    print(f"\nFinalizado: {ok} OK, {erros} com erro")
-    print(f"Diretorio: {pasta}")
-    print("ATENCAO: arquivos .cfg e .debug.txt podem conter senhas e chaves. Mantenha-os privados.")
+    print(f"\nFinished: {ok} OK, {erros} failed")
+    print(f"Directory: {pasta}")
+    print("NOTICE: .cfg and .debug.txt files may contain passwords and keys. Keep them private.")
     if erros:
-        print("Consulte *.erro.txt e *.debug.txt para diagnosticar as falhas.")
+        print("Inspect *.erro.txt and *.debug.txt to diagnose failures.")
     return 1 if erros else 0
 
 

@@ -1,51 +1,48 @@
-# Multicast IPv4 e IPv6 — Labs 01–05 (CCNP/CCIE SP)
+# IPv4 and IPv6 Multicast — Labs 01–05
 
-Topologia Cisco IOS no EVE-NG, com sete roteadores, OSPFv2 (IPv4) e OSPFv3 (IPv6). Evidências dos Labs 01–04 coletadas em 12/11/2026; LAB 05 documentado a partir de saídas do console em 13/11/2026. Os arquivos de evidências registram saídas reais, não exemplos inventados.
+Seven Cisco IOS routers in EVE-NG, using OSPFv2 for IPv4 and OSPFv3 for IPv6. Labs 01–04 preserve user-supplied console evidence from 2026-11-12; LAB 05 preserves console excerpts from 2026-11-13. This documentation revision did not rerun those tests.
 
-```text
-CE1 (source) --- PE1 --- RR-P (RP ASM / BIDIR / Anycast 1)
-                            |                    |
-                            +--- PE2 --- CE2     +--- PE3 (Anycast 2) --- CE3
-```
+![Multicast topology supplied by the lab owner](topology/multicast-eve-ng.png)
 
-> Observação: topologia em estrela com **caminho único** via RR-P. PE3 não tem enlace direto com PE2; mudar custo OSPF sem adicionar links não cria caminho alternativo. O nome RR-P não representa BGP RR neste laboratório.
+The physical topology is a tree: CE1–PE1–RR-P, with branches through PE2 to CE2 and through PE3 to CE3. There is no PE2–PE3 link. Changing an OSPF cost cannot create an alternate physical path. RR-P is a device name, not evidence of BGP route reflection.
 
-## Laboratórios concluídos
+## Choose the forwarding model
 
-| Lab | Grupo | Controle | Evidências |
+| Lab | Receiver request | Group / RP | What was observed |
 |---|---|---|---|
-| [01 — PIM-SM (ASM)](LAB01-PIM-SM-ASM.md) | `239.1.1.1` | Static RP `10.255.0.1` | IGMP Join, `(*,G)`, `(S,G)`, flag T e RPF |
-| [02 — PIM-SSM + IGMPv3](LAB02-PIM-SSM-IGMPv3.md) | `232.1.1.1` | Sem RP | source filtering e contadores 26→28 no PE2 |
-| [03 — PIM-BIDIR](LAB03-PIM-BIDIR.md) | `239.2.2.2` | RP `10.255.0.2` | DF, `(*,G)`, RP-tree 14→17; fontes CE1/CE3 testadas |
-| [04 — Anycast RP + MSDP](LAB04-Anycast-RP-MSDP.md) | `239.3.3.3` | Anycast `10.255.0.100` | MSDP Up, SA, failover OSPF e novo Join; PE2 24→26 |
-| [05 — IPv6 ASM + SSM / MLDv2](LAB05-IPv6-Multicast.md) | `FF1E::1234` e `FF3E::1234` | RP IPv6 (ASM), INCLUDE (SSM) | OSPFv3, PIM Register, SPT, 2 receptores, filtro de fonte positivo/negativo |
+| [01 — PIM-SM ASM](LAB01-PIM-SM-ASM.md) | Group G | 239.1.1.1 / 10.255.0.1 | IGMP, (*,G), (S,G), T flag and RPF |
+| [02 — SSM / IGMPv3](LAB02-PIM-SSM-IGMPv3.md) | Source S and group G | 232.1.1.1 / no RP | Distinct source trees; PE2 counters 26→28 |
+| [03 — BIDIR](LAB03-PIM-BIDIR.md) | Group G | 239.2.2.2 / 10.255.0.2 | DF election; shared-tree counters 14→17 |
+| [04 — Anycast RP / MSDP](LAB04-Anycast-RP-MSDP.md) | Group G | 239.3.3.3 / 10.255.0.100 | MSDP, SA cache, route failover; PE2 24→26 |
+| [05 — IPv6 ASM / SSM](LAB05-IPv6-Multicast.md) | Group or source/group | FF1E::1234 and FF3E::1234 | MLDv2, two receivers and source filtering |
 
-- [Comandos de consulta](comandos.md)
-- [Validação e troubleshooting](troubleshooting.md)
-- [Evidências TXT dos 5 labs](evidencias/) (LAB05 extraído das saídas compartilhadas no chat)
-- [Snapshot histórico pré-LAB05 — 12/11](configs/snapshot-2026-11-12/)
-- [Snapshot pós-LAB05 — 7 show running-configs revisados em 13/11](configs/snapshot-2026-11-13/)
-- [Topologia e endereçamento](topology/enderecamento.md)
-- [Backup automatizado de show run](../09-Automation/backup_show_run_eve.py)
+## Reading order
 
-## Baseline vigente
+1. [Topology and addressing](topology/enderecamento.md).
+2. One lab guide: objective → configuration → commands → result → explanation.
+3. [Command reference](comandos.md) and [troubleshooting](troubleshooting.md).
+4. [Evidence files](evidencias/) and the relevant configuration snapshot.
 
-- **OSPF:** processo 1, área 0, usando as loopbacks e os enlaces ponto a ponto.
-- **ASM:** ACL `ASM_GROUPS` → RP `10.255.0.1`.
-- **SSM:** `ip pim ssm default` → `232.0.0.0/8`.
-- **BIDIR:** ACL `BIDIR_GROUPS` → RP `10.255.0.2` com `bidir`.
-- **Anycast:** ACL `ANYCAST_GROUPS` → RP lógico `10.255.0.100`, compartilhado entre RR-P e PE3; MSDP entre `10.255.0.1` e `10.255.0.33`.
+## Snapshot selection
 
-## Estado e limitações
+- [2026-11-12](configs/snapshot-2026-11-12/): combined final IPv4 state after Labs 01–04.
+- [2026-11-13](configs/snapshot-2026-11-13/): post-LAB05 state, including IPv6.
+- [Configuration notes](configs/README.md): provenance and differences between snapshots.
+- [IOS backup utility](../09-Automation/backup-show-run-eve.md): local collection, not automatic publication.
 
-- Há comprovação de encaminhamento multicast nos labs SSM, BIDIR e Anycast via `show ip mroute count`.
-- Para o PIM-SM inicial, existem tabelas `(S,G)` com flag T, mas o registro enviado não inclui contadores comparáveis de entrega ao receptor para esse grupo.
-- O teste de failover Anycast comprovou reconvergência do RP, nova inscrição e contadores no PE2; **não** demonstrou registro de uma *nova source inédita* após a falha.
-- O teste BIDIR de duas fontes foi confirmado na conversa, sem uma captura de contador individual rotulada por cada origem.
-- **LAB05 IPv6:** ASM + MLDv2 e SSM + filtragem de fontes verificados; **MLDv1 específico não foi testado**.
-- **Backups pós-LAB05 publicados:** IPv6, OSPFv3, RP e joins ASM/SSM conferidos nos sete arquivos. `2001:DB8:1::99` ausente no CE1; gravação em startup-config não comprovada pelos backups.
-- **Próximos labs:** mVPN/MPLS e troubleshooting de RPF com redundância física.
+The later snapshot is not an exact replay of each earlier lab. For example, CE2 and CE3 request different IPv4 SSM sources for the same group. Match the source address in each test to that receiver's subscription.
 
-## Segurança
+## What the evidence does and does not establish
 
-O repositório é público. Os sete arquivos de cada snapshot foram revisados quanto a senhas, tokens e chaves; não foram encontrados dados desse tipo. Os arquivos contêm apenas endereçamento fictício/de laboratório, inclusive IPv6 de documentação 2001:DB8::/32. Em novos backups, revise credenciais/segredos antes de publicar. Não publique arquivos do diretório local `backups/` indiscriminadamente.
+- SSM, BIDIR and Anycast captures show increasing forwarding counters.
+- ASM captures show routing state and the IOS T flag, but not comparable end-receiver delivery counters.
+- BIDIR traffic from CE1 and CE3 was reported by the user; no individual counter run was labeled for each source.
+- Anycast failure testing covered an already-known source and a renewed join, not registration of a previously unseen source after failure.
+- IPv6 ASM/SSM and MLDv2 were exercised. MLDv1 was not.
+- The post-LAB05 snapshots show the temporary IPv6 source removed. They do not prove startup-config persistence.
+
+## Shared baseline
+
+OSPF process 1/area 0 provides IPv4 reachability. ASM_GROUPS maps to RP 10.255.0.1; BIDIR_GROUPS maps to RP 10.255.0.2; ANYCAST_GROUPS maps to 10.255.0.100. SSM uses the default IPv4 232.0.0.0/8 range. RR-P and PE3 exchange MSDP information through their unique loopbacks.
+
+The snapshot review found no published passwords, tokens or private keys. Review each new capture independently before publication.

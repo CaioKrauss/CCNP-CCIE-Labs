@@ -1,55 +1,69 @@
-# Validação e troubleshooting — PIM Sparse Mode
+# Multicast Troubleshooting — Configuration, State and Delivery
 
-Este roteiro distingue **configuração**, **estado de controle** e **encaminhamento efetivo**. Não concluir que há entrega de pacotes apenas porque uma rota multicast existe.
+**Start with a precise source/group and receiver.** Record the source address, destination group, protocol model and expected path. For example, CE2's SSM request for 10.255.0.11 does not match traffic sourced from 10.0.1.1.
 
-## 1. Unicast / RPF
+## 1. Verify unicast and RPF
+
 ```cisco
 show ip ospf neighbor
 show ip route 10.255.0.1
 show ip route 10.255.0.11
 show ip rpf 10.255.0.11
 ```
-Conferir adjacências OSPF, alcance do RP e caminho RPF até a fonte. O RPF deve apontar para a interface que leva à origem do pacote multicast, conforme a tabela unicast/MRIB.
 
-## 2. PIM e RP
+Check the route toward the source and, where applicable, toward the RP. Compare the expected incoming interface with the actual source-facing link. A unicast route can exist while multicast traffic arrives on an unacceptable interface.
+
+## 2. Verify PIM and the group mapping
+
 ```cisco
 show ip pim neighbor
 show ip pim interface
 show ip pim rp mapping
 ```
-Confirmar vizinhanças em cada enlace de trânsito, interfaces com PIM habilitado e mapeamento do grupo para RP 10.255.0.1.
 
-## 3. IGMP e árvore compartilhada
+Missing PIM adjacency prevents the expected join path. An RP check applies to ASM/BIDIR/Anycast; do not require an RP for the SSM channel. Check the mapping for the exact group, not merely the presence of any RP.
+
+## 3. Verify receiver interest
+
 ```cisco
 show ip igmp groups
 show ip mroute 239.1.1.1
 ```
-Em CE2 e CE3, verificar o grupo 239.1.1.1 em Fa0/0. Na árvore `(*,G)`, conferir interface de entrada/RPF para o RP e lista de interfaces de saída (OIL) rumo aos receptores.
 
-## 4. Fonte, Register e SPT
+On CE2/CE3, inspect the receiver-facing Fa0/0. Local test receivers may have null OIL. On transit routers, inspect downstream OIL entries toward the receiver. An empty downstream branch on a transit node needs a different explanation from local reception.
+
+## 4. Verify the right tree and actual traffic
+
 ```cisco
-show ip mroute 239.1.1.1
+show ip mroute 232.1.1.1
+show ip mroute 239.2.2.2
 show ip mroute count
-show ip rpf 10.255.0.11
 ```
-Gerar tráfego de teste a partir da fonte prevista e observar evolução dos estados `(*,G)` e `(S,G)`, flags pertinentes e contadores. Se o equipamento/imagem oferecer comandos de depuração de PIM Register, utilizá-los com cautela em ambiente de laboratório.
 
-**Não confundir:** o flag `T` indica SPT-bit no IOS; o simples aparecimento de `(S,G)` não é, isoladamente, comprovação de que todo o caminho de dados foi comutado para a SPT. Comparar IIF/OIL, RPF e contadores em diferentes nós.
+| Model | State to examine | Frequent wrong inference |
+|---|---|---|
+| ASM | (*,G), (S,G), IOS T flag, RPF, IIF/OIL | Any (S,G) proves full SPT delivery |
+| SSM | Correct (S,G), source selection, counter increments | Same group means any source is accepted |
+| BIDIR | Shared state, DF roles, upstream direction | No per-source tree means no data |
+| Anycast | Selected RP route, MSDP, SA, mroute counters | SA cache proves receiver delivery |
 
-## 5. Testes de falha
-- Desligar uma interface de trânsito em ambiente de lab e registrar efeito sobre OSPF, PIM e mroute.
-- Restaurar a interface e medir convergência.
-- Alterar temporariamente uma condição de RPF e comparar comportamento, salvando a baseline antes.
-- Como a topologia não tem redundância, falhas de enlace podem interromper completamente o serviço; não esperar reroute.
+Send a bounded test from the intended source, compare before/after counters and record receiver replies where available. Counter changes need a time interval and a named device.
 
-## Registro recomendado
-Para cada teste, salvar data/hora, roteador, comandos, saída relevante, hipótese, resultado observado e conclusão. Preservar logs completos localmente e publicar apenas trechos revisados, sem segredos.
+## 5. Controlled failures are a separate exercise
 
-## Checklist
-- [ ] Vizinhanças OSPF/PIM em todos os enlaces
-- [ ] Mapeamento RP consistente
-- [ ] IGMP de CE2/CE3 verificado
-- [ ] `(*,239.1.1.1)` e OIL observados
-- [ ] Tráfego real enviado e contadores incrementando nos receptores
-- [ ] `(S,G)` e SPT avaliados com evidências
-- [ ] Falha induzida, diagnóstico e recuperação documentados
+On this physical tree, losing a transit link may break service entirely. Do not expect a redundant path that does not exist. A future failure exercise should record the baseline, one deliberate fault, symptoms, diagnosis, restoration and a post-recovery test. Do not mark such a test complete merely because its commands are documented.
+
+LAB 04 contains a historical loopback failure. It does not prove survival of a full RR-P outage.
+
+## Evidence checklist
+
+- [ ] Source/group and receiver explicitly identified
+- [ ] Unicast reachability and RPF checked
+- [ ] PIM and group mapping appropriate for the multicast model
+- [ ] Membership and IIF/OIL captured
+- [ ] Traffic generated and measured at named points
+- [ ] Expected result separated from actual result
+- [ ] Limitations and unresolved causes retained
+- [ ] Any injected fault restored and recovery evidenced
+
+See [command reference](comandos.md) and [IPv6-specific checks](LAB05-IPv6-Multicast.md).

@@ -1,6 +1,6 @@
-Equipamento: R3
-Inicio da coleta (America/Sao_Paulo): 2026-11-13T15:43:30.638243-03:00
-Origem: console do laboratorio; comandos executados nesta sessao.
+Device: R3
+Collection start (America/Sao_Paulo): 2026-11-13T15:43:30.638243-03:00
+Source: lab console; commands executed during the recorded collection.
 
 ===== show running-config =====
 show running-config
@@ -267,3 +267,4 @@ Label      Label      or Tunnel Id     Switched      interface
 16         Pop Label  1.1.1.1/32       5948          Fa0/0      10.0.0.6    
 17         Pop Label  10.10.10.10/32   6355          Fa1/0      10.0.0.1    
 R3#
+

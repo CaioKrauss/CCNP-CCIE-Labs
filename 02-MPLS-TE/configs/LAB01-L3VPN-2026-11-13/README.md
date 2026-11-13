@@ -1,14 +1,14 @@
-# Configurações observadas — L3VPN CUST-A
+# Observed Configurations — CUST-A L3VPN
 
-Coleta direta dos consoles em 13/11/2026, aproximadamente às 15:43, America/Sao_Paulo. Estes arquivos representam o estado encontrado; não são configurações recém-aplicadas.
+Collected directly from device consoles on 2026-11-13 at approximately 15:43, America/Sao_Paulo. These are the configurations found during validation, not newly applied configurations.
 
-- Nove arquivos: running/startup de CE1_A, CE2_A, R1 e R3; running do XR1.
-- Comandos efetivos de running e startup equivalentes nos quatro equipamentos IOS, ignorando comentários e cabeçalhos.
-- XR1: configuração ativa com histórico de commits existente. Último commit listado: 1000000019. Não houve novo commit nem teste de reboot.
-- Removidos apenas eco do comando, cabeçalhos externos à configuração e prompt final. Quebras de linha normalizadas para LF; cada arquivo termina com LF.
-- A configuração do XR não inclui credenciais locais na saída coletada. Estes snapshots não são um pacote completo de instalação ou autenticação da imagem.
-- Revisão não identificou senhas, hashes de senha, chaves privadas, tokens ou dados de clientes de produção no conteúdo publicado. Endereços de gerenciamento do EVE e portas de console não foram incluídos.
-- Os endereços são do cenário de laboratório, incluindo loopbacks em faixas públicas; não devem ser anunciados fora dele.
-- Nenhum equipamento L2 foi configurado ou renomeado nesta validação L3VPN.
+- Nine files: running/startup for CE1_A, CE2_A, R1 and R3; running for XR1.
+- Effective running/startup commands match on the four IOS devices after excluding comments and capture headers.
+- XR1 has an active configuration and an existing commit history; latest listed commit 1000000019. No new commit or reboot test was performed.
+- Only command echo, external capture headers and the final prompt were removed. Configuration files use UTF-8/LF.
+- The captured XR configuration does not include local access credentials. These snapshots are not a complete image-installation or authentication package.
+- Publication review found no password/hash, private key, token or production-customer data. EVE management addresses and console ports are excluded.
+- Addresses belong to this isolated scenario; some loopbacks use public IPv4 values and must not be advertised outside the lab.
+- L2 devices were not configured or renamed. CE1_B/CE2_B, later identified in the supplied screenshot, were not part of the five-device capture.
 
-As [evidências de CLI](../../evidencias/LAB01-L3VPN-2026-11-13/) preservam as saídas completas revisadas. Os hashes em SHA256SUMS.txt referem-se aos bytes UTF-8/LF publicados, não a arquivos anteriores à normalização.
+[CLI evidence](../../evidencias/LAB01-L3VPN-2026-11-13/) preserves the command responses. SHA256SUMS.txt hashes the current published UTF-8 bytes; English editorial headers in evidence files were translated and the manifest regenerated. Router responses and configuration commands were preserved.

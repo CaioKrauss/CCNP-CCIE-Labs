@@ -1,9 +1,9 @@
-# Snapshot do show running-config — 12/11/2026
+# Running-Configuration Snapshot — 2026-11-12
 
-Contém as **sete saídas integrais** do Cisco IOS, coletadas após os labs 01–04, preservadas para reprodução do ambiente: CE1, CE2, CE3, PE1, PE2, PE3 e RR-P.
+Seven Cisco IOS show running-config outputs collected after Labs 01–04: CE1, CE2, CE3, PE1, PE2, PE3 and RR-P.
 
-Os arquivos são registros de `show running-config`, com cabeçalho `Current configuration`, não scripts para colar diretamente no CLI.
+These are captures with a Current configuration header, not paste-ready configuration scripts. They represent the combined final IPv4 state, not every intermediate lab state. Use the [historical evidence](../../evidencias/) to interpret a specific test.
 
-**Verificação de segurança antes da publicação:** não foram encontrados comandos de senha, tokens ou chaves nesses sete arquivos. O repositório é público; novos snapshots precisam de revisão antes de upload. `backups/` locais não devem ser sincronizados automaticamente.
+The publication review found no password commands, tokens or keys in these files. New captures need their own review. Do not automatically synchronize local backups/ directories to this public repository.
 
-A snapshot reflete o estado **final combinado** dos quatro labs, não o estado histórico de cada etapa. Os TXT em `../../evidencias/` preservam os outputs observados durante os testes.
+The English revision preserves the configuration-file bytes. A configuration snapshot establishes configured intent, not traffic delivery or startup-config persistence.

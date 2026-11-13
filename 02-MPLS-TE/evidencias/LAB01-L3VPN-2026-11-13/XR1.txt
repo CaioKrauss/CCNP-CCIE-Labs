@@ -1,6 +1,6 @@
-Equipamento: XR1
-Inicio da coleta (America/Sao_Paulo): 2026-11-13T15:43:22.586351-03:00
-Origem: console do laboratorio; comandos executados nesta sessao.
+Device: XR1
+Collection start (America/Sao_Paulo): 2026-11-13T15:43:22.586351-03:00
+Source: lab console; commands executed during the recorded collection.
 
 ===== show running-config =====
 show running-config
@@ -339,3 +339,4 @@ SNo. Label/ID              User      Line                Client      Time Stamp
 18   1000000002            root      con0_0_CPU0         CLI         Tue Sep 22 03:44:21 2026
 19   1000000001            root      con0_0_CPU0         CLI         Tue Sep 22 03:42:42 2026
 RP/0/0/CPU0:XR1#
+

@@ -1,13 +1,13 @@
 CCNP SP - MULTICAST | LAB 04 - ANYCAST RP + MSDP
 =================================================
-REGISTROS REAIS ENVIADOS NA CONVERSA
-Grupo ASM Anycast: 239.3.3.3 | Anycast RP: 10.255.0.100
+ACTUAL RECORDS SUPPLIED BY THE LAB OWNER
+Anycast ASM group: 239.3.3.3 | Anycast RP: 10.255.0.100
 RP1: RR-P (Loopback0 10.255.0.1, Loopback10 10.255.0.100)
 RP2: PE3  (Loopback0 10.255.0.33, Loopback10 10.255.0.100)
 MSDP peer: 10.255.0.1 <-> 10.255.0.33
-Source CE1: 10.255.0.11 | Receptores: CE2 / CE3
+Source CE1: 10.255.0.11 | Receivers: CE2 / CE3
 
-=== TESTE 1 - RR-P / ROTA LOCAL E MSDP ANTES DE FALHA ===
+=== TEST 1 - RR-P / LOCAL ROUTE AND MSDP BEFORE FAILURE ===
 RR-P#show ip route 10.255.0.100
 Routing entry for 10.255.0.100/32
   Known via "connected", distance 0, metric 0 (connected, via interface)
@@ -52,7 +52,7 @@ Acl: BIDIR_GROUPS, Static, Bidir Mode
 Acl: ANYCAST_GROUPS, Static
     RP: 10.255.0.100 (?)
 
-=== TESTE 2 - PE3 / ROTA LOCAL E MSDP ANTES DE FALHA ===
+=== TEST 2 - PE3 / LOCAL ROUTE AND MSDP BEFORE FAILURE ===
 PE3#show ip route 10.255.0.100
 Routing entry for 10.255.0.100/32
   Known via "connected", distance 0, metric 0 (connected, via interface)
@@ -88,7 +88,7 @@ Acl: BIDIR_GROUPS, Static, Bidir Mode
 Acl: ANYCAST_GROUPS, Static
     RP: 10.255.0.100 (?)
 
-=== TESTE 3 - SOURCE ACTIVE E MSDP CACHE ===
+=== TEST 3 - SOURCE ACTIVE AND MSDP CACHE ===
 PE3#show ip msdp sa-cache
 MSDP Source-Active Cache - 1 entries
 (10.255.0.11, 239.3.3.3), RP 10.255.0.1, AS ?,00:01:17/00:05:53, Peer 10.255.0.1
@@ -136,7 +136,7 @@ MSDP Peer 10.255.0.33 (?), AS ?
     SA Messages in/out: 0/1
     Data Packets in/out: 0/1
 
-=== TESTE 4 - FALHA DO RP1 / LOOPBACK10 SHUTDOWN NO RR-P ===
+=== TEST 4 - RP1 FAILURE / LOOPBACK10 SHUTDOWN ON RR-P ===
 RR-P#show ip route 10.255.0.100
 Routing entry for 10.255.0.100/32
   Known via "connected", distance 0, metric 0 (connected, via interface)
@@ -180,7 +180,7 @@ RPF information for ? (10.255.0.100)
   Doing distance-preferred lookups across tables
   RPF topology: ipv4 multicast base, originated from ipv4 unicast base
 
-=== TESTE 5 - PE3 / TREE E CONTADORES DURANTE FAILOVER ===
+=== TEST 5 - PE3 / TREE AND COUNTERS DURING FAILOVER ===
 PE3#show ip mroute 239.3.3.3
 (*, 239.3.3.3), 00:09:38/00:02:38, RP 10.255.0.100, flags: SJC
   Incoming interface: Null, RPF nbr 0.0.0.0
@@ -214,7 +214,7 @@ MSDP Peer 10.255.0.1 (?), AS ?
     SA Messages in/out: 6/2
     Data Packets in/out: 1/1
 
-=== TESTE 6 - CE2 / NOVA INSCRIÇÃO IGMP APÓS FALHA ===
+=== TEST 6 - CE2 / NEW IGMP MEMBERSHIP AFTER FAILURE ===
 CE2#sh run interface FastEthernet0/0
 Building configuration...
 
@@ -243,7 +243,7 @@ CE2(config)#interface FastEthernet0/0
 CE2(config-if)# ip igmp join-group 239.3.3.3
 CE2(config-if)#end
 
-=== TESTE 7 - PE3 / ESTADO APÓS NOVO JOIN ===
+=== TEST 7 - PE3 / STATE AFTER NEW JOIN ===
 PE3#show ip mroute 239.3.3.3
 (*, 239.3.3.3), 00:16:13/00:02:47, RP 10.255.0.100, flags: SJC
   Incoming interface: Null, RPF nbr 0.0.0.0
@@ -256,8 +256,8 @@ PE3#show ip mroute 239.3.3.3
   Outgoing interface list:
     FastEthernet1/0, Forward/Sparse, 00:12:52/00:03:02
 
-=== TESTE 8 - PE2 / RESULTADO DO NOVO JOIN E FORWARDING ===
-O log PE2 completo está anexado abaixo; pontos verificados:
+=== TEST 8 - PE2 / NEW JOIN AND FORWARDING RESULT ===
+The complete PE2 log is appended below; verified points:
 PE2#show ip mroute 239.3.3.3
 (*, 239.3.3.3), 00:13:49/00:03:13, RP 10.255.0.100, flags: SJC
   Incoming interface: FastEthernet0/0, RPF nbr 10.0.23.1
@@ -288,16 +288,16 @@ RPF information for ? (10.255.0.100)
   Doing distance-preferred lookups across tables
   RPF topology: ipv4 multicast base, originated from ipv4 unicast base
 
-=== CONCLUSÃO DO TESTE ===
-- Sessão MSDP RR-P / PE3 Up e sem reset antes e durante a falha da Loopback10.
-- SA cache do PE3 contém (10.255.0.11,239.3.3.3) originada em RR-P.
-- RR-P muda rota/RPF do Anycast RP 10.255.0.100 de connected Loopback10 para OSPF via PE3 (10.0.34.2).
-- PE2 mantém Join ao grupo, (S,G) com flag T e contadores avançam 24 -> 26.
-- Este cenário comprova a mudança de RP no roteamento e forwarding durante falha da loopback.
-- O registro de uma nova source inédita após a falha não foi realizado nesta conversa.
-- A restauração 'no shutdown' da Loopback10 foi recomendada, mas não há log do usuário confirmando execução.
+=== TEST CONCLUSION ===
+- The RR-P / PE3 MSDP session is Up with no reset before/during the Loopback10 failure.
+- The PE3 SA cache contains (10.255.0.11,239.3.3.3), originated at RR-P.
+- RR-P changes the Anycast RP 10.255.0.100 route/RPF from connected Loopback10 to OSPF through PE3 (10.0.34.2).
+- PE2 retains membership and (S,G) with the T flag; counters advance 24 -> 26.
+- This scenario demonstrates an RP route change and forwarding during the loopback failure.
+- Registration of a previously unseen source after the failure was not tested.
+- Restoring Loopback10 with no shutdown was recommended; the supplied log does not confirm execution.
 
-=== ANEXO - LOG BRUTO PE2 (SEM LIMPEZA) ===
+=== APPENDIX - ORIGINAL PE2 RAW LOG ===
 
 PE2#
 PE2#show ip mroute 239.3.3.3
@@ -607,3 +607,4 @@ RPF information for ? (10.255.0.100)
   Doing distance-preferred lookups across tables
   RPF topology: ipv4 multicast base, originated from ipv4 unicast base
 PE2#
+

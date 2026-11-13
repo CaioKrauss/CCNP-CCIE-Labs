@@ -1,18 +1,25 @@
 # IPv6
 
-## Escopo
-ND, ICMPv6, MP-BGP, PMTUD e segurança.
+## Documented result
 
-## Estrutura dos labs
-Cada lab deve conter: objetivo, pré-requisitos, topologia, plano de endereçamento fictício, roteiro, hipóteses, configurações, comandos de validação, evidências e conclusão.
+[LAB 05 — IPv6 multicast](../01-Multicast/LAB05-IPv6-Multicast.md) covers OSPFv3 reachability, PIM-SM ASM, a static RP, MLDv2, SSM and source selection on seven Cisco IOS routers.
 
-> Nunca publicar senhas, tokens, IPs reais de clientes ou configurações proprietárias de produção.
+The recorded tests include receiver replies, multicast state and positive/negative source cases. MLDv1 was not tested. The [post-LAB05 snapshot](../01-Multicast/configs/snapshot-2026-11-13/) preserves the reviewed running configurations; it does not establish startup persistence.
 
-## Laboratório IPv6 documentado
+## Questions answered in LAB 05
 
-O LAB 05 reutilizou sete Cisco IOS do EVE-NG para validar OSPFv3 e multicast IPv6 (PIM-SM, RP, MLDv2, SSM e seleção de fonte). O arquivo inclui os resultados do ping, tabelas `(S,G)` e contadores. A versão MLDv1 não foi testada; o snapshot dos sete `show running-config` pós-LAB05 está em [01-Multicast/configs/snapshot-2026-11-13](../01-Multicast/configs/snapshot-2026-11-13/).
+- How does OSPFv3 provide the reachability used by the multicast topology?
+- Which RP serves the ASM group, and what Register evidence was captured?
+- How does source selection change reception for the SSM group?
+- Why can a local receiver show a null outgoing-interface list?
 
-## Progresso
-- [x] Primeiro laboratório documentado — [LAB 05 Multicast IPv6 (ASM, SSM e MLDv2)](../01-Multicast/LAB05-IPv6-Multicast.md)
-- [ ] Troubleshooting concluído
-- [ ] Revisão técnica realizada
+See the lab's command matrix for the observed IOS syntax and result interpretation.
+
+## Future scope
+
+Neighbor Discovery, ICMPv6, MP-BGP, path-MTU discovery and IPv6 security remain separate planned studies. The multicast result does not validate all IPv6 features.
+
+- [x] First IPv6 lab documented
+- [x] Evidence limits and snapshot provenance recorded
+- [ ] MLDv1-specific experiment
+- [ ] Dedicated PMTUD/security experiments

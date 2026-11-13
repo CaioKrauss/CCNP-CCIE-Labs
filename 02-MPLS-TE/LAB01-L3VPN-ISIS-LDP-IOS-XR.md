@@ -1,18 +1,18 @@
-# LAB 01 — L3VPN MPLS entre Cisco IOS e IOS XR
+# LAB 01 — MPLS L3VPN Between Cisco IOS and IOS XR
 
-## Resultado
+## Result and validation boundary
 
-**L3VPN CUST-A validada em 13/11/2026, às 15:43 (America/Sao_Paulo): comunicação bidirecional entre as loopbacks dos dois sites, com 20/20 respostas em cada sentido.** IS-IS, LDP, MP-BGP VPNv4 e eBGP PE–CE estavam operacionais. Não foi necessário corrigir ou aplicar configuração de rede. Os equipamentos reservados à futura L2VPN não foram configurados nem renomeados.
+**CUST-A passed bidirectional loopback-to-loopback testing on 2026-11-13 at 15:43, America/Sao_Paulo: 20/20 ICMP replies in each direction.** IS-IS, LDP, MP-BGP VPNv4 and PE–CE eBGP were already operational. No network configuration change was necessary.
 
-Este laboratório comprova conectividade IPv4 entre dois sites da mesma VRF. Não inclui teste de isolamento entre clientes, convergência após falha, MTU máxima, desempenho ou L2VPN.
+The tested path is **CE1_A–XR1–R3–R1–CE2_A**. A subsequently supplied screenshot also shows CE1_B/CE2_B; those devices were not checked in the five-device collection. L2_CE1/L2_CE2 were reserved for future L2VPN work and were not configured or renamed.
 
-## Objetivo e hipótese
+## Actual topology screenshot
 
-Transportar os prefixos `192.168.101.1/32` e `192.168.102.1/32` por um backbone MPLS sem instalá-los na tabela IP do roteador P. A hipótese é que a conectividade exige quatro elementos coerentes: alcance IP entre os PEs, transporte MPLS, distribuição das rotas VPNv4 e importação dessas rotas na VRF correta.
+![MPLS topology supplied by the lab owner](topology/mpls-eve-ng.png)
 
-## Topologia e recursos
+Original user-supplied image, received on 2026-11-13 and published unchanged. It shows the full canvas, including unverified/reserved nodes. Interface labels agree with the tested CUST-A path. The image is not proof that every node is configured or running.
 
-Topologia lógica reconstruída a partir das configurações, adjacências e traceroutes coletados. O arquivo `.unl` não foi exportado nesta validação.
+### Validated logical path
 
 ```mermaid
 flowchart LR
@@ -23,131 +23,183 @@ flowchart LR
     XR -. "MP-BGP VPNv4 · CUST-A" .- PE
 ```
 
-| Equipamento | Função | Plataforma observada | Interfaces utilizadas |
-|---|---|---|---|
-| CE1_A | CE do site 1 | Cisco IOS 15.2 | Fa0/0 `172.16.10.1/30`; Lo0 `192.168.101.1/32` |
-| XR1 | PE do site 1 | IOS XR 6.3.1 | Gi0/0/0/0 `172.16.10.2/30` na VRF; Gi0/0/0/2 `10.0.0.1/30`; Lo0 `10.10.10.10/32` |
-| R3 | P do backbone | Cisco IOS 15.2 | Fa1/0 `10.0.0.2/30`; Fa0/0 `10.0.0.5/30`; Lo0 `3.3.3.3/32` |
-| R1 | PE do site 2 | Cisco IOS 15.2 | Fa2/0 `10.0.0.6/30`; Fa3/0 `172.16.20.1/30` na VRF; Lo0 `1.1.1.1/32` |
-| CE2_A | CE do site 2 | Cisco IOS 15.2 | Fa0/0 `172.16.20.2/30`; Lo0 `192.168.102.1/32` |
+The diagram is reconstructed from configuration and operational output; it is not an exported .unl file.
 
-Os endereços acima são os valores efetivamente observados no laboratório. `1.1.1.1` e `3.3.3.3` não são faixas reservadas para documentação: foram usados como loopbacks internas deste ambiente e não devem ser anunciados para a Internet.
+## Addressing and roles
 
-## Como a VPN funciona neste lab
-
-1. CE1_A anuncia sua loopback ao XR1 por eBGP. CE2_A faz o mesmo para R1.
-2. Cada PE aprende a rota local dentro de `CUST-A` e a exporta por MP-BGP VPNv4 para o outro PE.
-3. Ambos usam RD `65000:100` e RT de importação/exportação `65000:100`. O **RD distingue prefixos VPNv4; o RT controla a importação na VRF**. Usar o mesmo valor numérico não torna suas funções iguais.
-4. IS-IS nível 2 fornece alcance entre as loopbacks dos PEs. LDP fornece os labels de transporte.
-5. O PE de entrada impõe labels de transporte e de VPN. R3 encaminha por MPLS; o PE de saída entrega o pacote ao CE correto. O P não precisa carregar as rotas dos clientes. Essa separação é descrita na [RFC 4364](https://www.rfc-editor.org/rfc/rfc4364.html).
-
-No XR, a política `PASS` está aplicada em entrada e saída ao vizinho CE na família IPv4 da VRF. No R1, `send-community extended` está configurado para o vizinho VPNv4. Esses pontos fazem parte da configuração observada, não foram adicionados nesta execução.
-
-## Configurações preservadas
-
-As configurações completas estão em [configs/LAB01-L3VPN-2026-11-13](configs/LAB01-L3VPN-2026-11-13/).
-
-| Equipamento | Situação constatada |
-|---|---|
-| CE1_A, CE2_A, R1 e R3 | `running-config` e `startup-config` coletadas; comandos efetivos equivalentes ao desconsiderar comentários e cabeçalhos |
-| XR1 | `running-config` coletada e histórico de commits consultado; último commit listado `1000000019`, em 22/09/2026 |
-
-Nenhuma restauração, `write memory`, `copy running-config startup-config`, alteração de configuração ou reboot foi realizado nesta validação. Apenas a paginação da sessão foi desativada para coleta. O histórico do XR é evidência de commits existentes; não foi executado teste de persistência por reinicialização.
-
-## Roteiro de validação e resultados
-
-| Camada | Verificação | Resultado observado |
+| Device | Role / platform | Used interfaces |
 |---|---|---|
-| Interfaces | Interfaces de acesso e backbone | Up/up nos links utilizados |
-| IGP | IS-IS XR1–R3 e R3–R1 | Adjacências nível 2 Up |
-| Transporte | Vizinhanças LDP | Oper nos dois enlaces do backbone |
-| VPN | MP-BGP entre `10.10.10.10` e `1.1.1.1` | Established, um prefixo remoto recebido por PE |
-| Acesso | eBGP CE1_A–XR1 e CE2_A–R1 | Established, um prefixo remoto recebido por CE |
-| VRF | Tabelas `CUST-A` | As duas loopbacks presentes em ambos os PEs |
-| Encaminhamento | CEF/LFIB e traceroute | Labels VPN e transporte coerentes |
-| Dados | CE1_A → CE2_A | 100%, 20/20; RTT mínimo/médio/máximo 12/33/56 ms |
-| Dados | CE2_A → CE1_A | 100%, 20/20; RTT mínimo/médio/máximo 32/62/80 ms |
-| Separação de tabelas | Tabelas globais dos PEs e R3 | Prefixos das loopbacks dos clientes ausentes das tabelas globais coletadas |
+| CE1_A | Customer edge, IOS 15.2 | Fa0/0 172.16.10.1/30; Lo0 192.168.101.1/32 |
+| XR1 | Provider edge, IOS XR 6.3.1 | Gi0/0/0/0 172.16.10.2/30 in CUST-A; Gi0/0/0/2 10.0.0.1/30; Lo0 10.10.10.10/32 |
+| R3 | Provider core, IOS 15.2 | Fa1/0 10.0.0.2/30; Fa0/0 10.0.0.5/30; Lo0 3.3.3.3/32 |
+| R1 | Provider edge, IOS 15.2 | Fa2/0 10.0.0.6/30; Fa3/0 172.16.20.1/30 in CUST-A; Lo0 1.1.1.1/32 |
+| CE2_A | Customer edge, IOS 15.2 | Fa0/0 172.16.20.2/30; Lo0 192.168.102.1/32 |
 
-A ausência dos prefixos do cliente no backbone é coerente com a arquitetura; não substitui um teste de isolamento entre duas VRFs, que não foi realizado.
+These are observed lab values. 1.1.1.1 and 3.3.3.3 are not documentation prefixes; keep them inside the isolated lab and do not advertise them externally.
 
-### Testes de dados executados
+## How the service works
 
-No CE1_A:
+1. CE1_A advertises its loopback by eBGP to XR1. CE2_A advertises its loopback to R1.
+2. Each PE stores its local customer route in CUST-A and exports a VPNv4 route to the other PE.
+3. Both PEs use RD 65000:100 and import/export RT 65000:100. **RD distinguishes VPNv4 prefixes; RT governs VRF import.** Equal numeric values do not make their roles interchangeable.
+4. IS-IS level 2 provides reachability between PE loopbacks. LDP supplies transport labels.
+5. The ingress PE imposes transport and VPN labels. R3 forwards MPLS without carrying customer routes; the egress PE delivers toward its CE. See [RFC 4364](https://www.rfc-editor.org/rfc/rfc4364.html).
+
+## Configuration decisions and why they matter
+
+Full snapshots are in [configs/LAB01-L3VPN-2026-11-13](configs/LAB01-L3VPN-2026-11-13/). The following are existing excerpts, not changes applied during validation.
+
+### R1: separate customer routing and distribute VPN routes
+
+```cisco
+ip vrf CUST-A
+ rd 65000:100
+ route-target export 65000:100
+ route-target import 65000:100
+!
+interface FastEthernet3/0
+ ip vrf forwarding CUST-A
+ ip address 172.16.20.1 255.255.255.252
+!
+router bgp 65000
+ neighbor 10.10.10.10 remote-as 65000
+ neighbor 10.10.10.10 update-source Loopback0
+ address-family vpnv4
+  neighbor 10.10.10.10 activate
+  neighbor 10.10.10.10 send-community extended
+ exit-address-family
+ address-family ipv4 vrf CUST-A
+  neighbor 172.16.20.2 remote-as 65102
+  neighbor 172.16.20.2 activate
+ exit-address-family
+```
+
+The access interface belongs to the customer VRF. The VPNv4 session uses stable loopbacks. Extended communities carry the RT information needed for import. The CE neighbor is activated inside the customer address family.
+
+### XR1: accept and advertise the customer routes
+
+```cisco
+route-policy PASS
+  pass
+end-policy
+!
+router bgp 65000
+ vrf CUST-A
+  rd 65000:100
+  address-family ipv4 unicast
+  !
+  neighbor 172.16.10.1
+   remote-as 65101
+   address-family ipv4 unicast
+    route-policy PASS in
+    route-policy PASS out
+```
+
+The captured XR configuration applies PASS in both directions to the CE. Its VRF configuration imports/exports RT 65000:100. A working PE-to-PE session alone does not replace the customer-facing policy and route exchange.
+
+### Core transport
+
+R1/R3 use IS-IS CORE, level-2-only, wide metrics and mpls ldp autoconfig. XR1 uses the corresponding IS-IS IPv4 address-family mpls ldp auto-config. Loopbacks are passive in IS-IS and serve as LDP router IDs.
+
+**IS-IS L2 means IGP level 2, not L2VPN.** R3 has no customer VRF/BGP requirement for this transport role.
+
+## Verification: command → observation → explanation
+
+| Layer | Command examples | Observed outcome | Why it matters |
+|---|---|---|---|
+| Interfaces | show ip interface brief / show ipv4 interface brief | Used links Up/up | Establishes the basic access/core path |
+| IGP | show isis neighbors / show isis adjacency | XR1–R3 and R3–R1 Up | PE-loopback reachability can be resolved |
+| Transport | show mpls ldp neighbor | Oper on both core links | LDP sessions have formed |
+| VPN control | show ip bgp vpnv4 all summary / show bgp vpnv4 unicast summary | Established; one remote customer prefix per PE | The VPN route exchange is active |
+| Access | show ip bgp summary / show bgp vrf CUST-A ipv4 unicast summary | CE sessions Established | Each site exchanges routes with its PE |
+| VRF RIB | show ip route vrf CUST-A / show route vrf CUST-A | Both customer /32s installed | Imported routes are usable in the customer table |
+| Forwarding | CEF detail and MPLS forwarding tables | VPN and transport labels resolved | The route has a concrete forwarding action |
+| Data | Loopback-sourced pings in both directions | 20/20 each way | The tested customer prefixes have working forward/return paths |
+
+Customer loopbacks were absent from the global routing tables collected on the PEs and R3. This is consistent with the service model, but is not a multi-VRF isolation test.
+
+## Measured traffic results
+
+On CE1_A:
 
 ```text
 ping 192.168.102.1 source 192.168.101.1 repeat 20 timeout 2
 Success rate is 100 percent (20/20), round-trip min/avg/max = 12/33/56 ms
 ```
 
-No CE2_A:
+On CE2_A:
 
 ```text
 ping 192.168.101.1 source 192.168.102.1 repeat 20 timeout 2
 Success rate is 100 percent (20/20), round-trip min/avg/max = 32/62/80 ms
 ```
 
-Usar a loopback como origem valida o caminho de ida **e a rota de retorno dos prefixos anunciados pelos CEs**. Um ping com origem automática na interface de acesso testaria outro par de endereços.
+The explicit source forces a return path to the advertised customer loopback. A ping sourced automatically from an access interface would test a different address pair. These short runs are connectivity checks, not throughput or latency benchmarks.
 
-### Labels vistos no caminho
+### Trace the label stack
 
-CE1_A → CE2_A:
+CE1_A to CE2_A:
 
 ```text
+traceroute 192.168.102.1 source 192.168.101.1 numeric timeout 1 probe 1
 1 172.16.10.2 8 msec
 2 10.0.0.2 [MPLS: Labels 16/18 Exp 0] 40 msec
 3 172.16.20.1 [MPLS: Label 18 Exp 0] 40 msec
 4 172.16.20.2 32 msec
 ```
 
-CE2_A → CE1_A:
+CE2_A to CE1_A:
 
 ```text
+traceroute 192.168.101.1 source 192.168.102.1 numeric timeout 1 probe 1
 1 172.16.20.1 24 msec
 2 10.0.0.5 [MPLS: Labels 17/24003 Exp 0] 56 msec
 3 10.0.0.1 [MPLS: Label 24003 Exp 0] 56 msec
 4 172.16.10.1 84 msec
 ```
 
-O CEF do XR1 mostrou `labels imposed {16 18}` para `192.168.102.1/32`. No R1, o CEF mostrou label VPN `24003` e label de transporte `17` para `192.168.101.1/32`. A LFIB de R3 mostrou `Pop Label` para as loopbacks dos PEs, compatível com PHP. Esses números são locais e dinâmicos; podem mudar após reinicialização ou reconvergência.
+XR1 CEF reported labels imposed {16 18} for 192.168.102.1/32. R1 CEF reported VPN label 24003 and transport label 17 for 192.168.101.1/32. R3's LFIB showed Pop Label for the PE loopbacks, consistent with penultimate-hop popping. The remaining VPN label is still relevant at the egress PE.
 
-O último salto aparece com o endereço da interface do CE, embora o destino consultado seja sua loopback. Não confundir o endereço usado na resposta ICMP com mudança do destino do teste.
+Labels are local/dynamic values and may change. The final traceroute response uses the CE access address even though the tested destination is its loopback; an ICMP response address does not redefine the requested destination.
 
-## Comandos de diagnóstico
+## Troubleshooting order
 
-| Pergunta | IOS | IOS XR |
-|---|---|---|
-| Interface está ativa? | `show ip interface brief` | `show ipv4 interface brief` |
-| IGP formou vizinhança? | `show isis neighbors` | `show isis adjacency` |
-| Transporte MPLS está pronto? | `show mpls ldp neighbor` | `show mpls ldp neighbor` |
-| Sessão VPNv4 está estabelecida? | `show ip bgp vpnv4 all summary` | `show bgp vpnv4 unicast summary` |
-| Rotas chegaram à VRF? | `show ip route vrf CUST-A` | `show route vrf CUST-A` |
-| Qual label será imposto? | `show ip cef vrf CUST-A 192.168.101.1 detail` | `show cef vrf CUST-A 192.168.102.1 detail` |
-| Como o backbone encaminha? | `show mpls forwarding-table` | `show mpls forwarding` |
+1. Check the physical/interface state and addressing.
+2. Check IS-IS and reachability to both PE loopbacks.
+3. Check LDP and the LFIB. Established BGP alone does not prove transport forwarding.
+4. Check CE advertisements and XR's customer route policy.
+5. Check VPNv4, RTs and the remote prefix inside CUST-A.
+6. Inspect CEF recursion and repeat a bounded loopback-sourced ping.
 
-## Se parar de funcionar
+Useful forwarding checks:
 
-1. Confira interfaces e endereçamento PE–CE e no backbone.
-2. Confira IS-IS e alcance às loopbacks dos PEs.
-3. Confira LDP e LFIB. BGP estabelecido sozinho não comprova transporte MPLS funcional.
-4. Confira eBGP PE–CE, anúncio das loopbacks e política `PASS` no XR.
-5. Confira VPNv4, RTs e presença da rota remota dentro de `CUST-A`.
-6. Confira CEF e execute ping com origem explícita na loopback.
+```cisco
+! R1:
+show ip bgp vpnv4 all labels
+show ip cef vrf CUST-A 192.168.101.1 detail
+show mpls forwarding-table
+! XR1:
+show cef vrf CUST-A 192.168.102.1 detail
+show mpls forwarding
+```
 
-Não remova RTs, derrube interfaces ou limpe sessões para reproduzir falhas sem um plano separado. Nesta execução não houve injeção de falhas.
+No interface shutdown, session reset or fault injection was performed in this validation.
 
-## Diagnóstico da suspeita de perda de configuração
+## Configuration preservation and diagnosis
 
-A suspeita de perda geral não se confirmou na parte L3VPN. Os quatro equipamentos IOS tinham configuração ativa e salva. O XR1 também tinha configuração e commits existentes. A primeira tentativa de coleta do XR não chegava ao prompt; ajustar a interação do console para envio de CR permitiu consultar o equipamento. Não há evidência de que a configuração do XR tenha sido restaurada ou recriada nesta sessão.
+R1, R3, CE1_A and CE2_A had matching effective running/startup commands after excluding comments and headers. XR1 had an active configuration and an existing commit history; latest listed commit 1000000019 was dated 2026-09-22.
 
-Os dois consoles que apresentaram assistente inicial foram excluídos desta etapa conforme a orientação de preservar os equipamentos L2 para outro laboratório.
+The suspected general configuration loss was not confirmed for the five-device CUST-A path. The initial XR console collector did not reach the prompt; sending CR allowed inspection. No XR configuration was recreated or restored.
 
-## Evidências e limites
+Only session pagination was disabled for capture. There was no write memory, copy running-config startup-config, new XR commit, reboot or persistence-through-reboot test.
 
-- [Saídas completas dos cinco equipamentos](evidencias/LAB01-L3VPN-2026-11-13/): comandos, respostas e horário local do início da coleta por dispositivo.
-- [Manifesto SHA-256](evidencias/LAB01-L3VPN-2026-11-13/SHA256SUMS.txt): integridade dos arquivos publicados de configuração e evidência.
-- [Revisão rápida no Notion](https://app.notion.com/p/41601f76d92881b6a737c04816a2a214).
+## Evidence and limits
 
-As evidências publicadas passaram por revisão de dados sensíveis. Endereço de gerenciamento do EVE-NG, portas de console e credenciais de acesso não fazem parte do pacote. Foram preservados os endereços e ASNs do cenário para permitir reprodução. Logs intermediários de descoberta não são a evidência final.
+- [Reviewed command outputs](evidencias/LAB01-L3VPN-2026-11-13/): actual commands/responses, with per-device local collection time.
+- [Configuration snapshots](configs/LAB01-L3VPN-2026-11-13/).
+- [SHA-256 manifest](evidencias/LAB01-L3VPN-2026-11-13/SHA256SUMS.txt): current published configuration/evidence bytes.
+- [Portuguese personal revision note in Notion](https://app.notion.com/p/41601f76d92881b6a737c04816a2a214).
 
-**Conclusão:** a L3VPN entre CE1_A e CE2_A estava funcional e foi validada sem mudanças de configuração. O resultado cobre conectividade bidirecional dos dois prefixos testados na condição observada, não disponibilidade após falha nem todos os possíveis serviços de uma VPN.
+The English rewrite translates editorial headers, not device responses. EVE management addresses, console ports and access credentials are excluded from this package.
+
+**Conclusion:** the two CUST-A loopbacks communicated bidirectionally in the observed condition without configuration changes. Customer B, inter-VRF isolation, convergence after failure, maximum MTU, performance and L2VPN remain outside the validated scope.
