@@ -134,4 +134,10 @@ show ipv6 pim traffic
 - Investigar, caso desejado, o motivo do timeout com origem Loopback0 e contador de loopback PIM.
 - LAB 06: mVPN/MPLS (se suportado pelas imagens de roteador disponíveis).
 
-**Observação de segurança:** o repositório é público; publicar novos `show running-config` apenas depois de inspecionar credenciais e outras informações sensíveis.
+**Observação de segurança:** o repositório é público. Foi realizada revisão dos sete arquivos enviados em 13/11/2026; não foram observadas credenciais, chaves, tokens ou endereços de produção aparentes; apenas endereços sintéticos do laboratório (10/8, 10.255/16 e 2001:DB8::/32). Revalidar novos backups antes de publicá-los.
+
+## Snapshot pós-LAB05 — 13/11/2026
+
+Os arquivos originais dos sete equipamentos foram coletados pelo usuário, conferidos e adicionados em [`configs/snapshot-2026-11-13/`](configs/snapshot-2026-11-13/): `CE1.cfg`, `CE2.cfg`, `CE3.cfg`, `PE1.cfg`, `PE2.cfg`, `PE3.cfg`, `RR-P.cfg`.
+
+Validação estática do snapshot: `ipv6 unicast-routing`, `ipv6 multicast-routing`, `ipv6 cef`, `ipv6 router ospf 10` e `ipv6 pim rp-address 2001:DB8:100::1` constam nos sete; MLD ASM/SSM em CE2/CE3. O IOS serializou o join com seleção de fonte em `show run` como `ipv6 mld join-group FF3E::1234 2001:DB8:1::1` (em vez de `include` digitado na CLI). CE1 não contém mais o endereço temporário `::99`. Os snapshots não substituem os testes de plano de dados.

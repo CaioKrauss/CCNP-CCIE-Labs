@@ -48,4 +48,4 @@ CE1 (source) --- PE1 --- RR-P (RP ASM / BIDIR / Anycast 1)
 
 ## Segurança
 
-O repositório é público. Os 7 arquivos `.cfg` desta pasta foram conferidos antes de publicar e não continham senhas, tokens nem chaves; contêm apenas endereçamento privado sintético de laboratório. Em novos backups, revise credenciais/segredos antes de publicar. Não publique arquivos do diretório local `backups/` indiscriminadamente.
+O repositório é público. Os sete arquivos de cada snapshot foram revisados quanto a senhas, tokens e chaves; não foram encontrados dados desse tipo. Os arquivos contêm apenas endereçamento fictício/de laboratório, inclusive IPv6 de documentação 2001:DB8::/32. Em novos backups, revise credenciais/segredos antes de publicar. Não publique arquivos do diretório local `backups/` indiscriminadamente.
