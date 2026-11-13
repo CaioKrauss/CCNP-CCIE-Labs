@@ -3,7 +3,7 @@
 **Data do teste:** 13/11/2026 · **Equipamentos:** Cisco IOS (EVE-NG), CE1/CE2/CE3, PE1/PE2/PE3 e RR-P.  
 **Status:** ASM IPv6 e SSM IPv6 validados com MLDv2. MLDv1 não foi testado.
 
-> Evidências obtidas de saídas reais enviadas na conversa; não há novo snapshot `show running-config` para este lab. Os 7 arquivos [snapshot-2026-11-12](configs/snapshot-2026-11-12/) são **anteriores** ao LAB 05. Não usar como referência de configuração final IPv6.
+> Evidências operacionais obtidas de saídas reais enviadas na conversa. Os sete backups pós-LAB05 foram entregues pelo usuário e revisados em 13/11/2026: [snapshot-2026-11-13](configs/snapshot-2026-11-13/). O [snapshot-2026-11-12](configs/snapshot-2026-11-12/) permanece como histórico anterior ao IPv6.
 
 ## Objetivos
 
@@ -78,7 +78,7 @@ interface FastEthernet0/0
 ```cisco
 ! CE2 e CE3 / interface de acesso
 interface FastEthernet0/0
- ipv6 mld join-group FF3E::1234 include 2001:DB8:1::1
+ ipv6 mld join-group FF3E::1234 2001:DB8:1::1
 
 ! Verificações
 show ipv6 mld interface FastEthernet0/0
@@ -86,6 +86,8 @@ show ipv6 mld groups
 show ipv6 mroute FF3E::1234
 show ipv6 mroute FF3E::1234 count
 ```
+
+**Sintaxe efetivamente salva:** os backups de CE2 e CE3 mostram o comando acima sem a palavra `include`. INCLUDE descreve o filtro de fonte observado nos testes; o trecho foi ajustado para reproduzir literalmente o running-config.
 
 Evidências: CE2/CE3 possuem inscrição para `FF3E::1234`. PE2 e PE3 instalaram `(2001:DB8:1::1,FF3E::1234)` flags **sTI**, com IIF Fa0/0 e OIL Fa1/0. RPF de PE2 para RR-P via `FE80::C806:1EFF:FEB0:1D`; PE3 via `FE80::C806:1EFF:FEB0:1C`. O CE2 apresentou `sPLTI` com OIL Null (receptor local). Ping SSM via CE1 Fa0/0: **5/5, 10 multicast replies**, cinco de cada receptor.
 
@@ -127,8 +129,8 @@ show ipv6 pim traffic
 ## Pendências / próximos passos
 
 - **MLDv1 não validado:** `ipv6 mld ?` não exibiu comando `version` na imagem IOS; a versão observada foi MLDv2.
-- **Limpeza ainda não confirmada pelo usuário:** remover o IPv6 temporário `2001:DB8:1::99/64` do CE1 Fa0/0 (`no ipv6 address 2001:DB8:1::99/64`) e salvar com `copy running-config startup-config`.
-- **Backup pós-LAB05 pendente de coleta:** não publicar configs IPv6 como se já tivessem sido capturadas.
+- **Limpeza confirmada no running-config recebido:** CE1 Fa0/0 contém somente `2001:DB8:1::1/64`; `2001:DB8:1::99/64` está ausente. Os arquivos não comprovam gravação em startup-config.
+- **Backups pós-LAB05 recebidos e revisados:** sete hostnames corretos, arquivos terminando em `end`, IPv6 unicast/multicast/CEF, OSPFv3 10 área 0, Loopback0 passiva e RP `2001:DB8:100::1` nos sete nós; endereços dos seis enlaces compatíveis entre pares. CE2/CE3 mantêm joins ASM e SSM. Validação estática; não foram executados novos testes de rede nem o script Python, e a VM não foi reiniciada.
 - Investigar, caso desejado, o motivo do timeout com origem Loopback0 e contador de loopback PIM.
 - LAB 06: mVPN/MPLS (se suportado pelas imagens de roteador disponíveis).
 

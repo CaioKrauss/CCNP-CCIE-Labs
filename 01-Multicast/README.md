@@ -23,7 +23,8 @@ CE1 (source) --- PE1 --- RR-P (RP ASM / BIDIR / Anycast 1)
 - [Comandos de consulta](comandos.md)
 - [Validação e troubleshooting](troubleshooting.md)
 - [Evidências TXT dos 5 labs](evidencias/) (LAB05 extraído das saídas compartilhadas no chat)
-- [Snapshot integral dos 7 show running-configs](configs/snapshot-2026-11-12/)
+- [Snapshot histórico pré-LAB05 — 12/11](configs/snapshot-2026-11-12/)
+- [Snapshot pós-LAB05 — 7 show running-configs revisados em 13/11](configs/snapshot-2026-11-13/)
 - [Topologia e endereçamento](topology/enderecamento.md)
 - [Backup automatizado de show run](../09-Automation/backup_show_run_eve.py)
 
@@ -42,7 +43,7 @@ CE1 (source) --- PE1 --- RR-P (RP ASM / BIDIR / Anycast 1)
 - O teste de failover Anycast comprovou reconvergência do RP, nova inscrição e contadores no PE2; **não** demonstrou registro de uma *nova source inédita* após a falha.
 - O teste BIDIR de duas fontes foi confirmado na conversa, sem uma captura de contador individual rotulada por cada origem.
 - **LAB05 IPv6:** ASM + MLDv2 e SSM + filtragem de fontes verificados; **MLDv1 específico não foi testado**.
-- **Pendente:** novo `show running-config` pós-LAB05; o snapshot 12/11/2026 não inclui IPv6 deste lab. Limpeza do endereço `2001:DB8:1::99` ainda não confirmada.
+- **Backups pós-LAB05 publicados:** IPv6, OSPFv3, RP e joins ASM/SSM conferidos nos sete arquivos. `2001:DB8:1::99` ausente no CE1; gravação em startup-config não comprovada pelos backups.
 - **Próximos labs:** mVPN/MPLS e troubleshooting de RPF com redundância física.
 
 ## Segurança
