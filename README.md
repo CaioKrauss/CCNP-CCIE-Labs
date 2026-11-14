@@ -13,6 +13,7 @@ Hands-on Cisco IOS and IOS XR labs with topology screenshots, configuration snap
 | [IPv6 multicast](01-Multicast/LAB05-IPv6-Multicast.md) | How do ASM, SSM and MLDv2 interact? | Positive/negative source tests and receiver replies; MLDv1 not tested |
 | [MPLS L3VPN: IOS / IOS XR](02-MPLS-TE/LAB01-L3VPN-ISIS-LDP-IOS-XR.md) | How does a VPN cross a core without customer routes? | CUST-A: 20/20 ICMP replies in each direction, VPNv4, CEF and MPLS labels |
 | [LAB 06 — L2VPN VPWS over MPLS](02-MPLS-TE/LAB06-L2VPN-VPWS-IOS-IOSXR.md) | Can two CEs share an Ethernet segment over an MPLS core? | R2–R1 PW 100 UP, 9/10 + 10/10 bidirectional CE pings, ARP resolved and VC counters; initial XRv PW UP but no data delivery |
+| [LAB 07 — VPLS + VPWS spoke](02-MPLS-TE/LAB07-VPLS-CSR1000v-VPWS-C7200.md) | Can four sites share a bridge-domain across local ports and a PW? | Fresh six-router captures; all 12 CE directions reached 10/10, three after a repeat; saved service configs verified |
 
 ## Topology gallery
 
@@ -43,7 +44,7 @@ The original L3VPN evidence covers **CE1_A–XR1–R3–R1–CE2_A**. LAB 06 add
 | Folder | Scope | Current material |
 |---|---|---|
 | [01-Multicast](01-Multicast/) | ASM, SSM, BIDIR, Anycast RP, IPv6 multicast | Five documented labs |
-| [02-MPLS-TE](02-MPLS-TE/) | MPLS forwarding, L3VPN, L2VPN VPWS, LDP, TE, FRR | L3VPN CUST-A and LAB06 L2VPN VPWS validated |
+| [02-MPLS-TE](02-MPLS-TE/) | MPLS forwarding, L3VPN, L2VPN VPWS, LDP, TE, FRR | L3VPN CUST-A, LAB06 VPWS and LAB07 VPLS/VPWS validated |
 | [03-Segment-Routing](03-Segment-Routing/) | SR-MPLS, SR-TE, TI-LFA, SRv6 | Planned study |
 | [04-EVPN-VXLAN](04-EVPN-VXLAN/) | EVPN, VXLAN, IRB, multihoming | Planned study |
 | [05-QoS](05-QoS/) | Classification, queues, WRED, shaping, policing | Planned study |

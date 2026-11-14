@@ -6,6 +6,7 @@
 |---|---|---|
 | [LAB 01 — IOS / IOS XR L3VPN](LAB01-L3VPN-ISIS-LDP-IOS-XR.md) | IS-IS, LDP, VPNv4, VRF, eBGP PE–CE | CUST-A: 20/20 replies in each direction on 2026-11-13 |
 | [LAB 06 — L2VPN VPWS / EoMPLS](LAB06-L2VPN-VPWS-IOS-IOSXR.md) | IS-IS + LDP transport, targeted LDP PW 100, Ethernet between CEs | R2/R1 IOS PW UP; CE pings 9/10 and 10/10; 65 received/77 sent, no drops on R2; XRv classic limitation observed |
+| [LAB 07 — VPLS + VPWS spoke](LAB07-VPLS-CSR1000v-VPWS-C7200.md) | CSR1000v BD100/VFI with three local CEs and a Cisco 7200 remote CE | Six fresh configs; 12 directed CE pairs reached 10/10 (three on repeat); service startup verified |
 
 ![Complete MPLS canvas supplied by the lab owner](topology/mpls-eve-ng.png)
 
@@ -23,6 +24,14 @@ The lab guide maps each command to the question it answers, explains the observe
 - [Six real running-config snapshots (14 Nov 2026)](configs/LAB06-VPWS-2026-11-14/)
 - [Observed CLI and startup-state evidence](evidencias/LAB06-VPWS-2026-11-14/)
 - The L2_CE1/L2_CE2 running configs were captured, but persistence to startup was **not** verified. R1/R2/R3 startup matches running. XR1 final config no longer contains the early experimental xconnect.
+
+## LAB 07 — Separate VPLS topology
+
+The `VPLS.unl` lab uses R1 CSR1000v directly connected to R2 Cisco 7200, plus four CEs. The preceding screenshot belongs to the older MPLS topology, not LAB07.
+
+- [Topology, guide, ping matrix and persistence findings](LAB07-VPLS-CSR1000v-VPWS-C7200.md)
+- [Six reviewed running-config snapshots](configs/LAB07-VPLS-2026-11-14/)
+- [Startup snapshots, live CLI evidence and manifest](evidencias/LAB07-VPLS-2026-11-14/)
 
 ## Planned scope
 

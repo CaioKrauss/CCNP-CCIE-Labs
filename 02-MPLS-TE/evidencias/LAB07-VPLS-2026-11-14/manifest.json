@@ -1,0 +1,79 @@
+{
+  "lab": "VPLS.unl",
+  "date": "2026-11-14",
+  "timezone": "America/Sao_Paulo",
+  "devices": [
+    {
+      "hostname": "L2_CE1",
+      "collection_started": "2026-11-14T18:26:02.521731-03:00",
+      "console_port": 32774,
+      "running_complete": true,
+      "startup_complete": true,
+      "effective_commands_match_excluding_certificate_storage": true,
+      "register": "Configuration register is 0x2142 (will be 0x2102 at next reload)",
+      "original_running_sha256": "0a051a786f6372243fd2480d48a4be9d9af96fc379096a5752398b7d2cfe431c",
+      "published_running_sha256": "0a051a786f6372243fd2480d48a4be9d9af96fc379096a5752398b7d2cfe431c"
+    },
+    {
+      "hostname": "L2_CE2",
+      "collection_started": "2026-11-14T18:25:59.838039-03:00",
+      "console_port": 32770,
+      "running_complete": true,
+      "startup_complete": true,
+      "effective_commands_match_excluding_certificate_storage": true,
+      "register": "Configuration register is 0x2142 (will be 0x2102 at next reload)",
+      "original_running_sha256": "1b2daf97004bc9b963950f82e9ea45afe2dc2c12f17d2181ecb425cb9fb231ef",
+      "published_running_sha256": "1b2daf97004bc9b963950f82e9ea45afe2dc2c12f17d2181ecb425cb9fb231ef"
+    },
+    {
+      "hostname": "L2_CE3",
+      "collection_started": "2026-11-14T18:25:59.838436-03:00",
+      "console_port": 32771,
+      "running_complete": true,
+      "startup_complete": true,
+      "effective_commands_match_excluding_certificate_storage": true,
+      "register": "Configuration register is 0x2142 (will be 0x2102 at next reload)",
+      "original_running_sha256": "44930b693e779adbf51bdfb1e75f1753d1ed9b795eb3b7ae7a77b4d17035c636",
+      "published_running_sha256": "44930b693e779adbf51bdfb1e75f1753d1ed9b795eb3b7ae7a77b4d17035c636"
+    },
+    {
+      "hostname": "L2_CE4",
+      "collection_started": "2026-11-14T18:26:02.138133-03:00",
+      "console_port": 32772,
+      "running_complete": true,
+      "startup_complete": true,
+      "effective_commands_match_excluding_certificate_storage": true,
+      "register": "Configuration register is 0x2142 (will be 0x2102 at next reload)",
+      "original_running_sha256": "401013e32714b3f288c33c6e974404c6590d49ff193bd74caa8c3e11f22cc19a",
+      "published_running_sha256": "401013e32714b3f288c33c6e974404c6590d49ff193bd74caa8c3e11f22cc19a"
+    },
+    {
+      "hostname": "R1",
+      "collection_started": "2026-11-14T18:25:59.837123-03:00",
+      "console_port": 32769,
+      "running_complete": true,
+      "startup_complete": true,
+      "effective_commands_match_excluding_certificate_storage": true,
+      "register": "Configuration register is 0x2102",
+      "original_running_sha256": "fa979b9d845a2796802637a2c76d56eef083f882ca68441adaf785824607000a",
+      "published_running_sha256": "cd16cff58de68678a116be2d6aa3429c520bae609ae6f0eb1a221174649c4571"
+    },
+    {
+      "hostname": "R2",
+      "collection_started": "2026-11-14T18:26:02.225171-03:00",
+      "console_port": 32773,
+      "running_complete": true,
+      "startup_complete": true,
+      "effective_commands_match_excluding_certificate_storage": true,
+      "register": "Configuration register is 0x2142 (will be 0x2102 at next reload)",
+      "original_running_sha256": "75c7d77984008cd5f368887b032b297e16ebb5731a47529dd8b4f767960b10f0",
+      "published_running_sha256": "75c7d77984008cd5f368887b032b297e16ebb5731a47529dd8b4f767960b10f0"
+    }
+  ],
+  "redactions": [
+    "R1 certificate hex payloads",
+    "R1 license UDI serial"
+  ],
+  "configuration_writes": false,
+  "reload_performed": false
+}

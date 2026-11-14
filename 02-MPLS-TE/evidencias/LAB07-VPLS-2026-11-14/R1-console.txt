@@ -1,0 +1,534 @@
+# LAB07 VPLS.unl — R1
+# Collection started: 2026-11-14T18:25:59.837123-03:00
+# Commands below are live console output; verification repeats occurred later in this session.
+
+
+=== terminal length 0 ===
+terminal length 0
+R1#
+
+=== show running-config ===
+show running-config
+Building configuration...
+
+Current configuration : 6687 bytes
+!
+! Last configuration change at 21:16:57 UTC Sat Nov 14 2026
+!
+version 16.12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+! Call-home is enabled by Smart-Licensing.
+service call-home
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+platform console serial
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+  no destination transport-method email
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+!
+mpls label protocol ldp
+multilink bundle-name authenticated
+l2vpn vfi context VPLS100 
+ vpn id 100
+ member 2.2.2.2 encapsulation mpls
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-2074567696
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2074567696
+ revocation-check none
+ rsakeypair TP-self-signed-2074567696
+!
+crypto pki trustpoint SLA-TrustPoint
+ enrollment pkcs12
+ revocation-check crl
+!
+!
+crypto pki certificate chain TP-self-signed-2074567696
+ certificate self-signed 01
+  ! REDACTED: certificate payload
+  quit
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  ! REDACTED: certificate payload
+  quit
+!
+license udi pid CSR1000V sn REDACTED-SERIAL
+diagnostic bootup level minimal
+memory free low-watermark processor 72329
+!
+!
+spanning-tree extend system-id
+!
+!
+redundancy
+bridge-domain 100 
+ member GigabitEthernet1 service-instance 100
+ member GigabitEthernet2 service-instance 100
+ member GigabitEthernet3 service-instance 100
+ member vfi VPLS100
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+!
+interface GigabitEthernet1
+ description VPLS-TO-L2_CE4
+ no ip address
+ negotiation auto
+ no mop enabled
+ no mop sysid
+ service instance 100 ethernet
+  encapsulation untagged
+ !
+!
+interface GigabitEthernet2
+ description VPLS-TO-L2_CE3
+ no ip address
+ negotiation auto
+ no mop enabled
+ no mop sysid
+ service instance 100 ethernet
+  encapsulation untagged
+ !
+!
+interface GigabitEthernet3
+ description VPLS-TO-L2_CE2
+ no ip address
+ negotiation auto
+ no mop enabled
+ no mop sysid
+ service instance 100 ethernet
+  encapsulation untagged
+ !
+!
+interface GigabitEthernet4
+ description MPLS-TO-R2
+ ip address 10.0.0.1 255.255.255.252
+ negotiation auto
+ mpls ip
+ no mop enabled
+ no mop sysid
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+!
+ip route 2.2.2.2 255.255.255.255 10.0.0.2
+!
+!
+!
+!
+mpls ldp router-id Loopback0 force
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+!
+!
+!
+!
+end
+
+R1#
+
+=== show startup-config ===
+show startup-config
+Using 2912 out of 33554432 bytes
+!
+! Last configuration change at 21:16:57 UTC Sat Nov 14 2026
+!
+version 16.12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+! Call-home is enabled by Smart-Licensing.
+service call-home
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+platform console serial
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+  no destination transport-method email
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+!
+mpls label protocol ldp
+multilink bundle-name authenticated
+l2vpn vfi context VPLS100 
+ vpn id 100
+ member 2.2.2.2 encapsulation mpls
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-2074567696
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2074567696
+ revocation-check none
+ rsakeypair TP-self-signed-2074567696
+!
+crypto pki trustpoint SLA-TrustPoint
+ enrollment pkcs12
+ revocation-check crl
+!
+!
+crypto pki certificate chain TP-self-signed-2074567696
+ certificate self-signed 01 nvram:IOS-Self-Sig#1.cer
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01 nvram:CiscoLicensi#1CA.cer
+!
+license udi pid CSR1000V sn REDACTED-SERIAL
+diagnostic bootup level minimal
+memory free low-watermark processor 72329
+!
+!
+spanning-tree extend system-id
+!
+!
+redundancy
+bridge-domain 100 
+ member GigabitEthernet1 service-instance 100
+ member GigabitEthernet2 service-instance 100
+ member GigabitEthernet3 service-instance 100
+ member vfi VPLS100
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+!
+interface GigabitEthernet1
+ description VPLS-TO-L2_CE4
+ no ip address
+ negotiation auto
+ no mop enabled
+ no mop sysid
+ service instance 100 ethernet
+  encapsulation untagged
+ !
+!
+interface GigabitEthernet2
+ description VPLS-TO-L2_CE3
+ no ip address
+ negotiation auto
+ no mop enabled
+ no mop sysid
+ service instance 100 ethernet
+  encapsulation untagged
+ !
+!
+interface GigabitEthernet3
+ description VPLS-TO-L2_CE2
+ no ip address
+ negotiation auto
+ no mop enabled
+ no mop sysid
+ service instance 100 ethernet
+  encapsulation untagged
+ !
+!
+interface GigabitEthernet4
+ description MPLS-TO-R2
+ ip address 10.0.0.1 255.255.255.252
+ negotiation auto
+ mpls ip
+ no mop enabled
+ no mop sysid
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+!
+ip route 2.2.2.2 255.255.255.255 10.0.0.2
+!
+!
+!
+!
+mpls ldp router-id Loopback0 force
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+!
+!
+!
+!
+end
+
+R1#
+
+=== show version (configuration-register excerpt only) ===
+Configuration register is 0x2102
+
+=== show ip interface brief ===
+show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet1       unassigned      YES unset  up                    up      
+GigabitEthernet2       unassigned      YES unset  up                    up      
+GigabitEthernet3       unassigned      YES unset  up                    up      
+GigabitEthernet4       10.0.0.1        YES manual up                    up      
+Loopback0              1.1.1.1         YES manual up                    up      
+R1#
+
+=== show cdp neighbors detail ===
+show cdp neighbors detail
+% CDP is not enabled
+R1#
+
+=== show bridge-domain 100 ===
+show bridge-domain 100
+Bridge-domain 100 (4 ports in all)
+State: UP                    Mac learning: Enabled
+Aging-Timer: 300 second(s)
+Maximum address limit: 65536
+    GigabitEthernet1 service instance 100
+    GigabitEthernet2 service instance 100
+    GigabitEthernet3 service instance 100
+    vfi VPLS100 neighbor 2.2.2.2 100
+   AED MAC address    Policy  Tag       Age  Pseudoport
+   0   CA02.0DD6.0000 forward dynamic   294  GigabitEthernet3.EFP100
+   0   CA06.14C7.0000 forward dynamic   296  VPLS100.404013
+   0   CA04.0D32.0000 forward dynamic   291  GigabitEthernet1.EFP100
+   0   CA03.0D84.0000 forward dynamic   292  GigabitEthernet2.EFP100
+
+R1#
+
+=== show l2vpn vfi ===
+show l2vpn vfi
+Legend: RT=Route-target, S=Split-horizon, Y=Yes, N=No
+
+VFI name: VPLS100, state: up, type: multipoint, signaling: LDP
+  VPN ID: 100
+  Bridge-Domain 100 attachment circuits:
+  Pseudo-port interface: pseudowire100001
+  Interface          Peer Address     VC ID        S
+  pseudowire100002   2.2.2.2          100          Y
+
+R1#
+
+=== show mpls ldp neighbor ===
+show mpls ldp neighbor
+    Peer LDP Ident: 2.2.2.2:0; Local LDP Ident 1.1.1.1:0
+	TCP connection: 2.2.2.2.33268 - 1.1.1.1.646
+	State: Oper; Msgs sent/rcvd: 23/20; Downstream
+	Up time: 00:13:59
+	LDP discovery sources:
+	  GigabitEthernet4, Src IP addr: 10.0.0.2
+	  Targeted Hello 1.1.1.1 -> 2.2.2.2, active, passive
+        Addresses bound to peer LDP Ident:
+          10.0.0.2        2.2.2.2         
+R1#
+
+=== show mpls forwarding-table ===
+show mpls forwarding-table
+Local      Outgoing   Prefix           Bytes Label   Outgoing   Next Hop    
+Label      Label      or Tunnel Id     Switched      interface              
+16         No Label   l2ckt(1)         6559          none       point2point 
+17         Pop Label  2.2.2.2/32       0             Gi4        10.0.0.2    
+R1#
+
+=== verification repeat: dir nvram: ===
+dir nvram:
+Directory of nvram:/
+
+32769  -rw-             2912                    <no date>  startup-config
+32770  ----             3595                    <no date>  private-config
+32771  -rw-             2912                    <no date>  underlying-config
+    1  ----               31                    <no date>  vudi
+    2  ----                4                    <no date>  private-KS1
+    3  ----              422                    <no date>  persistent-data
+    4  -rw-               17                    <no date>  ecfm_ieee_mib
+    5  -rw-              805                    <no date>  CiscoLicensi#1CA.cer
+    6  -rw-                0                    <no date>  ifIndex-table
+    7  -rw-              820                    <no date>  IOS-Self-Sig#1.cer
+
+33554432 bytes total (33540705 bytes free)
+R1#
+
+=== verification repeat: show bridge-domain 100 ===
+show bridge-domain 100
+Bridge-domain 100 (4 ports in all)
+State: UP                    Mac learning: Enabled
+Aging-Timer: 300 second(s)
+Maximum address limit: 65536
+    GigabitEthernet1 service instance 100
+    GigabitEthernet2 service instance 100
+    GigabitEthernet3 service instance 100
+    vfi VPLS100 neighbor 2.2.2.2 100
+   AED MAC address    Policy  Tag       Age  Pseudoport
+   0   CA02.0DD6.0000 forward dynamic   299  GigabitEthernet3.EFP100
+   0   CA06.14C7.0000 forward dynamic   293  VPLS100.404013
+   0   CA04.0D32.0000 forward dynamic   299  GigabitEthernet1.EFP100
+   0   CA03.0D84.0000 forward dynamic   299  GigabitEthernet2.EFP100
+
+R1#

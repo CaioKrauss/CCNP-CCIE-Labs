@@ -1,0 +1,233 @@
+# LAB07 VPLS.unl — L2_CE3
+# Collection started: 2026-11-14T18:25:59.838436-03:00
+# Commands below are live console output; verification repeats occurred later in this session.
+
+
+=== terminal length 0 ===
+terminal length 0
+L2_CE3#
+
+=== show running-config ===
+show running-config
+Building configuration...
+
+Current configuration : 624 bytes
+!
+! Last configuration change at 21:14:23 UTC Sat Nov 14 2026
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname L2_CE3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ description LINK-TO-R1-GI2
+ ip address 192.168.100.3 255.255.255.0
+ duplex full
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+L2_CE3#
+
+=== show startup-config ===
+show startup-config
+Using 624 out of 129016 bytes
+!
+! Last configuration change at 21:14:23 UTC Sat Nov 14 2026
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname L2_CE3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ description LINK-TO-R1-GI2
+ ip address 192.168.100.3 255.255.255.0
+ duplex full
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+L2_CE3#
+
+=== show version (configuration-register excerpt only) ===
+Configuration register is 0x2142 (will be 0x2102 at next reload)
+
+=== show ip interface brief ===
+show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+FastEthernet0/0        192.168.100.3   YES manual up                    up      
+L2_CE3#
+
+=== show cdp neighbors detail ===
+show cdp neighbors detail
+L2_CE3#
+
+=== show ip arp ===
+show ip arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.100.1           9   ca06.14c7.0000  ARPA   FastEthernet0/0
+Internet  192.168.100.3           -   ca03.0d84.0000  ARPA   FastEthernet0/0
+L2_CE3#
+
+=== ping 192.168.100.1 source 192.168.100.3 repeat 10 timeout 1 ===
+ping 192.168.100.1 source 192.168.100.3 repeat 10 timeout 1
+Type escape sequence to abort.
+Sending 10, 100-byte ICMP Echos to 192.168.100.1, timeout is 1 seconds:
+Packet sent with a source address of 192.168.100.3 
+!!!!!!!!!!
+Success rate is 100 percent (10/10), round-trip min/avg/max = 48/52/56 ms
+L2_CE3#
+
+=== ping 192.168.100.2 source 192.168.100.3 repeat 10 timeout 1 ===
+ping 192.168.100.2 source 192.168.100.3 repeat 10 timeout 1
+Type escape sequence to abort.
+Sending 10, 100-byte ICMP Echos to 192.168.100.2, timeout is 1 seconds:
+Packet sent with a source address of 192.168.100.3 
+!!!!!!!!!!
+Success rate is 100 percent (10/10), round-trip min/avg/max = 48/52/56 ms
+L2_CE3#
+
+=== ping 192.168.100.4 source 192.168.100.3 repeat 10 timeout 1 ===
+ping 192.168.100.4 source 192.168.100.3 repeat 10 timeout 1
+Type escape sequence to abort.
+Sending 10, 100-byte ICMP Echos to 192.168.100.4, timeout is 1 seconds:
+Packet sent with a source address of 192.168.100.3 
+.!!!!!!!!!
+Success rate is 90 percent (9/10), round-trip min/avg/max = 48/52/56 ms
+L2_CE3#
+
+=== show ip arp after pings ===
+show ip arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.100.1          10   ca06.14c7.0000  ARPA   FastEthernet0/0
+Internet  192.168.100.2           0   ca02.0dd6.0000  ARPA   FastEthernet0/0
+Internet  192.168.100.3           -   ca03.0d84.0000  ARPA   FastEthernet0/0
+Internet  192.168.100.4           0   ca04.0d32.0000  ARPA   FastEthernet0/0
+L2_CE3#
+
+=== verification repeat: ping 192.168.100.4 source 192.168.100.3 repeat 10 timeout 1 ===
+ping 192.168.100.4 source 192.168.100.3 repeat 10 timeout 1
+Type escape sequence to abort.
+Sending 10, 100-byte ICMP Echos to 192.168.100.4, timeout is 1 seconds:
+Packet sent with a source address of 192.168.100.3 
+!!!!!!!!!!
+Success rate is 100 percent (10/10), round-trip min/avg/max = 28/50/60 ms
+L2_CE3#

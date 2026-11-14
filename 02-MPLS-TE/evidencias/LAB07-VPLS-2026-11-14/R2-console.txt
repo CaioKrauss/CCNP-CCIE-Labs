@@ -1,0 +1,304 @@
+# LAB07 VPLS.unl — R2
+# Collection started: 2026-11-14T18:26:02.225171-03:00
+# Commands below are live console output; verification repeats occurred later in this session.
+
+
+=== terminal length 0 ===
+terminal length 0
+R2#
+
+=== show running-config ===
+show running-config
+Building configuration...
+
+Current configuration : 920 bytes
+!
+! Last configuration change at 21:15:50 UTC Sat Nov 14 2026
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname R2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+mpls label protocol ldp
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+!
+interface FastEthernet0/0
+ description VPWS-TO-L2_CE1
+ no ip address
+ duplex full
+ no keepalive
+ xconnect 1.1.1.1 100 encapsulation mpls
+!
+interface FastEthernet1/0
+ description MPLS-TO-R1
+ ip address 10.0.0.2 255.255.255.252
+ duplex full
+ mpls ip
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 1.1.1.1 255.255.255.255 10.0.0.1
+!
+!
+mpls ldp router-id Loopback0 force
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+R2#
+
+=== show startup-config ===
+show startup-config
+Using 920 out of 129016 bytes
+!
+! Last configuration change at 21:15:50 UTC Sat Nov 14 2026
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname R2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+mpls label protocol ldp
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+!
+interface FastEthernet0/0
+ description VPWS-TO-L2_CE1
+ no ip address
+ duplex full
+ no keepalive
+ xconnect 1.1.1.1 100 encapsulation mpls
+!
+interface FastEthernet1/0
+ description MPLS-TO-R1
+ ip address 10.0.0.2 255.255.255.252
+ duplex full
+ mpls ip
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 1.1.1.1 255.255.255.255 10.0.0.1
+!
+!
+mpls ldp router-id Loopback0 force
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+R2#
+
+=== show version (configuration-register excerpt only) ===
+Configuration register is 0x2142 (will be 0x2102 at next reload)
+
+=== show ip interface brief ===
+show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+FastEthernet0/0        unassigned      YES unset  up                    up      
+FastEthernet1/0        10.0.0.2        YES manual up                    up      
+Loopback0              2.2.2.2         YES manual up                    up      
+R2#
+
+=== show cdp neighbors detail ===
+show cdp neighbors detail
+R2#
+
+=== show mpls l2transport vc detail ===
+show mpls l2transport vc detail
+Local interface: Fa0/0 up, line protocol up, Ethernet up
+  Destination address: 1.1.1.1, VC ID: 100, VC status: up
+    Output interface: Fa1/0, imposed label stack {16}
+    Preferred path: not configured  
+    Default path: active
+    Next hop: 10.0.0.1
+  Create time: 00:12:23, last status change time: 00:12:17
+    Last label FSM state change time: 00:12:17
+  Signaling protocol: LDP, peer 1.1.1.1:0 up
+    Targeted Hello: 2.2.2.2(LDP Id) -> 1.1.1.1, LDP is UP
+    Status TLV support (local/remote)   : enabled/supported
+      LDP route watch                   : enabled
+      Label/status state machine        : established, LruRru
+      Last local dataplane   status rcvd: No fault
+      Last BFD dataplane     status rcvd: Not sent
+      Last BFD peer monitor  status rcvd: No fault
+      Last local AC  circuit status rcvd: No fault
+      Last local AC  circuit status sent: No fault
+      Last local PW i/f circ status rcvd: No fault
+      Last local LDP TLV     status sent: No fault
+      Last remote LDP TLV    status rcvd: No fault
+      Last remote LDP ADJ    status rcvd: No fault
+    MPLS VC labels: local 16, remote 16 
+    Group ID: local 0, remote 0
+    MTU: local 1500, remote 1500
+    Remote interface description: 
+  Sequencing: receive disabled, send disabled
+  Control Word: On (configured: autosense)
+  Dataplane:
+    SSM segment/switch IDs: 4097/4096 (used), PWID: 1
+  VC statistics:
+    transit packet totals: receive 49, send 122
+    transit byte totals:   receive 4989, send 16359
+    transit packet drops:  receive 0, seq error 0, send 0
+
+
+R2#
+
+=== show mpls ldp neighbor ===
+show mpls ldp neighbor
+    Peer LDP Ident: 1.1.1.1:0; Local LDP Ident 2.2.2.2:0
+	TCP connection: 1.1.1.1.646 - 2.2.2.2.33268
+	State: Oper; Msgs sent/rcvd: 21/23; Downstream
+	Up time: 00:12:18
+	LDP discovery sources:
+	  FastEthernet1/0, Src IP addr: 10.0.0.1
+	  Targeted Hello 2.2.2.2 -> 1.1.1.1, active, passive
+        Addresses bound to peer LDP Ident:
+          1.1.1.1         10.0.0.1        
+R2#
+
+=== verification repeat: show mpls l2transport vc detail ===
+show mpls l2transport vc detail
+Local interface: Fa0/0 up, line protocol up, Ethernet up
+  Destination address: 1.1.1.1, VC ID: 100, VC status: up
+    Output interface: Fa1/0, imposed label stack {16}
+    Preferred path: not configured  
+    Default path: active
+    Next hop: 10.0.0.1
+  Create time: 00:13:35, last status change time: 00:13:30
+    Last label FSM state change time: 00:13:30
+  Signaling protocol: LDP, peer 1.1.1.1:0 up
+    Targeted Hello: 2.2.2.2(LDP Id) -> 1.1.1.1, LDP is UP
+    Status TLV support (local/remote)   : enabled/supported
+      LDP route watch                   : enabled
+      Label/status state machine        : established, LruRru
+      Last local dataplane   status rcvd: No fault
+      Last BFD dataplane     status rcvd: Not sent
+      Last BFD peer monitor  status rcvd: No fault
+      Last local AC  circuit status rcvd: No fault
+      Last local AC  circuit status sent: No fault
+      Last local PW i/f circ status rcvd: No fault
+      Last local LDP TLV     status sent: No fault
+      Last remote LDP TLV    status rcvd: No fault
+      Last remote LDP ADJ    status rcvd: No fault
+    MPLS VC labels: local 16, remote 16 
+    Group ID: local 0, remote 0
+    MTU: local 1500, remote 1500
+    Remote interface description: 
+  Sequencing: receive disabled, send disabled
+  Control Word: On (configured: autosense)
+  Dataplane:
+    SSM segment/switch IDs: 4097/4096 (used), PWID: 1
+  VC statistics:
+    transit packet totals: receive 112, send 191
+    transit byte totals:   receive 12009, send 25877
+    transit packet drops:  receive 0, seq error 0, send 0
+
+
+R2#
