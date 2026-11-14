@@ -1,0 +1,120 @@
+# LAB06 — Observed CLI outputs shared in the chat (2026-11-14)
+# Provenance: transcribed excerpts supplied by lab owner; not an additional live device poll.
+# The configuration files stored in ../configs/LAB06-VPWS-2026-11-14/ are from the attached RAR collected later.
+
+=== XR1 (IOS XRv 6.3.1) — initial VPWS control plane UP, data plane not delivering ===
+RP/0/0/CPU0:XR1#show l2vpn xconnect
+LAB06-VPWS CE1-CE2    UP   Gi0/0/0/1              UP       1.1.1.1         100    UP
+
+RP/0/0/CPU0:XR1#show l2vpn xconnect detail
+Group LAB06-VPWS, XC CE1-CE2, state is up; Interworking none
+  AC: GigabitEthernet0/0/0/1, state is up
+    Type Ethernet
+    MTU 1500
+    Statistics:
+      packets: received 0, sent 0
+      bytes: received 0, sent 0
+  PW: neighbor 1.1.1.1, PW ID 100, state is up ( established )
+    Encapsulation MPLS, protocol LDP
+    Source address 10.10.10.10
+    PW type Ethernet, control word disabled, interworking none
+    MPLS Label: Local 24004, Remote 21
+    MTU: Local 1500, Remote 1500
+    Statistics:
+      packets: received 0, sent 0
+      bytes: received 0, sent 0
+
+RP/0/0/CPU0:XR1#show interfaces GigabitEthernet0/0/0/1
+GigabitEthernet0/0/0/1 is up, line protocol is up
+  Layer 2 Transport Mode
+  Full-duplex, 1000Mb/s, unknown, link type is autonegotiation
+  85 packets input, 7907 bytes, 0 total input drops
+  0 input errors, 0 CRC
+  0 packets output, 0 bytes, 0 total output drops
+
+L2_CE1#ping 192.168.100.2 repeat 10
+..........
+Success rate is 0 percent (0/10)
+
+R1#show mpls l2transport vc detail
+Destination address: 10.10.10.10, VC ID: 100, VC status: up
+  Signaling protocol: LDP, peer 10.10.10.10:0 up
+  MPLS VC labels: local 21, remote 24004
+  MTU: local 1500, remote 1500
+  Control Word: Off (configured: autosense)
+  VC statistics:
+    transit packet totals: receive 0, send 84
+    transit packet drops: receive 0, seq error 0, send 0
+
+=== R2 brought into path — IS-IS and MPLS ===
+R2#show interfaces FastEthernet0/0
+FastEthernet0/0 is up, line protocol is up
+  MTU 1500 bytes, BW 100000 Kbit/sec
+  Full-duplex, 100Mb/s, 100BaseTX/FX
+  349 packets input, 204727 bytes
+  0 input errors, 0 CRC
+  295 packets output, 92835 bytes
+  0 output errors, 0 collisions
+
+R2#show isis neighbors
+System Id      Type Interface   IP Address      State Holdtime Circuit Id
+R3             L2   Fa0/0       10.0.0.10       UP    9        R3.01
+
+R2#show mpls ldp neighbor
+Peer LDP Ident: 3.3.3.3:0; Local LDP Ident 2.2.2.2:0
+  State: Oper; Downstream
+  LDP discovery sources:
+    FastEthernet0/0, Src IP addr: 10.0.0.10
+Peer LDP Ident: 1.1.1.1:0; Local LDP Ident 2.2.2.2:0
+  State: Oper; Downstream
+  LDP discovery sources:
+    Targeted Hello 2.2.2.2 -> 1.1.1.1, active, passive
+
+R2#show ip route 1.1.1.1
+Routing entry for 1.1.1.1/32
+  Known via "isis", distance 115, metric 20, type level-2
+  * 10.0.0.10, from 1.1.1.1, via FastEthernet0/0
+
+R2#show mpls forwarding-table
+Local  Outgoing    Prefix            Bytes tag  Outgoing   Next Hop
+16                 l2ckt(100)        3076       none       point2point
+17     Pop tag     3.3.3.3/32        0          Fa0/0      10.0.0.10
+19     17          1.1.1.1/32        0          Fa0/0      10.0.0.10
+
+=== Working VPWS: two Cisco IOS PEs (R2 and R1) ===
+L2_CE1#clear arp-cache
+L2_CE1#ping 192.168.100.2 repeat 10
+.!!!!!!!!!
+Success rate is 90 percent (9/10), round-trip min/avg/max = 80/100/124 ms
+
+L2_CE1#show ip arp
+Internet  192.168.100.2           0   ca08.10ae.0000  ARPA   FastEthernet0/0
+
+L2_CE2#ping 192.168.100.1 repeat 10
+!!!!!!!!!!
+Success rate is 100 percent (10/10), round-trip min/avg/max = 76/106/124 ms
+
+L2_CE2#show ip arp
+Internet  192.168.100.1           1   ca07.5020.0000  ARPA   FastEthernet0/0
+
+R2#show mpls l2transport vc detail
+Local interface: Fa0/1 up, line protocol up, Ethernet up
+  Destination address: 1.1.1.1, VC ID: 100, VC status: up
+    Next hop: 10.0.0.10
+    Output interface: Fa0/0, imposed label stack {17 23}
+  Signaling protocol: LDP, peer 1.1.1.1:0 up
+    MPLS VC labels: local 16, remote 23
+    MTU: local 1500, remote 1500
+  Sequencing: receive disabled, send disabled
+  VC statistics:
+    packet totals: receive 65, send 77
+    byte totals: receive 7633, send 8759
+    packet drops: receive 0, seq error 0, send 0
+
+=== Interpretation and limitations ===
+- Working 2-PE IOS VPWS proved CE-to-CE traffic and ARP for this topology.
+- The initial XR1-to-R1 pseudowire was signaled UP but had zero XRv service counters and failed CE ping.
+- The XRv classic software forwarding limitation is a plausible explanation, not independently root-caused by packet capture.
+- The first CE1 ping miss is consistent with initial ARP; not individually proven.
+- CLI stats reflect the observation time, not the time of the later RAR collection.
+- The later XR1 running-config has no l2vpn stanza and GigabitEthernet0/0/0/1 is shutdown. Do not represent earlier XC state as final active configuration.
