@@ -1,72 +1,40 @@
-# CCNP / CCIE Advanced Networking Labs
+# My CCNP / CCIE Service Provider Labs
 
-Hands-on Cisco IOS and IOS XR labs with topology screenshots, configuration snapshots, command output, and explanations of **what happened and why**.
+I use this repository to document **what I configured, what I tested, what I observed and what I learned** in EVE-NG. Each lab links to the real CLI evidence and configuration backups.
 
-## Start with the documented labs
+## Completed labs
 
-| Lab | Main question | Evidence and limits |
+| Lab | What I learned | Result I recorded |
 |---|---|---|
-| [PIM-SM / ASM](01-Multicast/LAB01-PIM-SM-ASM.md) | How do receivers discover a source through an RP? | IGMP, shared/source state, RPF and IOS SPT flag; receiver delivery counters were not captured |
-| [SSM / IGMPv3](01-Multicast/LAB02-PIM-SSM-IGMPv3.md) | How does a receiver select a specific source? | Source-specific trees and PE2 forwarding counters |
-| [Bidirectional PIM](01-Multicast/LAB03-PIM-BIDIR.md) | How can multiple sources share one tree? | DF election and increasing shared-tree counters; no separately labeled per-source counter runs |
-| [Anycast RP / MSDP](01-Multicast/LAB04-Anycast-RP-MSDP.md) | What survives an RP address failure? | RP route change, SA state and forwarding of a known source; no new-source-after-failure test |
-| [IPv6 multicast](01-Multicast/LAB05-IPv6-Multicast.md) | How do ASM, SSM and MLDv2 interact? | Positive/negative source tests and receiver replies; MLDv1 not tested |
-| [MPLS L3VPN: IOS / IOS XR](02-MPLS-TE/LAB01-L3VPN-ISIS-LDP-IOS-XR.md) | How does a VPN cross a core without customer routes? | CUST-A: 20/20 ICMP replies in each direction, VPNv4, CEF and MPLS labels |
-| [LAB 06 — L2VPN VPWS over MPLS](02-MPLS-TE/LAB06-L2VPN-VPWS-IOS-IOSXR.md) | Can two CEs share an Ethernet segment over an MPLS core? | R2–R1 PW 100 UP, 9/10 + 10/10 bidirectional CE pings, ARP resolved and VC counters; initial XRv PW UP but no data delivery |
-| [LAB 07 — VPLS + VPWS spoke](02-MPLS-TE/LAB07-VPLS-CSR1000v-VPWS-C7200.md) | Can four sites share a bridge-domain across local ports and a PW? | Fresh six-router captures; all 12 CE directions reached 10/10, three after a repeat; saved service configs verified |
-| [LAB 08 — RSVP-TE, IS-IS and Autoroute](02-MPLS-TE/LAB08-MPLS-RSVP-TE-ISIS-AUTOROUTE.md) | Can an explicit RSVP-TE tunnel override the normal IS-IS next hop? | R1→R3→R4 tunnel UP; RIB/CEF via Tunnel100 despite IS-IS via R2; RSVP 1→5→1 Mbps; final ping 10/10 |
-| [LAB 09 — MPLS TE Fast Reroute / NNHOP](02-MPLS-TE/LAB09-MPLS-TE-FRR-NNHOP-IOS.md) | Does local RSVP-TE FRR bypass a failed outgoing link without changing the IP route? | Ready→Active→Ready captured; R1→R2→R4 backup traceroute and ping 5/5; primary via R3 restored; no switchover timing measurement |
-| [LAB 10 — Dynamic CSPF, Bandwidth, Affinity & Preemption](02-MPLS-TE/LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md) | How do path constraints and RSVP priorities change TE admission? | CSPF cost 20→40→20, affinity forced weight 40, 0/0 LSP preempted a 7/7 LSP on R3→R4, explicit preemption syslog and recovery; four saved configs |
-| [LAB 11 — SR-MPLS Fundamentals / IS-IS (IOS XRv)](03-Segment-Routing/LAB11-SR-MPLS-ISIS-IOSXR.md) | Can classic IOS XRv advertise and program SR-MPLS Prefix-SIDs and Adj-SIDs? | Two IOS XRv: IS-IS L2 UP, SRGB/SIDs in LSDB, LFIB Pop entries with counters and bidirectional ping 5/5; XR1/XR2 config backups verified; no multi-hop SR-TE |
+| [01 — PIM-SM / ASM](01-Multicast/LAB01-PIM-SM-ASM.md) | How receivers build `(*,G)` toward an RP | IGMP, RPF and SPT state; no comparable receiver counters |
+| [02 — SSM / IGMPv3](01-Multicast/LAB02-PIM-SSM-IGMPv3.md) | Why the chosen source matters | Distinct `(S,G)` channels; PE2 counter **26→28** |
+| [03 — BIDIR PIM](01-Multicast/LAB03-PIM-BIDIR.md) | How one shared tree handles multiple sources | DF election; tree counter **14→17** |
+| [04 — Anycast RP / MSDP](01-Multicast/LAB04-Anycast-RP-MSDP.md) | What survives an RP loopback failure | MSDP/SA, RP route change and known-source forwarding |
+| [05 — IPv6 multicast](01-Multicast/LAB05-IPv6-Multicast.md) | ASM vs SSM with MLDv2 | Two receivers, source-selection positive/negative tests |
+| [L3VPN — IOS / XR](02-MPLS-TE/LAB01-L3VPN-ISIS-LDP-IOS-XR.md) | VRF + VPNv4 + MPLS labels | **20/20** CE pings each way |
+| [06 — VPWS](02-MPLS-TE/LAB06-L2VPN-VPWS-IOS-IOSXR.md) | PW signaling vs real Ethernet delivery | IOS PW UP; CE pings **9/10** and **10/10** |
+| [07 — VPLS + VPWS spoke](02-MPLS-TE/LAB07-VPLS-CSR1000v-VPWS-C7200.md) | Bridge-domain and remote MAC learning | All **12 directed CE pairs** reached 10/10 |
+| [08 — RSVP-TE](02-MPLS-TE/LAB08-MPLS-RSVP-TE-ISIS-AUTOROUTE.md) | Explicit path, Autoroute and RSVP reservation | R1→R3→R4; bandwidth **1→5→1 Mbps** |
+| [09 — RSVP-TE FRR](02-MPLS-TE/LAB09-MPLS-TE-FRR-NNHOP-IOS.md) | Local NNHOP repair | **Ready→Active→Ready**; backup ping 5/5 |
+| [10 — CSPF / Preemption](02-MPLS-TE/LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md) | Cost, bandwidth, affinity and priority | Measured path changes, preemption syslog and recovery |
+| [11 — SR-MPLS](03-Segment-Routing/LAB11-SR-MPLS-ISIS-IOSXR.md) | Prefix-SIDs, Adj-SIDs and MPLS LFIB | Two XRv; labels programmed and pings **5/5** each way |
 
-## Topology gallery
+## My topologies
 
-### Multicast: seven-router tree
+**Multicast:** seven-router physical tree (CE1 → PE1 → RR-P → PE2/PE3 → CE2/CE3).
 
-![User-supplied multicast topology](01-Multicast/topology/multicast-eve-ng.png)
+![My multicast EVE-NG topology](01-Multicast/topology/multicast-eve-ng.png)
 
-CE1 is the source-side router; CE2 and CE3 are receiver-side routers. RR-P is the central transit/RP router. Its name does not mean that BGP route reflection is configured.
+**MPLS:** the screenshot shows my original L3VPN canvas. Later VPWS, VPLS and TE labs use separate or expanded topologies; each guide identifies its own setup.
 
-### MPLS: complete canvas, limited validation scope
+![My original MPLS EVE-NG canvas](02-MPLS-TE/topology/mpls-eve-ng.png)
 
-![User-supplied MPLS topology](02-MPLS-TE/topology/mpls-eve-ng.png)
+## Where I keep the details
 
-The original L3VPN evidence covers **CE1_A–XR1–R3–R1–CE2_A**. LAB 06 additionally validates **L2_CE1–R2–R3–R1–L2_CE2** with a newer R2 PE; XR1 is retained for the L3VPN and its earlier unsuccessful L2VPN attempt is documented separately. CE1_B and CE2_B were not validated. The canvas screenshot predates the added R2; consult the LAB 06 topology in its guide. A screenshot establishes layout, not operational status.
+- [Multicast](01-Multicast/) · [MPLS / VPN / TE](02-MPLS-TE/) · [Segment Routing](03-Segment-Routing/) · [Automation](09-Automation/)
+- Planned: [EVPN/VXLAN](04-EVPN-VXLAN/), [QoS](05-QoS/), [BGP](06-BGP-Advanced/), [High Availability](07-High-Availability/), [Security](08-Security/), [IPv6](10-IPv6/) and [Troubleshooting](11-Troubleshooting/).
+- [Template for my next lab](LAB-TEMPLATE.md) · [Documentation history](CHANGELOG.md)
 
-## How to read a lab
+**My rule:** configuration ≠ control-plane operation ≠ packet delivery. I report these separately, keep failed tests and limitations visible, and never publish secrets or unreviewed production data.
 
-1. Read the objective and topology to identify the intended traffic path.
-2. Review the configuration excerpts and what each command enables.
-3. Run the verification commands on the stated platform.
-4. Compare the actual output with the interpretation and evidence limits.
-5. Follow the troubleshooting sequence before changing configuration.
-
-**Configured**, **control plane established**, and **traffic delivered** are different claims. A configuration file alone does not prove forwarding. Historical captures are not fresh tests.
-
-## Study roadmap
-
-| Folder | Scope | Current material |
-|---|---|---|
-| [01-Multicast](01-Multicast/) | ASM, SSM, BIDIR, Anycast RP, IPv6 multicast | Five documented labs |
-| [02-MPLS-TE](02-MPLS-TE/) | MPLS forwarding, L3VPN, L2VPN VPWS, LDP, TE, FRR | L3VPN CUST-A, LAB06 VPWS, LAB07 VPLS/VPWS, LAB08 RSVP-TE, LAB09 FRR and LAB10 CSPF/preemption validated |
-| [03-Segment-Routing](03-Segment-Routing/) | SR-MPLS, SR-TE, TI-LFA, SRv6 | LAB11 SR-MPLS fundamentals validated on two XRv; XR1/XR2 backups published; advanced SR planned |
-| [04-EVPN-VXLAN](04-EVPN-VXLAN/) | EVPN, VXLAN, IRB, multihoming | Planned study |
-| [05-QoS](05-QoS/) | Classification, queues, WRED, shaping, policing | Planned study |
-| [06-BGP-Advanced](06-BGP-Advanced/) | RR, Add-Path, PIC, RPKI, policy | Planned study |
-| [07-High-Availability](07-High-Availability/) | BFD, VRRP, LACP, MSTP | Planned study |
-| [08-Security](08-Security/) | CoPP, uRPF, DAI, ACLs, AAA | Planned study |
-| [09-Automation](09-Automation/) | Python, NETCONF/YANG, RESTCONF, Ansible | IOS console backup utility |
-| [10-IPv6](10-IPv6/) | IPv6 routing, multicast, ND, PMTUD | Link to multicast LAB 05 |
-| [11-Troubleshooting](11-Troubleshooting/) | Structured diagnosis and fault isolation | Method and future integrated exercise |
-
-Use [LAB-TEMPLATE.md](LAB-TEMPLATE.md) for new labs. Planned topics are not presented as completed tests.
-
-## Evidence, language and publication policy
-
-Documentation and editorial annotations are in English. Device CLI output and configuration commands retain their original meaning. The legacy paths `evidencias/`, `comandos.md` and `enderecamento.md` remain stable so existing links keep working; their contents are documented in English.
-
-Only reviewed lab material belongs in this public repository. Never upload credentials, private keys, production/customer data, VM images, or an unreviewed backup directory. Addresses shown are the values used inside these isolated labs; some IPv4 loopbacks are not documentation prefixes and must not be advertised externally.
-
-The English editorial revision adds explanations and screenshots; it does **not** represent a new execution of every historical lab. See [CHANGELOG.md](CHANGELOG.md) for the scope of the revision.
-
-This is an independent study project, not an official Cisco training course.
+My explanations are in English. Router commands and captured outputs retain their original syntax. This is my independent study notebook, not an official Cisco course.
