@@ -8,6 +8,7 @@
 | [LAB 06 — L2VPN VPWS / EoMPLS](LAB06-L2VPN-VPWS-IOS-IOSXR.md) | IS-IS + LDP transport, targeted LDP PW 100, Ethernet between CEs | R2/R1 IOS PW UP; CE pings 9/10 and 10/10; 65 received/77 sent, no drops on R2; XRv classic limitation observed |
 | [LAB 07 — VPLS + VPWS spoke](LAB07-VPLS-CSR1000v-VPWS-C7200.md) | CSR1000v BD100/VFI with three local CEs and a Cisco 7200 remote CE | Six fresh configs; 12 directed CE pairs reached 10/10 (three on repeat); service startup verified |
 | [LAB 08 — MPLS RSVP-TE and Autoroute](LAB08-MPLS-RSVP-TE-ISIS-AUTOROUTE.md) | IS-IS TE extensions, strict explicit ERO, RSVP bandwidth, local Autoroute | Tunnel100 UP via R3, RSVP 1/5/1 Mbps, CEF via Tunnel100, ping 10/10; four saved configs collected |
+| [LAB 09 — MPLS TE Fast Reroute / NNHOP](LAB09-MPLS-TE-FRR-NNHOP-IOS.md) | PLR at R1, protected Tunnel100 via R3 and bypass Tunnel200 via R2 | FRR Ready→Active→Ready; R2 backup path traceroute, 5/5 ping, return to R3; all four startup=running |
 
 ![Complete MPLS canvas supplied by the lab owner](topology/mpls-eve-ng.png)
 
@@ -42,15 +43,25 @@ The `VPLS.unl` lab uses R1 CSR1000v directly connected to R2 Cisco 7200, plus fo
 - IS-IS normally sends R1→R2→R4 (metric 20), but RSVP-TE Tunnel100 directs R1→R3→R4 (explicit metric 40). The local route/CEF uses Tunnel100 after `autoroute announce`. RSVP reservation was validated at 1, 5 and restored 1 Mbps; end-to-end ping 10/10.
 - All four running/startup snapshots match, but the register correction `0x2102` takes effect only on next reload; no reboot validation was performed.
 
+## LAB 09 — MPLS RSVP-TE FRR / NNHOP node protection
+
+- [Step-by-step lab, observed FRR switching and restoration](LAB09-MPLS-TE-FRR-NNHOP-IOS.md)
+- [Four router complete running/startup configurations](configs/LAB09-FRR-2026-11-16/)
+- [Lab-owner CLI evidence, collector transcripts and persistence manifest](evidencias/LAB09-FRR-2026-11-16/)
+- R1 locally protected its Tunnel100 via R3 using Tunnel200 via R2. The FRR database moved **Ready → Active → Ready** with `Active: 1` at failure, `Active: 0` after restoration. An ICMP ping during the bypass returned 5/5 and a traceroute followed R1→R2→R4; after restoration the traceroute followed R1→R3→R4.
+- All four `running-config` snapshots exactly match their respective `startup-config`. The pending `0x2142`→`0x2102` configuration-register transition was **not** verified after reload.
+- No quantified fast-reroute switching time or hitless forwarding claim is made. The earlier remote shutdown exhibited 122/154 ping responses with FRR remaining Ready; this is recorded separately.
+
 ## Planned scope
 
-LDP-IGP synchronization, RSVP-TE FRR, CSPF constraints/preemption and fast reroute are future topics. Existing L3VPN and RSVP-TE results do not validate those mechanisms.
+LDP-IGP synchronization, dynamic CSPF constraints/affinity, RSVP-TE preemption, FRR repair-time measurement and alternate failure types are future topics.
 
 - [x] First lab documented with direct command evidence
 - [x] Configuration and control/data-plane review for CUST-A
 - [x] L2VPN VPWS on IOS: control plane, bidirectional CE forwarding and saved R1/R2/R3 configurations
-- [ ] Controlled failure and recovery exercise
+- [x] Controlled RSVP-TE local protection failure and recovery exercise (LAB 09)
 - [x] RSVP-TE explicit path / Autoroute and bandwidth reservation validation (LAB 08)
-- [ ] RSVP-TE Fast Reroute (FRR) and preemption validation
+- [x] RSVP-TE FRR NNHOP local repair and recovery validation (LAB 09)
+- [ ] RSVP-TE priority-based preemption validation
 
 Use reviewed lab addressing and exclude credentials or production data from every new publication.
