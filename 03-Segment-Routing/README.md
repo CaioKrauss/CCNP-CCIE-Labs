@@ -4,11 +4,11 @@
 
 SR-MPLS, segment identifiers, SR-TE, TI-LFA and SRv6.
 
-**LAB 11 completed for SR-MPLS fundamentals:** Two IOS XRv classic 6.3.1 routers establish IS-IS L2 adjacency; advertise SRGB, Node/Prefix-SIDs and Adj-SIDs; install SR entries in the RIB and MPLS LFIB; and reach each other's loopback addresses with 5/5 ICMP replies in each direction. **Full running-configuration backups remain pending.**
+**LAB 11 completed for SR-MPLS fundamentals:** Two IOS XRv classic 6.3.1 routers establish IS-IS L2 adjacency; advertise SRGB, Node/Prefix-SIDs and Adj-SIDs; install SR entries in the RIB and MPLS LFIB; and reach each other's loopback addresses with 5/5 ICMP replies in each direction. **Captured XR1/XR2 running configurations are published and verified against the collector ZIP.** Post-reboot persistence was not tested.
 
 ### Validated lab
 
-- [LAB 11 — SR-MPLS Fundamentals with IS-IS (IOS XRv)](LAB11-SR-MPLS-ISIS-IOSXR.md) — LSDB/SRGB 16000–23999, Prefix-SIDs 16001/16002, local Adj-SID 24001 in both directions, MPLS forwarding Pop entries, traffic counters and ping. Explicit limitations and observed CLI are in the guide.
+- [LAB 11 — SR-MPLS Fundamentals with IS-IS (IOS XRv)](LAB11-SR-MPLS-ISIS-IOSXR.md) — LSDB/SRGB 16000–23999, Prefix-SIDs 16001/16002, local Adj-SID 24001 in both directions, MPLS forwarding Pop entries, traffic counters and ping. [XR1/XR2 configuration backups](configs/LAB11-SR-MPLS-2026-11-16/), explicit limitations and observed CLI are in the guide.
 
 ## Next study area
 
