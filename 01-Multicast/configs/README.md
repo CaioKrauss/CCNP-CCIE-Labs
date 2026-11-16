@@ -1,28 +1,14 @@
-# Multicast Configuration Snapshots
+# My Multicast Configuration Snapshots
 
-These directories contain reviewed snapshots for CE1, CE2, CE3, PE1, PE2, PE3 and RR-P.
+I collected seven Cisco IOS running configs (CE1–CE3, PE1–PE3 and RR-P).
 
-| Snapshot | Meaning | Limitation |
+| Snapshot | What I captured | Important limit |
 |---|---|---|
-| [2026-11-12](snapshot-2026-11-12/) | Combined final state after IPv4 Labs 01–04 | Not the exact intermediate state of every experiment |
-| [2026-11-13](snapshot-2026-11-13/) | Post-LAB05 state with IPv6/OSPFv3 and ASM/SSM joins | Running-config only; does not prove persistence or current forwarding |
+| [2026-11-12](snapshot-2026-11-12/) | Final combined **IPv4** state after LABs 01–04 | Not every intermediate experiment |
+| [2026-11-13](snapshot-2026-11-13/) | **IPv6/OSPFv3**, ASM/SSM joins and earlier IPv4 config | Running state, not a startup/reboot test |
 
-An older version of this note said backups had not been published. That statement predates the reviewed snapshot uploads; the directories above are now the authoritative published copies.
+I use these to check the *configured* baseline and [the original CLI evidence](../evidencias/) to explain *what happened* during each lab.
 
-## Initial baseline
+**Reminder:** RR-P was a PIM RP / transit node here; its name does **not** imply a configured BGP route reflector. I review every capture for secrets before publishing it.
 
-```cisco
-ip multicast-routing
-ip cef
-router ospf 1
- network 10.0.0.0 0.255.255.255 area 0
-ip pim rp-address 10.255.0.1
-```
-
-Each router uses a unique Loopback0-derived OSPF router ID. Transit subnets are /30. PIM sparse mode is enabled on the participating transit interfaces; initial receiver joins are on CE2/CE3 Fa0/0. Later labs add group-scoped RP mappings, SSM, BIDIR, Anycast and IPv6.
-
-RR-P has no BGP process in these multicast snapshots. Do not infer route-reflector behavior from its hostname.
-
-Keep raw local collection directories private until reviewed. Snapshot commands retain their original text during the English documentation revision.
-
-[Addressing](../topology/enderecamento.md) · [Historical test evidence](../evidencias/)
+[Addressing](../topology/enderecamento.md) · [Backup utility](../../09-Automation/backup-show-run-eve.md).
