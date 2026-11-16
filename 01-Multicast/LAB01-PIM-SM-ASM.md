@@ -1,24 +1,12 @@
-# LAB 01 — PIM Sparse Mode, ASM and a Static RP
+# LAB 01 — PIM-SM / ASM
 
-## Objective and evidence status
+**My goal:** understand how a receiver joins group **239.1.1.1** through a static RP (**RR-P, 10.255.0.1**).
 
-Explain how group membership creates a shared tree and how a source-specific tree appears. Group: **239.1.1.1**. RP: **RR-P, 10.255.0.1**. Source: CE1, using **10.255.0.11** or **10.0.1.1** in different captures. Receivers: CE2/CE3.
+![My multicast topology](topology/multicast-eve-ng.png)
 
-Historical console evidence shows membership and forwarding state. It does not include comparable end-receiver delivery counters for this group.
+## What I configured
 
-![Shared multicast lab topology](topology/multicast-eve-ng.png)
-
-See [interface addressing](topology/enderecamento.md). Traffic crosses PE1 and RR-P before branching toward the receivers.
-
-## Mechanism
-
-A receiver requests group G through IGMP. Its last-hop router sends a PIM (*,G) Join toward the RP. The source-side designated router can encapsulate initial traffic in PIM Registers to the RP. Receivers may subsequently use a source-specific shortest-path tree. These are control-plane steps; each still requires a usable data path. See [RFC 7761](https://www.rfc-editor.org/rfc/rfc7761.html).
-
-In this physical tree, the shared and source-specific paths can use the same interfaces. An SPT transition does not require the diagram to show a different cable.
-
-## Configuration and purpose
-
-Observed excerpts, not a complete paste-ready configuration:
+I enabled multicast routing and PIM-SM on the relevant interfaces, mapped this ASM group to the RP and used CE2/CE3 as test receivers.
 
 ```cisco
 ip multicast-routing
@@ -27,32 +15,22 @@ ip access-list standard ASM_GROUPS
  permit 239.1.1.1
 ! On participating interfaces:
 ip pim sparse-mode
-! Receiver interface in the initial capture:
+! On the receiver:
 ip igmp join-group 239.1.1.1
 ```
 
-| Command | Purpose |
-|---|---|
-| ip multicast-routing | Enables IPv4 multicast routing |
-| ip pim sparse-mode | Enables PIM on that interface |
-| ip pim rp-address ... ASM_GROUPS | Maps the selected ASM group to the static RP |
-| ip igmp join-group | Makes the router itself a local receiver for the test |
+## What I observed
 
-The snapshot may contain extra groups or later membership changes. Use the lab-specific evidence to reconstruct the historical step.
+- **IGMP:** CE2 joined `239.1.1.1`.
+- **Shared tree:** PE2 showed `(*,239.1.1.1)` pointing upstream to RR-P and downstream to CE2.
+- **Source state:** I also saw `(10.255.0.11,239.1.1.1)` with the IOS **T** flag (SPT indication).
+- **RPF:** I checked the path back toward CE1; CE1 used different source addresses in different captures.
 
-## Verify and interpret
+## What I learned
 
-| Command | Observed result | Why it matters |
-|---|---|---|
-| show ip igmp groups | CE2 subscribed to 239.1.1.1 | Confirms local receiver interest |
-| show ip pim rp mapping | Inspect the group-to-RP mapping | A mismatched RP can send joins toward the wrong tree |
-| show ip mroute 239.1.1.1 | PE2 (*,G): SJC; IIF Fa0/0, RPF neighbor 10.0.23.1; OIL Fa1/0 | The tree points upstream to RR-P and downstream to CE2 |
-| show ip mroute 239.1.1.1 | PE2 (10.255.0.11,G) includes T | IOS reports the SPT bit set for that entry |
-| show ip rpf 10.255.0.11 | Check the source-facing interface | Multicast arriving on the wrong RPF interface can be rejected |
-| show ip mroute count | Compare counters while sending traffic | Needed to strengthen a forwarding claim beyond installed state |
+**ASM starts from receiver interest in a group.** The last-hop router can build `(*,G)` toward the RP; source-specific state can appear afterward. The T flag is useful evidence, but a `(S,G)` entry alone does not prove packet delivery. A local receiver can have a null OIL.
 
 ```cisco
-show ip pim neighbor
 show ip pim rp mapping
 show ip igmp groups
 show ip mroute 239.1.1.1
@@ -60,12 +38,6 @@ show ip rpf 10.255.0.11
 show ip mroute count
 ```
 
-**Do not equate (S,G) with a proven end-to-end SPT transition.** The T flag is the relevant IOS state indicator here; compare IIF/OIL and counters across routers. CE2's null OIL is compatible with local reception: the router need not forward the packet to another interface to consume it.
+**Limit:** I recorded control-plane state, not comparable receiver delivery counters. My topology has only one physical path.
 
-## Troubleshooting and conclusion
-
-If membership exists but the tree does not, inspect PIM neighbors and RP mapping. If the tree exists but counters do not advance, inspect source address, RPF and outgoing interfaces. Do not diagnose a physical reroute on this single-path topology.
-
-The captures establish ASM membership, shared/source state and the IOS SPT indication. End-receiver delivery still needs its own measured evidence.
-
-[Original command output with English annotations](evidencias/LAB01_PIM_SM_ASM.txt) · [Combined final IPv4 snapshot](configs/snapshot-2026-11-12/)
+**Evidence:** [CLI capture](evidencias/LAB01_PIM_SM_ASM.txt) · [IPv4 configs](configs/snapshot-2026-11-12/) · [Addressing](topology/enderecamento.md).
