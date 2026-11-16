@@ -2,7 +2,7 @@
 
 **Platform:** 2 Cisco IOS XRv classic 6.3.1 instances in EVE-NG.  
 **Observed:** 2026-11-16.  
-**Status:** IS-IS L2 adjacency, SR advertisements, prefix/adjacency SID visibility, SR-programmed forwarding entries and bidirectional loopback reachability verified. **Complete running configurations have not yet been collected.**
+**Status:** IS-IS L2 adjacency, SR advertisements, prefix/adjacency SID visibility, SR-programmed forwarding entries and bidirectional loopback reachability verified. **Complete XR1/XR2 running configurations collected, checked against the ZIP and published; post-reboot persistence not tested.**
 
 ## Objective and topology
 
@@ -31,7 +31,23 @@ The local SRGB label range is **16000–23999** and the Node-SIDs are `16000 + i
 
 The interactive setup in this exercise used IS-IS process `CORE`, Loopback0 as a passive IS-IS interface, level-2-only operation and SR-MPLS enabled under the IS-IS IPv4 unicast address family. Prefix-SID indexes were configured per Loopback0.
 
-**Provenance warning:** the full on-device `show running-config` outputs for XR1 and XR2 have **not** yet been supplied. Do not treat the example setup instructions in the chat as captured router backups. Add validated full snapshots under `configs/LAB11-SR-MPLS-2026-11-16/` after collection and review. Do not publish passwords, secrets, access credentials, keys, or non-lab data.
+## Captured configuration backups and provenance
+
+The user supplied full `show running-config` outputs and the collector ZIP `20261116-180310.zip` for EVE-NG lab `SR-MPLS.unl`. The separate `XR1.cfg` and `XR2.cfg` match the archive's router files byte for byte. No passwords, secrets, or keys were found in these lab configs.
+
+- [XR1 — captured running-config](configs/LAB11-SR-MPLS-2026-11-16/XR1-running.cfg)
+- [XR2 — captured running-config](configs/LAB11-SR-MPLS-2026-11-16/XR2-running.cfg)
+
+The collection manifest states **2026-11-16 18:03:12 -03:00**, both routers **complete**, and an IOS XR commit-history entry on each router. The original files use CRLF; LF normalization produces 885 bytes per config and these hashes match the manifest:
+
+| Router | SHA-256 after LF normalization |
+|---|---|
+| XR1 | `9f68ec5fb3376042b3325d4d6123090c201d79fb18e84eaab276895dcf1a4136` |
+| XR2 | `6a83ebb7e333eb6688b14041957e9f48ea765ccff03765976534f` |
+
+**Configuration audit:** both backups have `router isis CORE`, `is-type level-2-only`, `segment-routing mpls` in the IS-IS IPv4 unicast address-family, passive Loopback0, `prefix-sid index 1/2`, and metric 10 on Gi0/0/0/0. A global `mpls traffic-eng` stanza is present but is **not** an SR-TE policy. No SR-TE segment-list or TI-LFA configuration was captured.
+
+Captured IOS XR running configuration and commit metadata are not a post-reboot persistence test. These are point-in-time snapshots only.
 
 ## Owner-observed evidence
 
@@ -182,7 +198,7 @@ show running-config
 
 **Validated:** IS-IS L2 UP, IPv4 Loopbacks installed as SR-labeled IS-IS routes, advertised SRGB/prefix SIDs/Adj-SIDs, installed MPLS LFIB entries, MPLS label counters nonzero, IP ping 5/5 in each direction.
 
-**Not validated:** complete saved configurations or persistence after reboot, SR-TE policy, imposed multi-segment stack, alternative-path steering, TI-LFA, convergence, latency under failure, explicit Adj-SID packet forwarding, service traffic over SR-MPLS, or physical packet capture.
+**Not validated:** persistence after reboot, SR-TE policy, imposed multi-segment stack, alternative-path steering, TI-LFA, convergence, latency under failure, explicit Adj-SID packet forwarding, service traffic over SR-MPLS, or physical packet capture.
 
 The lab demonstrates working **SR-MPLS fundamentals on two IOS XRv classic instances** within these evidence limits.
 
