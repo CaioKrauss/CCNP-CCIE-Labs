@@ -32,4 +32,4 @@ I write **three or fewer short points** explaining the mechanism, the result and
 
 **Limit:** I state what I did **not** prove. I never invent an output or treat an expected result as a measured one.
 
-**Evidence:** [Actual CLI](#) · [Running configs](#) · [Collection notes](#).
+**Evidence:** I add real CLI, config and collection links only after the files exist.
