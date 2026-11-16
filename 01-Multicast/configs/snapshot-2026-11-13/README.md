@@ -1,27 +1,23 @@
-# Post-LAB05 Snapshot — 2026-11-13
+# My Post-LAB05 IPv6 Snapshot — 2026-11-13
 
-Source: seven user-uploaded .cfg files, originally named with a (2) suffix. Names were normalized. The initial publication preserved original bytes; a later revision normalized line endings to LF and removed the final newline without changing commands. That review did not run the Python collector, make a fresh device collection or restart the VM. Last configuration change is the device timestamp, not the collection timestamp.
+I received seven `.cfg` files after LAB 05 and normalized their names and line endings **without changing the IOS commands**. The device's "Last configuration change" timestamp is not the file collection time.
 
-## Publication review
+## What I checked
 
-The review checked passwords/secrets, usernames, SNMP communities, keys, certificates, AAA/RADIUS/TACACS, URLs and personal identifiers. No secret or personal information was identified and no redaction was required. IPv4 unicast values are in 10.0.0.0/8; IPv6 values are in 2001:DB8::/32. Absence of published credentials is not an access-hardening assessment.
+- All seven hostnames and complete config end markers.
+- IPv6 routing, multicast, CEF and OSPFv3 process 10/area 0.
+- Six matching /64 transit links and seven distinct loopbacks.
+- Static ASM RP `2001:DB8:100::1` and CE2/CE3 ASM + source-specific joins.
+- CE1's temporary `2001:DB8:1::99` was **absent** in the final snapshot.
+- Original IPv4 SSM joins differ by CE: CE2 `10.255.0.11`, CE3 `10.0.1.1`.
 
-## Static checks
+I found no credential or personal-data content during publication review. These are **running-config snapshots**, not fresh traffic tests or proof of saved startup state. **MLDv1 was not tested.**
 
-- Seven expected hostnames and final end markers; no pagination marker or command error.
-- IPv6 unicast routing, multicast routing and CEF on all nodes.
-- OSPFv3 process 10/area 0, distinct router IDs and passive Loopback0.
-- Six matching /64 transit subnets and distinct /128 loopbacks.
-- Static RP 2001:DB8:100::1 on all nodes, assigned to RR-P Loopback0.
-- CE2/CE3 join FF1E::1234 and source-specific FF3E::1234 from 2001:DB8:1::1. IOS saves the latter without the word include.
-- CE1 retains 2001:DB8:1::1/64; temporary 2001:DB8:1::99/64 is absent.
-- Prior IPv4 configuration remains. CE2 selects 10.255.0.11 for IPv4 SSM while CE3 selects 10.0.1.1; that historical difference was not changed.
-
-These files establish snapshot configuration, not current operation, startup-config persistence or new traffic tests. MLDv2/ASM/SSM results remain grounded in the [console evidence](../../evidencias/LAB05-IPv6-PIM-MLDv2.txt). MLDv1 was not tested.
+[My LAB05 traffic results](../../LAB05-IPv6-Multicast.md) · [CLI capture](../../evidencias/LAB05-IPv6-PIM-MLDv2.txt).
 
 ## Original-byte SHA-256 hashes
 
-The following hashes describe the original CRLF bytes preserved in the [initial review commit](https://github.com/CaioKrauss/CCNP-CCIE-Labs/tree/ecb52b3204de383fbc1af7928ee7c6beaa6586f4/01-Multicast/configs/snapshot-2026-11-13). Do not compare them directly with normalized files on main. Equivalence after line-ending normalization was checked in the earlier review. This English revision preserves the current configuration bytes.
+I kept these hashes for the original CRLF uploads preserved in the [initial review commit](https://github.com/CaioKrauss/CCNP-CCIE-Labs/tree/ecb52b3204de383fbc1af7928ee7c6beaa6586f4/01-Multicast/configs/snapshot-2026-11-13). They do **not** match the later LF-normalized published bytes. I keep them to identify the historical originals.
 
 | File | SHA-256 |
 |---|---|
@@ -32,3 +28,4 @@ The following hashes describe the original CRLF bytes preserved in the [initial 
 | [PE2.cfg](PE2.cfg) | `c9aa42dd87c3e641618d1952f030c3f7a9c941631486f0a0b0ac49159eac2205` |
 | [PE3.cfg](PE3.cfg) | `6883aee80e50e04572ea616ee866015e28f586b1a92cf240dc89289956cff23d` |
 | [RR-P.cfg](RR-P.cfg) | `33b34cf49071d719929fb6f973ee7a6c8a8d07fa9c744a9af5dae6708293e975` |
+
