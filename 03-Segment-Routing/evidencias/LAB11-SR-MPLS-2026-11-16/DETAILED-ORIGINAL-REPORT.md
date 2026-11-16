@@ -35,8 +35,8 @@ The interactive setup in this exercise used IS-IS process `CORE`, Loopback0 as a
 
 The user supplied full `show running-config` outputs and the collector ZIP `20261116-180310.zip` for EVE-NG lab `SR-MPLS.unl`. The separate `XR1.cfg` and `XR2.cfg` match the archive's router files byte for byte. No passwords, secrets, or keys were found in these lab configs.
 
-- [XR1 — captured running-config](configs/LAB11-SR-MPLS-2026-11-16/XR1-running.cfg)
-- [XR2 — captured running-config](configs/LAB11-SR-MPLS-2026-11-16/XR2-running.cfg)
+- [XR1 — captured running-config](../../configs/LAB11-SR-MPLS-2026-11-16/XR1-running.cfg)
+- [XR2 — captured running-config](../../configs/LAB11-SR-MPLS-2026-11-16/XR2-running.cfg)
 
 The collection manifest states **2026-11-16 18:03:12 -03:00**, both routers **complete**, and an IOS XR commit-history entry on each router. The original files use CRLF; LF normalization produces 885 bytes per config and these hashes match the manifest:
 
@@ -202,4 +202,4 @@ show running-config
 
 The lab demonstrates working **SR-MPLS fundamentals on two IOS XRv classic instances** within these evidence limits.
 
-**Related:** [LAB 10 — RSVP-TE CSPF, Affinity and Preemption](../02-MPLS-TE/LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md).
+**Related:** [LAB 10 — RSVP-TE CSPF, Affinity and Preemption](../../../02-MPLS-TE/LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md).
