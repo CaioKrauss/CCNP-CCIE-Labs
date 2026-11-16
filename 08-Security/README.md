@@ -1,35 +1,15 @@
-# Network Security
+# Network Security — Planned Lab
 
-## Scope and status
+**Status:** I have not completed a dedicated lab in this section yet.
 
-CoPP, uRPF, ACLs, DHCP snooping, dynamic ARP inspection and AAA.
+## What I want to test
 
-**Planned study area: no completed feature-specific lab or measured result is claimed here.**
+I want to test CoPP, uRPF, ACLs, DHCP snooping, DAI and AAA without hiding valid traffic failures.
 
-## Core question
+## What I will record
 
-Which traffic or access is permitted, and can the intended protection be verified without disrupting legitimate traffic?
+Explicit allowed/denied test packets, matching rule counters and impact on legitimate traffic.
 
-## What a useful result must show
+**What I will not assume:** A security rule in the running-config is not evidence that it matched a packet.
 
-Use explicit positive and negative cases with counters/logs. A configured rule is not evidence that the intended packet matched it.
-
-## Planned workflow
-
-1. Select the exact platform/image and document prerequisites.
-2. Add the topology and addressing.
-3. Explain each configuration command and its intended effect.
-4. Record platform-specific verification commands, actual output and interpretation.
-5. Run bounded traffic tests and, if appropriate, a separately authorized failure/recovery test.
-
-Commands will be tied to a concrete platform when the lab is built; no universal cross-platform syntax or invented output is supplied.
-
-## Completion checklist
-
-- [ ] Topology and baseline captured
-- [ ] Commands and their purpose explained
-- [ ] Actual outputs reviewed
-- [ ] Data-plane outcome measured where applicable
-- [ ] Limitations and recovery documented
-
-Use the [lab template](../LAB-TEMPLATE.md). Publish only reviewed lab data.
+When I run this lab, I will link the real configs, CLI outputs and results here. I will use my [short lab template](../LAB-TEMPLATE.md).
