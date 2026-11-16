@@ -1,0 +1,4 @@
+Platform: Cisco 7206VXR, IOS 15.2(4)S7 (GNS3/EVE-NG lab)
+Cisco IOS Software, 7200 Software (C7200-ADVENTERPRISEK9-M), Version 15.2(4)S7, RELEASE SOFTWARE (fc4)
+Configuration register is 0x2142 (will be 0x2102 at next reload)
+Note: collected show version excerpt; full processor/board identifiers omitted from publication.

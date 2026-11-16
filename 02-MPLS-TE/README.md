@@ -9,6 +9,7 @@
 | [LAB 07 — VPLS + VPWS spoke](LAB07-VPLS-CSR1000v-VPWS-C7200.md) | CSR1000v BD100/VFI with three local CEs and a Cisco 7200 remote CE | Six fresh configs; 12 directed CE pairs reached 10/10 (three on repeat); service startup verified |
 | [LAB 08 — MPLS RSVP-TE and Autoroute](LAB08-MPLS-RSVP-TE-ISIS-AUTOROUTE.md) | IS-IS TE extensions, strict explicit ERO, RSVP bandwidth, local Autoroute | Tunnel100 UP via R3, RSVP 1/5/1 Mbps, CEF via Tunnel100, ping 10/10; four saved configs collected |
 | [LAB 09 — MPLS TE Fast Reroute / NNHOP](LAB09-MPLS-TE-FRR-NNHOP-IOS.md) | PLR at R1, protected Tunnel100 via R3 and bypass Tunnel200 via R2 | FRR Ready→Active→Ready; R2 backup path traceroute, 5/5 ping, return to R3; all four startup=running |
+| [LAB 10 — Dynamic CSPF, Affinity and RSVP-TE Preemption](LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md) | Bandwidth-aware CSPF, administrative groups, TE LSP setup/hold priority, preemption and recovery | Observed path choice via R2/R3; explicit R3 preemption log; R1 recovered 8 Mbps when R3 Tunnel200 shut; four matching running/startup snapshots |
 
 ![Complete MPLS canvas supplied by the lab owner](topology/mpls-eve-ng.png)
 
@@ -52,9 +53,18 @@ The `VPLS.unl` lab uses R1 CSR1000v directly connected to R2 Cisco 7200, plus fo
 - All four `running-config` snapshots exactly match their respective `startup-config`. The pending `0x2142`→`0x2102` configuration-register transition was **not** verified after reload.
 - No quantified fast-reroute switching time or hitless forwarding claim is made. The earlier remote shutdown exhibited 122/154 ping responses with FRR remaining Ready; this is recorded separately.
 
+## LAB 10 — Dynamic CSPF, bandwidth, administrative groups and preemption
+
+- [Full guide: CSPF, RSVP bandwidth, affinity, preemption syslog and recovery](LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md)
+- [Four-router complete running/startup configurations](configs/LAB10-CSPF-2026-11-16/)
+- [Interactive owner CLI timeline, saved-state collection manifest and console transcripts](evidencias/LAB10-CSPF-2026-11-16/)
+- CSPF initially preferred R1→R2→R4 (weight 20), switched to R1→R3→R4 (weight 40) after R1→R2 RSVP reservable bandwidth fell to 500 kbps, then returned to the lower-cost path on bandwidth restoration.
+- `Affinity 0x1/0x1` forced R1→R3→R4 despite its higher metric. On R3→R4 the low-priority 8 Mbps Tunnel100 (7/7) was explicitly **preempted** by the high-priority 5 Mbps Tunnel200 (0/0), confirmed by `%MPLS_TE-5-LSP ... preempted ... insufficient resources`.
+- R3 Tunnel200 was finally shut; R1 Tunnel100 recovered (UP, 8 Mbps RSVP, instance 44), and final R1/R2/R3/R4 running snapshots exactly match startup. No measured preemption packet-loss or recovery timing, and the pending config-register change has not been tested by a reboot.
+
 ## Planned scope
 
-LDP-IGP synchronization, dynamic CSPF constraints/affinity, RSVP-TE preemption, FRR repair-time measurement and alternate failure types are future topics.
+LDP-IGP synchronization, further CSPF affinity/preemption combinations, FRR repair-time measurement, alternate failure types, and Segment Routing are future topics.
 
 - [x] First lab documented with direct command evidence
 - [x] Configuration and control/data-plane review for CUST-A
@@ -62,6 +72,6 @@ LDP-IGP synchronization, dynamic CSPF constraints/affinity, RSVP-TE preemption, 
 - [x] Controlled RSVP-TE local protection failure and recovery exercise (LAB 09)
 - [x] RSVP-TE explicit path / Autoroute and bandwidth reservation validation (LAB 08)
 - [x] RSVP-TE FRR NNHOP local repair and recovery validation (LAB 09)
-- [ ] RSVP-TE priority-based preemption validation
+- [x] RSVP-TE priority-based preemption, explicit syslog and resource-release recovery (LAB 10)
 
 Use reviewed lab addressing and exclude credentials or production data from every new publication.

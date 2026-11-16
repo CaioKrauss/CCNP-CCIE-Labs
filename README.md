@@ -16,6 +16,7 @@ Hands-on Cisco IOS and IOS XR labs with topology screenshots, configuration snap
 | [LAB 07 — VPLS + VPWS spoke](02-MPLS-TE/LAB07-VPLS-CSR1000v-VPWS-C7200.md) | Can four sites share a bridge-domain across local ports and a PW? | Fresh six-router captures; all 12 CE directions reached 10/10, three after a repeat; saved service configs verified |
 | [LAB 08 — RSVP-TE, IS-IS and Autoroute](02-MPLS-TE/LAB08-MPLS-RSVP-TE-ISIS-AUTOROUTE.md) | Can an explicit RSVP-TE tunnel override the normal IS-IS next hop? | R1→R3→R4 tunnel UP; RIB/CEF via Tunnel100 despite IS-IS via R2; RSVP 1→5→1 Mbps; final ping 10/10 |
 | [LAB 09 — MPLS TE Fast Reroute / NNHOP](02-MPLS-TE/LAB09-MPLS-TE-FRR-NNHOP-IOS.md) | Does local RSVP-TE FRR bypass a failed outgoing link without changing the IP route? | Ready→Active→Ready captured; R1→R2→R4 backup traceroute and ping 5/5; primary via R3 restored; no switchover timing measurement |
+| [LAB 10 — Dynamic CSPF, Bandwidth, Affinity & Preemption](02-MPLS-TE/LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md) | How do path constraints and RSVP priorities change TE admission? | CSPF cost 20→40→20, affinity forced weight 40, 0/0 LSP preempted a 7/7 LSP on R3→R4, explicit preemption syslog and recovery; four saved configs |
 
 ## Topology gallery
 
@@ -46,7 +47,7 @@ The original L3VPN evidence covers **CE1_A–XR1–R3–R1–CE2_A**. LAB 06 add
 | Folder | Scope | Current material |
 |---|---|---|
 | [01-Multicast](01-Multicast/) | ASM, SSM, BIDIR, Anycast RP, IPv6 multicast | Five documented labs |
-| [02-MPLS-TE](02-MPLS-TE/) | MPLS forwarding, L3VPN, L2VPN VPWS, LDP, TE, FRR | L3VPN CUST-A, LAB06 VPWS, LAB07 VPLS/VPWS and LAB08 RSVP-TE/Autoroute and LAB09 FRR NNHOP validated |
+| [02-MPLS-TE](02-MPLS-TE/) | MPLS forwarding, L3VPN, L2VPN VPWS, LDP, TE, FRR | L3VPN CUST-A, LAB06 VPWS, LAB07 VPLS/VPWS, LAB08 RSVP-TE, LAB09 FRR and LAB10 CSPF/preemption validated |
 | [03-Segment-Routing](03-Segment-Routing/) | SR-MPLS, SR-TE, TI-LFA, SRv6 | Planned study |
 | [04-EVPN-VXLAN](04-EVPN-VXLAN/) | EVPN, VXLAN, IRB, multihoming | Planned study |
 | [05-QoS](05-QoS/) | Classification, queues, WRED, shaping, policing | Planned study |
