@@ -4,32 +4,22 @@
 
 SR-MPLS, segment identifiers, SR-TE, TI-LFA and SRv6.
 
-**Planned study area: no completed feature-specific lab or measured result is claimed here.**
+**LAB 11 completed for SR-MPLS fundamentals:** Two IOS XRv classic 6.3.1 routers establish IS-IS L2 adjacency; advertise SRGB, Node/Prefix-SIDs and Adj-SIDs; install SR entries in the RIB and MPLS LFIB; and reach each other's loopback addresses with 5/5 ICMP replies in each direction. **Full running-configuration backups remain pending.**
 
-## Core question
+### Validated lab
 
-How does a segment list select a path, and how is that path resolved in the forwarding plane?
+- [LAB 11 — SR-MPLS Fundamentals with IS-IS (IOS XRv)](LAB11-SR-MPLS-ISIS-IOSXR.md) — LSDB/SRGB 16000–23999, Prefix-SIDs 16001/16002, local Adj-SID 24001 in both directions, MPLS forwarding Pop entries, traffic counters and ping. Explicit limitations and observed CLI are in the guide.
 
-## What a useful result must show
+## Next study area
 
-Compare the intended segment list with the installed policy and a measured packet path. A configured policy alone does not establish that traffic uses it.
+- Understand Adj-SID label scope and program a directed packet test, if supported.
+- Expand to at least three SR-capable routers for an actual transit segment and path observability.
+- Study SR-TE, explicit segment lists, TI-LFA and SRv6 only on platforms/topologies that support each feature.
 
-## Planned workflow
+## Evidence discipline
 
-1. Select the exact platform/image and document prerequisites.
-2. Add the topology and addressing.
-3. Explain each configuration command and its intended effect.
-4. Record platform-specific verification commands, actual output and interpretation.
-5. Run bounded traffic tests and, if appropriate, a separately authorized failure/recovery test.
+- Do not claim multi-hop SR forwarding, a deployed SR policy, TI-LFA or steering based only on two nodes' Prefix-SID entries.
+- IP ping establishes IP connectivity; MPLS LFIB entries and counters provide separate evidence of label programming/activity.
+- The previously shown illustrative configs are **not** running-config backups. Publish user-collected snapshots only after review for sensitive material.
 
-Commands will be tied to a concrete platform when the lab is built; no universal cross-platform syntax or invented output is supplied.
-
-## Completion checklist
-
-- [ ] Topology and baseline captured
-- [ ] Commands and their purpose explained
-- [ ] Actual outputs reviewed
-- [ ] Data-plane outcome measured where applicable
-- [ ] Limitations and recovery documented
-
-Use the [lab template](../LAB-TEMPLATE.md). Publish only reviewed lab data.
+Use the [lab template](../LAB-TEMPLATE.md) for future labs.
