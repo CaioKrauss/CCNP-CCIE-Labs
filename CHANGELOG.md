@@ -1,5 +1,15 @@
 # Documentation Changes
 
+## 2026-11-16 — Shorter, first-person study notes
+
+- Rewrote my **12 completed lab guides** as compact first-person reports: **what I tested → configured → observed → learned**.
+- Simplified the root and topic indexes, troubleshooting, automation guide, future-study pages and lab template. I kept practical commands and exact measured results.
+- Preserved original device configs, CLI logs, manifests, screenshots and historical source details. For LAB 11, I moved the long original report to a separate **evidence archive** and linked it from the short guide.
+- Checked internal Markdown link targets and reviewed the text configuration/evidence files for obvious credential directives. Raw captures were not silently rewritten.
+- Clarified that **IGP state, programmed forwarding entries, ping and timed failover results are different types of proof**. I kept all not-tested limitations, including SR-TE and measured FRR time.
+
+These edits are documentation only: **I did not rerun the EVE-NG devices or change router configurations**.
+
 ## 2026-11-13 — English public edition
 
 - Rewrote all 27 existing Markdown documents in English and expanded the six completed lab guides with command purpose, observed results, interpretation, troubleshooting and explicit limits.

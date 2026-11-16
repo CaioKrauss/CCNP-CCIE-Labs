@@ -1,35 +1,15 @@
-# High Availability
+# High Availability — Planned Lab
 
-## Scope and status
+**Status:** I have not completed a dedicated lab in this section yet.
 
-BFD, VRRP, LACP, MSTP and controlled failover.
+## What I want to test
 
-**Planned study area: no completed feature-specific lab or measured result is claimed here.**
+I want to see how BFD, VRRP, LACP or MSTP detect faults and change forwarding.
 
-## Core question
+## What I will record
 
-Which mechanism detects a fault, which one changes forwarding, and how long does service interruption last?
+Before/failure/after traffic, protocol state and measured service interruption.
 
-## What a useful result must show
+**What I will not assume:** A protocol timer by itself is not a measured outage or hitless failover.
 
-Measure traffic before, during and after one controlled failure. Adjacency timers alone are not a service-outage measurement.
-
-## Planned workflow
-
-1. Select the exact platform/image and document prerequisites.
-2. Add the topology and addressing.
-3. Explain each configuration command and its intended effect.
-4. Record platform-specific verification commands, actual output and interpretation.
-5. Run bounded traffic tests and, if appropriate, a separately authorized failure/recovery test.
-
-Commands will be tied to a concrete platform when the lab is built; no universal cross-platform syntax or invented output is supplied.
-
-## Completion checklist
-
-- [ ] Topology and baseline captured
-- [ ] Commands and their purpose explained
-- [ ] Actual outputs reviewed
-- [ ] Data-plane outcome measured where applicable
-- [ ] Limitations and recovery documented
-
-Use the [lab template](../LAB-TEMPLATE.md). Publish only reviewed lab data.
+When I run this lab, I will link the real configs, CLI outputs and results here. I will use my [short lab template](../LAB-TEMPLATE.md).

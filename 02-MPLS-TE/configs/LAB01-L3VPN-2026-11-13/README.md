@@ -1,14 +1,11 @@
-# Observed Configurations — CUST-A L3VPN
+# My L3VPN CUST-A Configuration Capture
 
-Collected directly from device consoles on 2026-11-13 at approximately 15:43, America/Sao_Paulo. These are the configurations found during validation, not newly applied configurations.
+I collected these from the device consoles on **2026-11-13, around 15:43 (Brazil)**, without applying new configuration.
 
-- Nine files: running/startup for CE1_A, CE2_A, R1 and R3; running for XR1.
-- Effective running/startup commands match on the four IOS devices after excluding comments and capture headers.
-- XR1 has an active configuration and an existing commit history; latest listed commit 1000000019. No new commit or reboot test was performed.
-- Only command echo, external capture headers and the final prompt were removed. Configuration files use UTF-8/LF.
-- The captured XR configuration does not include local access credentials. These snapshots are not a complete image-installation or authentication package.
-- Publication review found no password/hash, private key, token or production-customer data. EVE management addresses and console ports are excluded.
-- Addresses belong to this isolated scenario; some loopbacks use public IPv4 values and must not be advertised outside the lab.
-- L2 devices were not configured or renamed. CE1_B/CE2_B, later identified in the supplied screenshot, were not part of the five-device capture.
+- **IOS:** running/startup snapshots of CE1_A, CE2_A, R1 and R3. Their effective commands matched.
+- **IOS XR:** XR1 running-config and existing commit history; I did **not** test persistence after reboot.
+- The nine files contain my tested CUST-A path, not CE1_B/CE2_B or the later L2VPN lab.
+- I removed console prompts/collection headers; I did not modify service commands.
+- I reviewed the published files for secrets. Loopbacks using public IPv4 values belong **only** in the isolated lab.
 
-[CLI evidence](../../evidencias/LAB01-L3VPN-2026-11-13/) preserves the command responses. SHA256SUMS.txt hashes the current published UTF-8 bytes; English editorial headers in evidence files were translated and the manifest regenerated. Router responses and configuration commands were preserved.
+My router responses are in the [CLI evidence folder](../../evidencias/LAB01-L3VPN-2026-11-13/), with the associated `SHA256SUMS.txt`. These config files show what was configured; my ping/traceroute results are documented separately in [LAB 01](../../LAB01-L3VPN-ISIS-LDP-IOS-XR.md).

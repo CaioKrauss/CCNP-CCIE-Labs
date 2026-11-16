@@ -1,25 +1,16 @@
-# IPv6
+# My IPv6 Studies
 
-## Documented result
+I started IPv6 with [LAB 05 — IPv6 Multicast](../01-Multicast/LAB05-IPv6-Multicast.md).
 
-[LAB 05 — IPv6 multicast](../01-Multicast/LAB05-IPv6-Multicast.md) covers OSPFv3 reachability, PIM-SM ASM, a static RP, MLDv2, SSM and source selection on seven Cisco IOS routers.
+## What I tested
 
-The recorded tests include receiver replies, multicast state and positive/negative source cases. MLDv1 was not tested. The [post-LAB05 snapshot](../01-Multicast/configs/snapshot-2026-11-13/) preserves the reviewed running configurations; it does not establish startup persistence.
+- **OSPFv3:** IPv6 loopback reachability in the seven-router topology.
+- **ASM:** PIM-SM and static RP `2001:DB8:100::1`.
+- **SSM:** MLDv2 source-specific joins and permitted/unselected-source tests.
+- **Forwarding:** both receiver sites replied to the selected source's multicast probes.
 
-## Questions answered in LAB 05
+The [post-test running configs](../01-Multicast/configs/snapshot-2026-11-13/) are published. They do **not** prove startup persistence.
 
-- How does OSPFv3 provide the reachability used by the multicast topology?
-- Which RP serves the ASM group, and what Register evidence was captured?
-- How does source selection change reception for the SSM group?
-- Why can a local receiver show a null outgoing-interface list?
+## What I still need to test
 
-See the lab's command matrix for the observed IOS syntax and result interpretation.
-
-## Future scope
-
-Neighbor Discovery, ICMPv6, MP-BGP, path-MTU discovery and IPv6 security remain separate planned studies. The multicast result does not validate all IPv6 features.
-
-- [x] First IPv6 lab documented
-- [x] Evidence limits and snapshot provenance recorded
-- [ ] MLDv1-specific experiment
-- [ ] Dedicated PMTUD/security experiments
+MLDv1, Neighbor Discovery, ICMPv6 troubleshooting, PMTUD, MP-BGP and IPv6 security are **not covered** by the completed multicast test.
