@@ -1,69 +1,46 @@
-# Multicast Troubleshooting — Configuration, State and Delivery
+# My Multicast Troubleshooting Checklist
 
-**Start with a precise source/group and receiver.** Record the source address, destination group, protocol model and expected path. For example, CE2's SSM request for 10.255.0.11 does not match traffic sourced from 10.0.1.1.
+When multicast does not work, I start with the exact **source S, group G and receiver**. In SSM, `(10.255.0.11,232.1.1.1)` and `(10.0.1.1,232.1.1.1)` are different channels.
 
-## 1. Verify unicast and RPF
+## 1. Unicast and RPF
 
 ```cisco
 show ip ospf neighbor
-show ip route 10.255.0.1
 show ip route 10.255.0.11
 show ip rpf 10.255.0.11
 ```
 
-Check the route toward the source and, where applicable, toward the RP. Compare the expected incoming interface with the actual source-facing link. A unicast route can exist while multicast traffic arrives on an unacceptable interface.
+I first confirm the path **back to the actual source**. A correct unicast route does not help if multicast arrives on the wrong RPF interface.
 
-## 2. Verify PIM and the group mapping
+## 2. PIM, RP and membership
 
 ```cisco
 show ip pim neighbor
-show ip pim interface
 show ip pim rp mapping
-```
-
-Missing PIM adjacency prevents the expected join path. An RP check applies to ASM/BIDIR/Anycast; do not require an RP for the SSM channel. Check the mapping for the exact group, not merely the presence of any RP.
-
-## 3. Verify receiver interest
-
-```cisco
 show ip igmp groups
-show ip mroute 239.1.1.1
 ```
 
-On CE2/CE3, inspect the receiver-facing Fa0/0. Local test receivers may have null OIL. On transit routers, inspect downstream OIL entries toward the receiver. An empty downstream branch on a transit node needs a different explanation from local reception.
+I check PIM on the transit path, the correct RP mapping for **ASM/BIDIR/Anycast**, and the receiver's exact group/source join. **SSM does not need an RP.**
 
-## 4. Verify the right tree and actual traffic
+## 3. Tree state and traffic
 
 ```cisco
+show ip mroute 239.1.1.1
 show ip mroute 232.1.1.1
-show ip mroute 239.2.2.2
 show ip mroute count
 ```
 
-| Model | State to examine | Frequent wrong inference |
-|---|---|---|
-| ASM | (*,G), (S,G), IOS T flag, RPF, IIF/OIL | Any (S,G) proves full SPT delivery |
-| SSM | Correct (S,G), source selection, counter increments | Same group means any source is accepted |
-| BIDIR | Shared state, DF roles, upstream direction | No per-source tree means no data |
-| Anycast | Selected RP route, MSDP, SA, mroute counters | SA cache proves receiver delivery |
+- **ASM:** I compare `(*,G)`, `(S,G)`, the IOS T flag and IIF/OIL.
+- **SSM:** I check the precise source in `(S,G)`.
+- **BIDIR:** I inspect the DF and shared tree, not a per-source SPT.
+- **Anycast:** I verify the selected RP, MSDP/SA and receiver-facing forwarding state.
 
-Send a bounded test from the intended source, compare before/after counters and record receiver replies where available. Counter changes need a time interval and a named device.
+I send a bounded test, compare counters on **named routers**, and check receiver replies. An entry in the table is not the same as proven delivery.
 
-## 5. Controlled failures are a separate exercise
+## 4. Failure testing
 
-On this physical tree, losing a transit link may break service entirely. Do not expect a redundant path that does not exist. A future failure exercise should record the baseline, one deliberate fault, symptoms, diagnosis, restoration and a post-recovery test. Do not mark such a test complete merely because its commands are documented.
+My physical multicast lab is a **tree**, with no alternate transit path. I do not expect OSPF metrics to create redundancy. When I inject a fault, I record the baseline, the single change, symptoms, restoration and post-recovery test.
 
-LAB 04 contains a historical loopback failure. It does not prove survival of a full RR-P outage.
+**My reminder:** in LAB 04 I shut an **RP loopback**, not the central router. I did not demonstrate full-node failover.
 
-## Evidence checklist
-
-- [ ] Source/group and receiver explicitly identified
-- [ ] Unicast reachability and RPF checked
-- [ ] PIM and group mapping appropriate for the multicast model
-- [ ] Membership and IIF/OIL captured
-- [ ] Traffic generated and measured at named points
-- [ ] Expected result separated from actual result
-- [ ] Limitations and unresolved causes retained
-- [ ] Any injected fault restored and recovery evidenced
-
-See [command reference](comandos.md) and [IPv6-specific checks](LAB05-IPv6-Multicast.md).
+[Command reference](comandos.md) · [IPv6 lab](LAB05-IPv6-Multicast.md).
