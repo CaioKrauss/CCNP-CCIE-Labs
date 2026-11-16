@@ -1,39 +1,35 @@
-# LAB <number> — <Topic>
+# LAB XX — Topic
 
-## Objective and status
+**My goal:** In one or two sentences, what exactly am I trying to prove?
 
-State the exact question, platforms, date and scope. Mark the lab planned, configured, control-plane verified or traffic-tested. Do not describe expected behavior as an observation.
+## My topology
 
-## Topology and addressing
+```text
+R1 ---- R2 ---- R3
+```
 
-Add a real, reviewed screenshot when available. Label reconstructed diagrams as diagrams. Identify every tested path and any visible but untested nodes.
+I note the platform, software version, IPs and any important path or limitation.
 
-## Mechanism and hypothesis
+## What I configured
 
-Explain the packet/control-message path in plain language. State what should happen and what would disprove the hypothesis. Link authoritative technical references.
+I paste only the commands that matter and explain **why** they matter. Full running configs belong in a separate linked folder.
 
-## Configuration and purpose
+```cisco
+! Relevant commands here
+```
 
-Show platform-specific excerpts and explain what each enables. Identify prerequisites. Distinguish existing configuration from changes actually applied.
+## What I observed
 
-## Verification
+| Check | My real result |
+|---|---|
+| Control plane | Captured state (or not tested) |
+| RIB / FIB | Installed next hop/label (or not tested) |
+| Traffic | Source, destination, reply count and packet/counter evidence |
 
-| Question | Device / command | Expected result | Observed result | Explanation |
-|---|---|---|---|---|
-| <question> | <command> | <prediction> | <captured output or not tested> | <why> |
+## What I learned
 
-## Data-plane test
+I write **three or fewer short points** explaining the mechanism, the result and any unexpected behavior.
 
-Specify source, destination, packet count/size and relevant timing. Preserve exact results. Explain the return path and any difference between local reception and transit forwarding.
+**Limit:** I state what I did **not** prove. I never invent an output or treat an expected result as a measured one.
 
-## Troubleshooting or controlled failure
-
-Record baseline, authorized change, symptom, diagnosis, restoration and recovery evidence. Keep disruptive actions separate from read-only checks.
-
-## Evidence and configuration snapshots
-
-Link actual outputs, collection time, platform/version and reviewed configurations. Document redactions, normalization and hashes where used.
-
-## Conclusions and limits
-
-State what the results establish, what remains unknown and the next useful test. Do not infer whole-network health from one passing ping.
+**Evidence:** [Actual CLI](#) · [Running configs](#) · [Collection notes](#).
