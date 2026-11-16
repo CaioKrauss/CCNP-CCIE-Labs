@@ -1,41 +1,25 @@
-# EVE-NG Telnet Console Backup Utility — Cisco IOS
+# My Cisco IOS Backup Script for EVE-NG
 
-[backup_show_run_eve.py](backup_show_run_eve.py) captures show running-config from the seven IOS multicast routers. It does not publish backups or modify persistent router configuration.
+I use [`backup_show_run_eve.py`](backup_show_run_eve.py) to collect **`show running-config`** from my seven-router IOS multicast lab over Telnet consoles.
 
-## What it does and why
+## What it does
 
-| Step | Behavior | Reason |
-|---|---|---|
-| Connect | Uses the configured host and per-device console port | Each EVE console is a separate endpoint |
-| Authenticate | Reads environment variables or prompts locally | Avoids embedding passwords in the script |
-| Enter EXEC | Sends enable if the prompt ends in > | show running-config typically needs privilege |
-| Prepare terminal | terminal length 0; optional terminal width 512 | Prevents pagination/wrapping from truncating output |
-| Collect | Sends show running-config | Reads active configuration |
-| Validate | Requires Current configuration, end and final prompt | Rejects obviously incomplete captures |
-| Save | Writes .cfg or diagnostic/error files | Keeps failures visible instead of treating partial output as a valid backup |
+1. Connects to the host/console port mapped to each router.
+2. Logs in using **locally provided credentials**, then enters privileged EXEC when needed.
+3. Sends `terminal length 0` (and optionally `terminal width 512`) so output is not paginated.
+4. Captures `show running-config` and checks for a recognizable start, `end` and final prompt.
+5. Saves complete `.cfg` files or separate diagnostic/error files if the capture fails.
 
-## Usage
-
-Run from the utility directory with Python 3.10+; it uses the standard library.
+## How I run it (Python 3.10+)
 
 ```powershell
 python .\backup_show_run_eve.py --help
 python .\backup_show_run_eve.py --host 192.0.2.10
 python .\backup_show_run_eve.py --host 192.0.2.10 --only PE1 PE2 PE3
-python .\backup_show_run_eve.py --host 192.0.2.10 --attempts 4 --timeout 180 --out .\private-backups
 ```
 
-192.0.2.10 is a documentation placeholder, not a reachable server. Set the actual lab host and verify every entry in EQUIPAMENTOS before connecting. The bundled port/name mapping belongs to the multicast scenario; EVE ports may identify completely different routers after changing labs.
+**`192.0.2.10` is only an example.** I supply my actual EVE-NG IP, check the `EQUIPAMENTOS` console ports and never commit credentials.
 
-Optional environment variables: EVE_LOGIN_USERNAME, EVE_LOGIN_PASSWORD and EVE_ENABLE_PASSWORD. Do not commit their values. Default output is backups/01-Multicast/<timestamp>/<device>.cfg relative to the script directory.
+For optional authentication I use `EVE_LOGIN_USERNAME`, `EVE_LOGIN_PASSWORD` and `EVE_ENABLE_PASSWORD` environment variables or local prompts. The default output is under `backups/01-Multicast/<timestamp>/`, excluded by `.gitignore`.
 
-## Boundaries and troubleshooting
-
-- This utility's parser expects Cisco IOS output. It was not the IOS XR collection adapter used for the L3VPN validation.
-- A valid-looking capture is not proof of correct forwarding or startup-config persistence.
-- Close competing console sessions before collecting. If command echo/output appears shifted, stop and verify command-response alignment.
-- A timeout can be console interaction, login or connectivity; it is not proof of configuration loss.
-- Preserve diagnostic files locally and review them for secrets before sharing.
-- No VM start/stop/reboot or configuration restoration is performed.
-
-The English revision changes explanatory text, prompts and messages. Existing callable names, CLI options, environment variables and legacy .erro.txt filenames remain compatible.
+**Limit:** this script expects **Cisco IOS** console output, not IOS XR. A captured running-config does not prove startup persistence or packet forwarding. I review files for secrets before sharing them. The script does not reboot routers or apply configuration.
