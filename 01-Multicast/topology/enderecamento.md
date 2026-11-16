@@ -1,6 +1,6 @@
-# Multicast Topology and Addressing
+# My Multicast Topology and Addressing
 
-Source: seven Cisco IOS configuration snapshots collected on 2026-11-12, with the IPv6 extension documented in LAB 05. The screenshot was supplied by the lab owner on 2026-11-13.
+I built this seven-router EVE-NG tree and preserved the IOS IPv4 snapshots from **2026-11-12**. I added IPv6 in [LAB 05](../LAB05-IPv6-Multicast.md).
 
 ![EVE-NG multicast topology](multicast-eve-ng.png)
 
@@ -27,14 +27,12 @@ Source: seven Cisco IOS configuration snapshots collected on 2026-11-12, with th
 | PE3 | 10.255.0.33/32 | Transit; second Anycast RP in LAB 04 |
 | CE3 | 10.255.0.32/32 | Local receiver; also a source in BIDIR tests |
 
-RR-P uses Loopback1 10.255.0.2/32 for BIDIR. RR-P and PE3 share Loopback10 10.255.0.100/32 in the Anycast lab.
+For BIDIR I used **RR-P Loopback1 10.255.0.2/32**. For Anycast RP I used **Loopback10 10.255.0.100/32** on RR-P and PE3.
 
-## Baseline and evolution
+## What I kept in mind
 
-The initial ASM baseline uses Cisco IOS 15.2, ip multicast-routing, OSPF process 1/area 0 and PIM sparse mode on the transit interfaces. CE1 and RR-P also enable PIM on Loopback0. Initial CE2/CE3 membership is 239.1.1.1 on Fa0/0; their Loopback0 interfaces do not need to be mistaken for the receiver-facing interfaces.
+I used OSPF area 0 and PIM-SM on participating IPv4 interfaces. CE2 and CE3 joined on **Fa0/0**, not Loopback0. Later SSM/BIDIR/Anycast/IPv6 settings coexist in newer snapshots; I check the date and group before replaying an earlier test.
 
-Later snapshots contain SSM, BIDIR, Anycast and IPv6 additions. Group-scoped RP mappings supersede the simplest initial unscoped RP example. Consult the matching lab and date before reproducing a state.
+**This is a physical tree:** an OSPF metric change cannot create a second path around RR-P.
 
-The physical tree has no redundant links. RPF paths can be inspected, but changing a metric alone cannot create ECMP or a bypass around RR-P. Unused RR-P interfaces are administratively down.
-
-[IPv6 address plan](../LAB05-IPv6-Multicast.md#addressing-and-prerequisites) · [Snapshot provenance](../configs/README.md)
+[IPv6 details](../LAB05-IPv6-Multicast.md) · [Config snapshots](../configs/README.md).
