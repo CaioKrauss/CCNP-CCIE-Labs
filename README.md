@@ -17,7 +17,7 @@ Hands-on Cisco IOS and IOS XR labs with topology screenshots, configuration snap
 | [LAB 08 — RSVP-TE, IS-IS and Autoroute](02-MPLS-TE/LAB08-MPLS-RSVP-TE-ISIS-AUTOROUTE.md) | Can an explicit RSVP-TE tunnel override the normal IS-IS next hop? | R1→R3→R4 tunnel UP; RIB/CEF via Tunnel100 despite IS-IS via R2; RSVP 1→5→1 Mbps; final ping 10/10 |
 | [LAB 09 — MPLS TE Fast Reroute / NNHOP](02-MPLS-TE/LAB09-MPLS-TE-FRR-NNHOP-IOS.md) | Does local RSVP-TE FRR bypass a failed outgoing link without changing the IP route? | Ready→Active→Ready captured; R1→R2→R4 backup traceroute and ping 5/5; primary via R3 restored; no switchover timing measurement |
 | [LAB 10 — Dynamic CSPF, Bandwidth, Affinity & Preemption](02-MPLS-TE/LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md) | How do path constraints and RSVP priorities change TE admission? | CSPF cost 20→40→20, affinity forced weight 40, 0/0 LSP preempted a 7/7 LSP on R3→R4, explicit preemption syslog and recovery; four saved configs |
-| [LAB 11 — SR-MPLS Fundamentals / IS-IS (IOS XRv)](03-Segment-Routing/LAB11-SR-MPLS-ISIS-IOSXR.md) | Can classic IOS XRv advertise and program SR-MPLS Prefix-SIDs and Adj-SIDs? | Two IOS XRv: IS-IS L2 UP, SRGB/SIDs in LSDB, LFIB Pop entries with counters and bidirectional ping 5/5; full config backups pending; no multi-hop SR-TE |
+| [LAB 11 — SR-MPLS Fundamentals / IS-IS (IOS XRv)](03-Segment-Routing/LAB11-SR-MPLS-ISIS-IOSXR.md) | Can classic IOS XRv advertise and program SR-MPLS Prefix-SIDs and Adj-SIDs? | Two IOS XRv: IS-IS L2 UP, SRGB/SIDs in LSDB, LFIB Pop entries with counters and bidirectional ping 5/5; XR1/XR2 config backups verified; no multi-hop SR-TE |
 
 ## Topology gallery
 
@@ -49,7 +49,7 @@ The original L3VPN evidence covers **CE1_A–XR1–R3–R1–CE2_A**. LAB 06 add
 |---|---|---|
 | [01-Multicast](01-Multicast/) | ASM, SSM, BIDIR, Anycast RP, IPv6 multicast | Five documented labs |
 | [02-MPLS-TE](02-MPLS-TE/) | MPLS forwarding, L3VPN, L2VPN VPWS, LDP, TE, FRR | L3VPN CUST-A, LAB06 VPWS, LAB07 VPLS/VPWS, LAB08 RSVP-TE, LAB09 FRR and LAB10 CSPF/preemption validated |
-| [03-Segment-Routing](03-Segment-Routing/) | SR-MPLS, SR-TE, TI-LFA, SRv6 | LAB11 SR-MPLS fundamentals validated on two XRv; full backups pending; advanced SR planned |
+| [03-Segment-Routing](03-Segment-Routing/) | SR-MPLS, SR-TE, TI-LFA, SRv6 | LAB11 SR-MPLS fundamentals validated on two XRv; XR1/XR2 backups published; advanced SR planned |
 | [04-EVPN-VXLAN](04-EVPN-VXLAN/) | EVPN, VXLAN, IRB, multihoming | Planned study |
 | [05-QoS](05-QoS/) | Classification, queues, WRED, shaping, policing | Planned study |
 | [06-BGP-Advanced](06-BGP-Advanced/) | RR, Add-Path, PIC, RPKI, policy | Planned study |
