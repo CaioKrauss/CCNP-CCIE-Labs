@@ -2,7 +2,7 @@
 
 I use this repository to document **what I configured, what I tested, what I observed and what I learned** in EVE-NG. Each lab links to the real CLI evidence and configuration backups.
 
-## Completed labs
+## Lab results
 
 | Lab | What I learned | Result I recorded |
 |---|---|---|
@@ -19,6 +19,14 @@ I use this repository to document **what I configured, what I tested, what I obs
 | [10 — CSPF / Preemption](02-MPLS-TE/LAB10-MPLS-TE-CSPF-AFFINITY-PREEMPTION-IOS.md) | Cost, bandwidth, affinity and priority | Measured path changes, preemption syslog and recovery |
 | [11 — SR-MPLS](03-Segment-Routing/LAB11-SR-MPLS-ISIS-IOSXR.md) | Prefix-SIDs, Adj-SIDs and MPLS LFIB | Two XRv; labels programmed and pings **5/5** each way |
 
+| [12 — SRMS / LDP interworking](03-Segment-Routing/LAB12-SR-MPLS-SRMS-LDP-INTERWORKING.md) | Mapping SIDs for LDP-only edges | LFIB swaps/counters; **20/20** pings each way |
+| [13 — SR-TE](03-Segment-Routing/LAB13-SR-TE-IOSXR.md) | Explicit policy and color steering configuration | **Partial evidence:** config preserved; operational results unavailable |
+| [14 — LFA / TI-LFA](03-Segment-Routing/LAB14-LFA-TI-LFA-ISIS-IOSXR.md) | Per-prefix repair configuration | **Partial evidence:** XR1 config preserved; failover proof unavailable |
+| [15 — BFD + IS-IS](07-High-Availability/LAB15-BFD-ISIS-IOSXR.md) | Detection vs forwarding recovery | **Evidence pending:** no BFD in final snapshot |
+| [16 — BGP Advanced](06-BGP-Advanced/LAB16-BGP-POLICY-BESTPATH-IOSXR.md) | Communities, LOCAL_PREF and iBGP best path | CLI/RIB validated; MED state captured; prepending evidence pending |
+
+[Shared night-lab snapshot and temporal coverage](03-Segment-Routing/evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md). Partial entries describe evidence coverage, not an inferred test failure.
+
 ## My topologies
 
 **Multicast:** seven-router physical tree (CE1 → PE1 → RR-P → PE2/PE3 → CE2/CE3).
@@ -31,8 +39,8 @@ I use this repository to document **what I configured, what I tested, what I obs
 
 ## Where I keep the details
 
-- [Multicast](01-Multicast/) · [MPLS / VPN / TE](02-MPLS-TE/) · [Segment Routing](03-Segment-Routing/) · [Automation](09-Automation/)
-- Planned: [EVPN/VXLAN](04-EVPN-VXLAN/), [QoS](05-QoS/), [BGP](06-BGP-Advanced/), [High Availability](07-High-Availability/), [Security](08-Security/), [IPv6](10-IPv6/) and [Troubleshooting](11-Troubleshooting/).
+- [Multicast](01-Multicast/) · [MPLS / VPN / TE](02-MPLS-TE/) · [Segment Routing](03-Segment-Routing/) · [BGP](06-BGP-Advanced/) · [High Availability](07-High-Availability/) · [Automation](09-Automation/)
+- Planned: [EVPN/VXLAN](04-EVPN-VXLAN/), [QoS](05-QoS/), [Security](08-Security/), [IPv6](10-IPv6/) and [Troubleshooting](11-Troubleshooting/).
 - [Template for my next lab](LAB-TEMPLATE.md) · [Documentation history](CHANGELOG.md)
 
 **My rule:** configuration ≠ control-plane operation ≠ packet delivery. I report these separately, keep failed tests and limitations visible, and never publish secrets or unreviewed production data.

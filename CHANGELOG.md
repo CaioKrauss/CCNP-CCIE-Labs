@@ -1,5 +1,13 @@
 # Documentation Changes
 
+## 2026-11-17 — Night labs 12–16 and shared XR snapshot
+
+- Added LAB 12 SRMS/LDP with original SID/LFIB outputs and 20/20 pings each way; added LAB 16 BGP with chronological user CLI and final policy/RIB observations.
+- Added LAB 13 SR-TE and LAB 14 LFA/TI-LFA as partial-evidence records, and LAB 15 BFD + IS-IS as evidence pending. Missing historical outputs are not reported as failed tests.
+- Preserved the five original ZIP members once, linked across labs, and documented missing R1/R2 and intermediate configurations.
+- Corrected the temporal interpretation: 02:23 -03:00 is 05:23 UTC, after the final recovered BGP checks. Documented original-byte hashes and the manifest's LF normalization.
+- Updated root/topic indexes without replacing the earlier LAB 11 evidence. No router changes or new tests were performed.
+
 ## 2026-11-16 — Shorter, first-person study notes
 
 - Rewrote my **12 completed lab guides** as compact first-person reports: **what I tested → configured → observed → learned**.

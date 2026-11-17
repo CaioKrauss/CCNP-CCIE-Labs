@@ -1,15 +1,12 @@
-# High Availability — Planned Lab
+# My High Availability Labs
 
-**Status:** I have not completed a dedicated lab in this section yet.
+| Lab | Result documented |
+|---|---|
+| [14 — LFA / TI-LFA](../03-Segment-Routing/LAB14-LFA-TI-LFA-ISIS-IOSXR.md) | Partial evidence: XR1 repair configuration preserved; operational repair and timing unavailable |
+| [15 — BFD + IS-IS](LAB15-BFD-ISIS-IOSXR.md) | Evidence pending: original BFD outputs unavailable; final shared backup has no BFD directives |
 
-## What I want to test
+[Shared collection and evidence gaps](../03-Segment-Routing/evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md)
 
-I want to see how BFD, VRRP, LACP or MSTP detect faults and change forwarding.
+**My rule:** a protocol timer is not a measured outage or hitless failover. I keep configuration, installed repair and observed traffic recovery separate.
 
-## What I will record
-
-Before/failure/after traffic, protocol state and measured service interruption.
-
-**What I will not assume:** A protocol timer by itself is not a measured outage or hitless failover.
-
-When I run this lab, I will link the real configs, CLI outputs and results here. I will use my [short lab template](../LAB-TEMPLATE.md).
+**Future topics:** VRRP, LACP and MSTP, with before/failure/after traffic and protocol state.

@@ -1,15 +1,9 @@
-# Advanced BGP — Planned Lab
+# My Advanced BGP Labs
 
-**Status:** I have not completed a dedicated lab in this section yet.
+| Lab | What I tested | Result documented |
+|---|---|---|
+| [16 — Policy and best path](LAB16-BGP-POLICY-BESTPATH-IOSXR.md) | MED, communities, LOCAL_PREF and iBGP propagation | Community/LOCAL_PREF and RIB choices validated; MED test state preserved; earlier prepending evidence pending |
 
-## What I want to test
+[Original CLI](evidencias/LAB16-BGP-2026-11-17/CLI-OBSERVED.md) · [Shared XR configs](../03-Segment-Routing/configs/LABS12-16-2026-11-17/README.md)
 
-I want to compare route reflection, Add-Path, policy, PIC and RPKI decisions using real prefixes.
-
-## What I will record
-
-Received paths, attributes, policy actions, best path, RIB/FIB entry and a controlled change.
-
-**What I will not assume:** The earlier L3VPN lab checked VPNv4 reachability; it did not test these advanced features.
-
-When I run this lab, I will link the real configs, CLI outputs and results here. I will use my [short lab template](../LAB-TEMPLATE.md).
+**Next topics:** multipath/ECMP, route reflection, Add-Path, PIC and RPKI. These are not validated by LAB 16. Two paths in BGP do not by themselves establish two forwarding paths.
