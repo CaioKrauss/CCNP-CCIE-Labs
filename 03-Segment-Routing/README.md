@@ -21,6 +21,6 @@ I used **two classic IOS XRv 6.3.1** routers to test IS-IS SR-MPLS fundamentals.
 | [13 — SR-TE](LAB13-SR-TE-IOSXR.md) | Partial evidence: committed explicit policy and color/VPN config; operational outputs unavailable |
 | [14 — LFA / TI-LFA](LAB14-LFA-TI-LFA-ISIS-IOSXR.md) | Partial evidence: XR1 FRR config; repair/failure results unavailable |
 
-[Shared final XR configs](configs/LABS12-16-2026-11-17/README.md) · [Evidence coverage and timezone correction](evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md)
+[Historical shared XR configs](configs/LABS12-16-2026-11-17/README.md) · [Evidence coverage and timezone correction](evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md)
 
 The same session also includes [LAB 15 — BFD + IS-IS](../07-High-Availability/LAB15-BFD-ISIS-IOSXR.md) and [LAB 16 — BGP Advanced](../06-BGP-Advanced/LAB16-BGP-POLICY-BESTPATH-IOSXR.md). The original LAB 11 findings above retain their original scope.

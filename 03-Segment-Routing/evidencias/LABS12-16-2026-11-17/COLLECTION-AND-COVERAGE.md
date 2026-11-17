@@ -34,7 +34,7 @@ The original [manifest](manifest.json) records hashes/lengths of the configs wit
 | XR1 show running-config timestamp | Nov 17, 05:23:43.679 | Nov 17, 02:23:43.679 |
 | XR2 show running-config timestamp | Nov 17, 05:23:44.749 | Nov 17, 02:23:44.749 |
 
-The filename's **02:23 is local time**, whereas router outputs show UTC. The earlier chat handoff called the ZIP older than later tests; that conclusion is not supported after timezone conversion. The snapshot includes XR1's final community-to-LOCAL_PREF policy and follows the final recovered BGP checks. Small host/router timestamp differences are retained; no clock synchronization measurement is claimed.
+The filename's **02:23 is local time**, whereas router outputs show UTC. This snapshot follows the retrieved LAB 16 checks at 05:21 UTC, but **predates LAB 17's recovered 05:34:22 UTC output**. The prior conclusion that no newer XR show run was needed was limited to the earlier recovered excerpt and is superseded. This is a historical snapshot, not a verified final/current configuration for LABs 13–17. Small host/router timestamp differences are retained; no clock synchronization measurement is claimed.
 
 The commit lists retain timestamps from Nov 16 20:40:30 to Nov 17 05:19:36 UTC on XR1, and Nov 16 20:41:04 to Nov 17 05:04:54 UTC on XR2. They list changes, but contain no historical config diffs. They cannot reconstruct the state at each lab stage.
 
@@ -45,7 +45,7 @@ The commit lists retain timestamps from Nov 16 20:40:30 to Nov 17 05:19:36 UTC o
 | [12 — SRMS/LDP](../../LAB12-SR-MPLS-SRMS-LDP-INTERWORKING.md) | SID mappings, LFIB swaps/counters, 20/20 pings both ways | Exact contemporaneous full configs, R1/R2 configs, packet-level capture |
 | [13 — SR-TE](../../LAB13-SR-TE-IOSXR.md) | Committed explicit policy and color/VPN configuration | Original policy state, label meaning, steering and delivery results |
 | [14 — LFA/TI-LFA](../../LAB14-LFA-TI-LFA-ISIS-IOSXR.md) | XR1 per-prefix FRR/TI-LFA directives | Computed repair, failure/recovery and timing evidence |
-| [15 — BFD + IS-IS](../../../07-High-Availability/LAB15-BFD-ISIS-IOSXR.md) | Session topic identified; final snapshot contains no BFD directives | Original BFD config, session state, timers and failure/recovery outputs |
+| [15 — BFD + IS-IS](../../../07-High-Availability/LAB15-BFD-ISIS-IOSXR.md) | Session topic identified; historical snapshot contains no BFD directives | Original BFD config, session state, timers and failure/recovery outputs |
 | [16 — BGP Advanced](../../../06-BGP-Advanced/LAB16-BGP-POLICY-BESTPATH-IOSXR.md) | MED test state, community/LOCAL_PREF changes, iBGP best-path and RIB results | Earlier prepending/baseline outputs, R1/R2 configs; traffic/multipath not demonstrated |
 
 “Partial evidence” describes what this publication can substantiate. It does not turn an inaccessible test into a failed test.
@@ -58,4 +58,8 @@ The commit lists retain timestamps from Nov 16 20:40:30 to Nov 17 05:19:36 UTC o
 
 The two ChatGPT history responses exposed no older-page cursor despite returning only recent portions. Other available project chat excerpts did not supply LAB 13–15 operational results; the web fallback required sign-in. The original chats may contain additional evidence. Their links require account access; the published CLI excerpts remain readable in GitHub.
 
-No config was invented and no device was reconfigured or retested during publication. No newer XR show run is required to cover the last recovered BGP result, but **R1/R2 show runs and historical LAB 13–15 evidence remain missing**. Future edits should update these existing guides and indexes.
+No config was invented and no device was reconfigured or retested during publication. **Fresh XR1/XR2/R1/R2 show runs are requested for the final lab state. Historical LAB 13–15, LAB 16 prepending/baseline and LAB 17 failure-stage outputs remain missing.** Future edits should update these existing guides and indexes.
+
+## Update — LAB 17
+
+The [LAB 17 guide](../../../06-BGP-Advanced/LAB17-BGP-MULTIPATH-ECMP-IOSXR.md) preserves the newly retrieved 05:34:22 UTC CLI. No newer attachment was returned. The workspace ZIP hash matches the archive documented above. The raw CFG/transcript/manifest files remain unchanged.

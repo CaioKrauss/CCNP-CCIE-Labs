@@ -11,7 +11,7 @@ R1 3.3.3.3 -- LDP -- XR1 1.1.1.1 -- SR -- XR2 2.2.2.2 -- LDP -- R2 4.4.4.4
             10.0.13.0/30        10.0.12.0/30         10.0.24.0/30
 ```
 
-The XRs run IOS XR 6.3.1. R1/R2 use IOS CLI; their full running configs and version outputs were not included in this collection. This capture predates the second XR-to-XR link present in the final shared backup.
+The XRs run IOS XR 6.3.1. R1/R2 use IOS CLI; their full running configs and version outputs were not included in this collection. This capture predates the second XR-to-XR link present in the historical shared backup.
 
 ## What I configured
 
@@ -46,6 +46,6 @@ XR1 also retains `segment-routing prefix-sid-map advertise-local` under IS-IS IP
 
 The mappings reached the remote XR and produced usable forwarding entries. The swap counters and bidirectional pings provide evidence beyond configuration acceptance.
 
-**Limit:** these are LFIB/counter and connectivity observations, not a per-packet capture or a timed failover test. The later backup is a combined end-of-session state, not an exact LAB 12 restore point.
+**Limit:** these are LFIB/counter and connectivity observations, not a per-packet capture or a timed failover test. The later backup is a historical combined state, not an exact LAB 12 restore point.
 
 **Evidence:** [Original CLI](evidencias/LAB12-SRMS-LDP-2026-11-17/CLI-OBSERVED.md) · [Shared XR configs](configs/LABS12-16-2026-11-17/README.md) · [Collection and coverage](evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md).

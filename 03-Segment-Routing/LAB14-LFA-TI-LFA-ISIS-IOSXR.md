@@ -41,3 +41,5 @@ Enabling FRR is one step; a programmed repair and its behavior during a failure 
 **Limit:** “partial evidence” is a documentation status, not a claim that the test failed. I have not assigned a sub-50-ms result, a repair stack, or a success rate without the original outputs.
 
 **Evidence:** [Shared XR configs](configs/LABS12-16-2026-11-17/README.md) · [Collection and coverage](evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md).
+
+**Snapshot status (2026-11-17 update):** the linked 05:23 UTC backup is historical, not a verified final/current restore point. Updated running-configs are requested; missing intermediate operational evidence remains pending.

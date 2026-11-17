@@ -1,5 +1,13 @@
 # Documentation Changes
 
+## 2026-11-17 — LAB 17 and corrected snapshot scope
+
+- Added original LAB 17 recovery-state CLI, a concise guide and a configuration-gap README, preserving the existing folder scheme.
+- Documented BGP/RIB multipath, reported failover, and ADD-PATH vs Multipath without inferring FIB traffic distribution or negotiated ADD-PATH.
+- Superseded the earlier final-snapshot wording: the 05:23 UTC backup predates the recovered LAB 17 output at 05:34 UTC. Raw historical backups remain unchanged; fresh configurations and missing test logs are requested.
+- Reused LABs 12–16 without duplicates; retained their partial-evidence status.
+
+
 ## 2026-11-17 — Night labs 12–16 and shared XR snapshot
 
 - Added LAB 12 SRMS/LDP with original SID/LFIB outputs and 20/20 pings each way; added LAB 16 BGP with chronological user CLI and final policy/RIB observations.

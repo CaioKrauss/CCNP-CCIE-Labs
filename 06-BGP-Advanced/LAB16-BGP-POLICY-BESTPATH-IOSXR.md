@@ -15,7 +15,7 @@ The tested prefix is **198.51.100.0/24**. The XRs run IOS XR 6.3.1. Their iBGP s
 
 ## What I configured
 
-The final XR1 snapshot contains:
+The historical XR1 snapshot contains:
 
 ```cisco
 community-set LAB16-COMMUNITY
@@ -51,8 +51,10 @@ XR2 marks its AS 65102 path “Not advertised to any peer”; XR1 shows only one
 
 The community was visible before LOCAL_PREF changed. The later configuration and outputs show the policy translating it into LOCAL_PREF 200 and influencing XR2's selected route.
 
-The chat attributes the earlier MED result to cross-AS MED comparison. The output preserves the resulting attributes and RIB choice, but the enabling command and baseline output are absent from the recovered evidence. The final snapshot no longer includes `bgp bestpath med always`.
+The chat attributes the earlier MED result to cross-AS MED comparison. The output preserves the resulting attributes and RIB choice, but the enabling command and baseline output are absent from the recovered evidence. The historical snapshot no longer includes `bgp bestpath med always`.
 
 **Limit:** no BGP ECMP/multipath, Add-Path, PIC, route-reflector behavior, traffic-delivery test or timed failover is claimed. AS-PATH prepending remains reported-only until its original CLI is recovered. `Origin-AS validity: not-found` is preserved as output, not a claim of a completed RPKI lab.
 
-**Evidence:** [Chronological CLI captures](evidencias/LAB16-BGP-2026-11-17/CLI-OBSERVED.md) · [Shared final XR configs](../03-Segment-Routing/configs/LABS12-16-2026-11-17/README.md) · [Temporal coverage](../03-Segment-Routing/evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md).
+**Evidence:** [Chronological CLI captures](evidencias/LAB16-BGP-2026-11-17/CLI-OBSERVED.md) · [Historical shared XR configs](../03-Segment-Routing/configs/LABS12-16-2026-11-17/README.md) · [Temporal coverage](../03-Segment-Routing/evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md).
+
+**Snapshot status (2026-11-17 update):** the linked 05:23 UTC backup is historical, not a verified final/current restore point. Updated running-configs are requested; missing intermediate operational evidence remains pending.

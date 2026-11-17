@@ -48,3 +48,5 @@ I need both policy state and forwarding evidence to establish that the alternati
 **Limit:** do not replay label 24004 without checking its current local meaning. In LAB 12's earlier XR1 LFIB it identified an LDP FEC for 3.3.3.3/32; the later SR-TE configuration uses the same number, but its contemporaneous LFIB is missing. I cannot infer label identity across snapshots or infer a platform defect from missing evidence.
 
 **Evidence:** [XR1/XR2 snapshot](configs/LABS12-16-2026-11-17/README.md) · [Coverage and missing evidence](evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md).
+
+**Snapshot status (2026-11-17 update):** the linked 05:23 UTC backup is historical, not a verified final/current restore point. Updated running-configs are requested; missing intermediate operational evidence remains pending.

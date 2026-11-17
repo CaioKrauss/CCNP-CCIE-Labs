@@ -3,7 +3,7 @@
 | Lab | Result documented |
 |---|---|
 | [14 — LFA / TI-LFA](../03-Segment-Routing/LAB14-LFA-TI-LFA-ISIS-IOSXR.md) | Partial evidence: XR1 repair configuration preserved; operational repair and timing unavailable |
-| [15 — BFD + IS-IS](LAB15-BFD-ISIS-IOSXR.md) | Evidence pending: original BFD outputs unavailable; final shared backup has no BFD directives |
+| [15 — BFD + IS-IS](LAB15-BFD-ISIS-IOSXR.md) | Evidence pending: original BFD outputs unavailable; historical shared backup has no BFD directives |
 
 [Shared collection and evidence gaps](../03-Segment-Routing/evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md)
 
