@@ -1,0 +1,49 @@
+RP/0/0/CPU0:XR2#show bgp ipv4 unicast 198.51.100.0/24
+Wed Nov 18 19:32:50.413 UTC
+BGP routing table entry for 198.51.100.0/24
+Versions:
+  Process           bRIB/RIB  SendTblVer
+  Speaker                 11          11
+Last Modified: Nov 18 19:32:46.412 for 00:00:04
+Paths: (1 available, best #1)
+  Not advertised to any peer
+  Path #1: Received by speaker 0
+  Not advertised to any peer
+  65101
+    1.1.1.1 (metric 10) from 1.1.1.1 (1.1.1.1)
+      Origin IGP, metric 0, localpref 100, valid, internal, best, group-best
+      Received Path ID 0, Local Path ID 0, version 11
+      Community: 65101:200
+RP/0/0/CPU0:XR2#show route 198.51.100.0/24
+Wed Nov 18 19:32:50.473 UTC
+
+Routing entry for 198.51.100.0/24
+  Known via "bgp 65000", distance 200, metric 0
+  Tag 65101, type internal
+  Installed Nov 18 19:32:46.514 for 00:00:03
+  Routing Descriptor Blocks
+    1.1.1.1, from 1.1.1.1
+      Route metric is 0
+  No advertising protos. 
+RP/0/0/CPU0:XR2#show cef ipv4 198.51.100.0/24 detail
+Wed Nov 18 19:32:51.193 UTC
+198.51.100.0/24, version 68, internal 0x5000001 0x0 (ptr 0xa136e174) [1], 0x0 (0x0), 0x0 (0x0)
+ Updated Nov 18 19:32:46.534 
+ local adjacency 10.0.12.1
+ Prefix Len 24, traffic index 0, precedence n/a, priority 4
+  gateway array (0xa12a12e0) reference count 1, flags 0x2010, source rib (7), 0 backups
+                [1 type 3 flags 0x68501 (0xa130571c) ext 0x210 (0xa155b1e0)]
+  LW-LDI[type=0, refc=0, ptr=0x0, sh-ldi=0x0]
+  gateway array update type-time 1 Nov 18 19:32:46.504
+ LDI Update time Nov 18 19:32:46.504
+   via 1.1.1.1/32, 2 dependencies, recursive [flags 0x6000]
+    path-idx 0 NHID 0x0 [0xa136dfdc 0x0]
+    next hop 1.1.1.1/32 via 1.1.1.1/32
+
+
+    Load distribution: 0 (refcount 1)
+
+    Hash  OK  Interface                 Address
+    0     Y   GigabitEthernet0/0/0/0    10.0.12.1      
+RP/0/0/CPU0:XR2#
+

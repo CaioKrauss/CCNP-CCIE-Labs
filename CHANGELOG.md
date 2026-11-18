@@ -1,5 +1,12 @@
 # Documentation Changes
 
+## 2026-11-18 — LAB 19 ADD-PATH + Route Reflection
+
+- Published four live running-configs, two matching IOS startup-configs, hashes and persistence responses.
+- Preserved historical negotiation, failure and recovery CLI separately from the fresh 19:36–19:37 UTC collection.
+- Confirmed Send/Receive, XR1 advertisement of AS65101 and XR2 Path ID 3 with a single active CEF exit via R2.
+- Corrected the earlier neighbor-capability assumption against actual XR 6.3.1 configuration. No failure replay or convergence-speed claim.
+
 ## 2026-11-18 — LAB 18 BGP PIC Edge / Core
 
 - Collected complete XR1/XR2/R1/R2 running configurations live; executed XR commit (no pending changes) and IOS write memory (OK), comparing IOS startup with running.

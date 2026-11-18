@@ -1,0 +1,435 @@
+===== terminal length 0 =====
+terminal length 0
+
+Wed Nov 18 19:37:02.576 UTC
+RP/0/0/CPU0:XR2#
+
+===== terminal width 512 =====
+terminal width 512
+
+Wed Nov 18 19:37:02.796 UTC
+RP/0/0/CPU0:XR2#
+
+===== show running-config =====
+show running-config
+
+Wed Nov 18 19:37:04.796 UTC
+Building configuration...
+!! IOS XR Configuration 6.3.1
+!! Last configuration change at Wed Nov 18 19:33:05 2026 by teste
+!
+hostname XR2
+vrf SRTE-LAB
+ address-family ipv4 unicast
+  import route-target
+   65000:100
+  !
+  export route-target
+   65000:100
+  !
+ !
+!
+interface Loopback0
+ description SR-MPLS-NODE-XR2
+ ipv4 address 2.2.2.2 255.255.255.255
+!
+interface Loopback100
+ description TESTE-SRTE
+ ipv4 address 172.20.2.1 255.255.255.255
+!
+interface Loopback200
+ vrf SRTE-LAB
+ ipv4 address 172.20.200.2 255.255.255.255
+!
+interface MgmtEth0/0/CPU0/0
+ shutdown
+!
+interface GigabitEthernet0/0/0/0
+ description LINK-TO-XR1
+ ipv4 address 10.0.12.2 255.255.255.252
+!
+interface GigabitEthernet0/0/0/1
+ description LINK-TO-R2
+ ipv4 address 10.0.24.1 255.255.255.252
+!
+interface GigabitEthernet0/0/0/2
+ description LINK-XR1-SRTE
+ ipv4 address 10.0.12.6 255.255.255.252
+!
+route-policy PASS-ALL
+  pass
+end-policy
+!
+route-policy EBGP-R2-ECMP-IN
+  if destination in (198.51.100.0/24) then
+    set local-preference 200
+  endif
+  pass
+end-policy
+!
+router isis CORE
+ is-type level-2-only
+ net 49.0001.0000.0002.0002.00
+ address-family ipv4 unicast
+  metric-style wide
+  mpls traffic-eng level-2-only
+  mpls traffic-eng router-id Loopback0
+  router-id Loopback0
+  segment-routing mpls
+ !
+ interface Loopback0
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 2
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  point-to-point
+  address-family ipv4 unicast
+   metric 100
+  !
+ !
+!
+router bgp 65000
+ bgp router-id 2.2.2.2
+ address-family ipv4 unicast
+  additional-paths receive
+  network 172.20.2.1/32
+ !
+ address-family vpnv4 unicast
+ !
+ neighbor 1.1.1.1
+  remote-as 65000
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy PASS-ALL in
+   route-policy PASS-ALL out
+   next-hop-self
+  !
+  address-family vpnv4 unicast
+   route-policy PASS-ALL in
+   route-policy PASS-ALL out
+  !
+ !
+ neighbor 10.0.24.2
+  remote-as 65102
+  address-family ipv4 unicast
+   route-policy EBGP-R2-ECMP-IN in
+   route-policy PASS-ALL out
+  !
+ !
+ vrf SRTE-LAB
+  rd 65000:2
+  address-family ipv4 unicast
+   label mode per-vrf
+   redistribute connected
+  !
+ !
+!
+mpls traffic-eng
+!
+mpls ldp
+ router-id 2.2.2.2
+ address-family ipv4
+ !
+ interface GigabitEthernet0/0/0/1
+ !
+!
+end
+
+RP/0/0/CPU0:XR2#
+
+===== configure terminal =====
+configure terminal
+
+Wed Nov 18 19:37:03.386 UTC
+RP/0/0/CPU0:XR2(config)#
+
+===== show configuration =====
+show configuration
+
+Wed Nov 18 19:37:03.676 UTC
+Building configuration...
+!! IOS XR Configuration 6.3.1
+end
+
+RP/0/0/CPU0:XR2(config)#
+
+===== commit =====
+commit
+
+Wed Nov 18 19:37:03.986 UTC
+No configuration changes to commit.
+RP/0/0/CPU0:XR2(config)#
+
+===== end =====
+end
+
+RP/0/0/CPU0:XR2#
+
+===== show configuration commit list =====
+show configuration commit list
+
+Wed Nov 18 19:37:05.736 UTC
+SNo. Label/ID              User      Line                Client      Time Stamp
+~~~~ ~~~~~~~~              ~~~~      ~~~~                ~~~~~~      ~~~~~~~~~~
+1    1000000013            teste     con0_0_CPU0         CLI         Wed Nov 18 19:33:05 2026
+2    1000000012            teste     con0_0_CPU0         CLI         Wed Nov 18 19:32:44 2026
+3    1000000011            teste     con0_0_CPU0         CLI         Wed Nov 18 19:27:01 2026
+4    1000000010            teste     con0_0_CPU0         CLI         Tue Nov 17 05:26:55 2026
+5    1000000009            teste     con0_0_CPU0         CLI         Tue Nov 17 05:04:54 2026
+6    1000000008            teste     con0_0_CPU0         CLI         Tue Nov 17 05:02:29 2026
+7    1000000007            teste     con0_0_CPU0         CLI         Tue Nov 17 04:56:24 2026
+8    1000000006            teste     con0_0_CPU0         CLI         Tue Nov 17 02:41:23 2026
+9    1000000005            teste     con0_0_CPU0         CLI         Tue Nov 17 02:34:00 2026
+10   1000000004            teste     con0_0_CPU0         CLI         Tue Nov 17 02:22:38 2026
+11   1000000003            teste     con0_0_CPU0         CLI         Tue Nov 17 01:56:44 2026
+12   1000000002            teste     con0_0_CPU0         CLI         Tue Nov 17 01:48:34 2026
+13   1000000001            teste     con0_0_CPU0         CLI         Mon Nov 16 20:41:04 2026
+RP/0/0/CPU0:XR2#
+
+===== show bgp neighbors 1.1.1.1 =====
+show bgp neighbors 1.1.1.1
+
+Wed Nov 18 19:37:05.106 UTC
+
+BGP neighbor is 1.1.1.1
+ Remote AS 65000, local AS 65000, internal link
+ Remote router ID 1.1.1.1
+  BGP state = Established, up for 00:06:54
+  NSR State: None
+  Last read 00:00:51, Last read before reset 00:07:15
+  Hold time is 180, keepalive interval is 60 seconds
+  Configured hold time: 180, keepalive: 60, min acceptable hold time: 3
+  Last write 00:00:51, attempted 19, written 19
+  Second last write 00:01:51, attempted 19, written 19
+  Last write before reset 00:07:47, attempted 19, written 19
+  Second last write before reset 00:08:47, attempted 19, written 19
+  Last write pulse rcvd  Nov 18 19:36:13.630 last full not set pulse count 119
+  Last write pulse rcvd before reset 00:07:47
+  Socket not armed for io, armed for read, armed for write
+  Last write thread event before reset 00:07:19, second last 00:07:19
+  Last KA expiry before reset 00:07:47, second last 00:08:47
+  Last KA error before reset 00:00:00, KA not sent 00:00:00
+  Last KA start before reset 00:07:47, second last 00:08:47
+  Precedence: internet
+  Non-stop routing is enabled
+  Multi-protocol capability received
+  Neighbor capabilities:
+    Route refresh: advertised (old + new) and received (old + new)
+    4-byte AS: advertised and received
+    Address family IPv4 Unicast: advertised and received
+    Address family VPNv4 Unicast: advertised and received
+  Received 75 messages, 1 notifications, 0 in queue
+  Sent 68 messages, 0 notifications, 0 in queue
+  Minimum time between advertisement runs is 0 secs
+  Inbound message logging enabled, 3 messages buffered
+  Outbound message logging enabled, 3 messages buffered
+
+ For Address Family: IPv4 Unicast
+  BGP neighbor version 12
+  Update group: 0.2 Filter-group: 0.2  No Refresh request being processed
+  NEXT_HOP is always this router
+  AF-dependent capabilities:
+    Additional-paths Send: received
+    Additional-paths Receive: advertised
+    Extended Nexthop Encoding: advertised and received
+  Route refresh request: received 0, sent 0
+  Policy for incoming advertisements is PASS-ALL
+  Policy for outgoing advertisements is PASS-ALL
+  1 accepted prefixes, 0 are bestpaths
+  Exact no. of prefixes denied : 0.
+  Cumulative no. of prefixes denied: 0. 
+  Prefix advertised 3, suppressed 0, withdrawn 1
+  Maximum prefixes allowed 1048576
+  Threshold for warning message 75%, restart interval 0 min
+  AIGP is enabled
+  An EoR was received during read-only mode
+  Last ack version 12, Last synced ack version 0
+  Outstanding version objects: current 0, max 2
+  Additional-paths operation: Receive
+  Send Multicast Attributes
+  Advertise routes with local-label via Unicast SAFI
+
+ For Address Family: VPNv4 Unicast
+  BGP neighbor version 17
+  Update group: 0.2 Filter-group: 0.1  No Refresh request being processed
+  Route refresh request: received 0, sent 0
+  Policy for incoming advertisements is PASS-ALL
+  Policy for outgoing advertisements is PASS-ALL
+  1 accepted prefixes, 1 are bestpaths
+  Exact no. of prefixes denied : 0.
+  Cumulative no. of prefixes denied: 0. 
+  Prefix advertised 1, suppressed 0, withdrawn 0
+  Maximum prefixes allowed 2097152
+  Threshold for warning message 75%, restart interval 0 min
+  AIGP is enabled
+  An EoR was received during read-only mode
+  Last ack version 17, Last synced ack version 0
+  Outstanding version objects: current 0, max 1
+  Additional-paths operation: None
+  Send Multicast Attributes
+
+  Connections established 3; dropped 2
+  Local host: 2.2.2.2, Local port: 179, IF Handle: 0x00000000
+  Foreign host: 1.1.1.1, Foreign port: 51316
+  Last reset 00:07:15, due to BGP Notification received: administrative reset
+  Time since last notification received from neighbor: 00:07:15
+  Error Code: administrative reset
+  Notification data received:
+    None
+RP/0/0/CPU0:XR2#
+
+===== show route 198.51.100.0/24 =====
+show route 198.51.100.0/24
+
+Wed Nov 18 19:37:05.456 UTC
+
+Routing entry for 198.51.100.0/24
+  Known via "bgp 65000", distance 20, metric 0
+  Tag 65102, type external
+  Installed Nov 18 19:33:13.552 for 00:03:51
+  Routing Descriptor Blocks
+    10.0.24.2, from 10.0.24.2, BGP external
+      Route metric is 0
+  No advertising protos. 
+RP/0/0/CPU0:XR2#
+
+===== show bgp summary =====
+show bgp summary
+
+Wed Nov 18 19:37:05.976 UTC
+BGP router identifier 2.2.2.2, local AS number 65000
+BGP generic scan interval 60 secs
+Non-stop routing is enabled
+BGP table state: Active
+Table ID: 0xe0000000   RD version: 12
+BGP main routing table version 12
+BGP NSR Initial initsync version 5 (Reached)
+BGP NSR/ISSU Sync-Group versions 0/0
+BGP scan interval 60 secs
+
+BGP is operating in STANDALONE mode.
+
+
+Process       RcvTblVer   bRIB/RIB   LabelVer  ImportVer  SendTblVer  StandbyVer
+Speaker              12         12         12         12          12           0
+
+Neighbor        Spk    AS MsgRcvd MsgSent   TblVer  InQ OutQ  Up/Down  St/PfxRcd
+1.1.1.1           0 65000      75      68       12    0    0 00:06:55          1
+10.0.24.2         0 65102      50      55       12    0    0 00:03:52          1
+
+RP/0/0/CPU0:XR2#
+
+===== show bgp ipv4 unicast 198.51.100.0/24 =====
+show bgp ipv4 unicast 198.51.100.0/24
+
+Wed Nov 18 19:37:06.276 UTC
+BGP routing table entry for 198.51.100.0/24
+Versions:
+  Process           bRIB/RIB  SendTblVer
+  Speaker                 12          12
+Last Modified: Nov 18 19:33:13.412 for 00:03:52
+Paths: (2 available, best #2)
+  Advertised to peers (in unique update groups):
+    1.1.1.1         
+  Path #1: Received by speaker 0
+  Not advertised to any peer
+  65101
+    1.1.1.1 (metric 10) from 1.1.1.1 (1.1.1.1)
+      Origin IGP, metric 0, localpref 100, valid, internal, group-best
+      Received Path ID 3, Local Path ID 0, version 0
+      Community: 65101:200
+  Path #2: Received by speaker 0
+  Advertised to peers (in unique update groups):
+    1.1.1.1         
+  65102
+    10.0.24.2 from 10.0.24.2 (4.4.4.4)
+      Origin IGP, metric 0, localpref 200, valid, external, best, group-best
+      Received Path ID 0, Local Path ID 0, version 12
+      Origin-AS validity: not-found
+RP/0/0/CPU0:XR2#
+
+===== show cef ipv4 198.51.100.0/24 detail =====
+show cef ipv4 198.51.100.0/24 detail
+
+Wed Nov 18 19:37:06.526 UTC
+198.51.100.0/24, version 70, internal 0x5000001 0x0 (ptr 0xa136e174) [1], 0x0 (0x0), 0x0 (0x0)
+ Updated Nov 18 19:33:13.572 
+ local adjacency 10.0.24.2
+ Prefix Len 24, traffic index 0, precedence n/a, priority 4
+  gateway array (0xa12a11d8) reference count 1, flags 0x2010, source rib (7), 0 backups
+                [1 type 3 flags 0x48501 (0xa13056e0) ext 0x0 (0x0)]
+  LW-LDI[type=0, refc=0, ptr=0x0, sh-ldi=0x0]
+  gateway array update type-time 1 Nov 18 19:33:13.572
+ LDI Update time Nov 18 19:33:13.572
+   via 10.0.24.2/32, 2 dependencies, recursive, bgp-ext [flags 0x6020]
+    path-idx 0 NHID 0x0 [0xa136d6d4 0x0]
+    next hop 10.0.24.2/32 via 10.0.24.2/32
+
+
+    Load distribution: 0 (refcount 1)
+
+    Hash  OK  Interface                 Address
+    0     Y   GigabitEthernet0/0/0/1    10.0.24.2      
+RP/0/0/CPU0:XR2#
+
+===== show cef ipv4 2.2.2.2/32 detail =====
+show cef ipv4 2.2.2.2/32 detail
+
+Wed Nov 18 19:37:06.786 UTC
+2.2.2.2/32, version 3, attached, receive
+  Updated Nov 18 18:49:41.341
+  Prefix Len 32
+  internal 0x3006041 (ptr 0xa136d7e4) [3], 0x0 (0xa1353464), 0x0 (0x0)
+RP/0/0/CPU0:XR2#
+
+===== show isis adjacency =====
+show isis adjacency
+
+Wed Nov 18 19:37:07.066 UTC
+
+IS-IS CORE Level-2 adjacencies:
+System Id      Interface        SNPA           State Hold Changed  NSF IPv4 IPv6
+                                                                       BFD  BFD 
+R2             Gi0/0/0/1        *PtoP*         Up    20   00:47:34 Yes None None
+XR1            Gi0/0/0/0        *PtoP*         Up    29   00:28:16 Yes None None
+XR1            Gi0/0/0/2        *PtoP*         Up    22   00:47:34 Yes None None
+
+Total adjacency count: 3
+RP/0/0/CPU0:XR2#
+
+===== show isis fast-reroute 2.2.2.2/32 detail =====
+show isis fast-reroute 2.2.2.2/32 detail
+
+Wed Nov 18 19:37:07.316 UTC
+
+The requested route 2.2.2.2/32 was not found in the IS-IS CORE IPv4 Unicast FRR Table
+RP/0/0/CPU0:XR2#
+
+===== show ipv4 interface brief =====
+show ipv4 interface brief
+
+Wed Nov 18 19:37:07.576 UTC
+
+Interface                      IP-Address      Status          Protocol Vrf-Name
+Loopback0                      2.2.2.2         Up              Up       default 
+Loopback100                    172.20.2.1      Up              Up       default 
+Loopback200                    172.20.200.2    Up              Up       SRTE-LAB
+MgmtEth0/0/CPU0/0              unassigned      Shutdown        Down     default 
+GigabitEthernet0/0/0/0         10.0.12.2       Up              Up       default 
+GigabitEthernet0/0/0/1         10.0.24.1       Up              Up       default 
+GigabitEthernet0/0/0/2         10.0.12.6       Up              Up       default 
+RP/0/0/CPU0:XR2#

@@ -1,0 +1,50 @@
+{
+  "lab": "LAB 19 — BGP ADD-PATH + Route Reflection",
+  "devices": [
+    {
+      "node": "XR1",
+      "port": 32777,
+      "collected_at": "2026-11-18T16:36:58.621222-03:00",
+      "complete": true,
+      "saved": true,
+      "save_method": "commit (no new configuration introduced)",
+      "bytes": 3815,
+      "sha256": "3b68507f6cfff54e4bbcc61c585cc88e0a64d8fef16bfbbbe7a44376ef6fb775",
+      "unchanged": true
+    },
+    {
+      "node": "XR2",
+      "port": 32778,
+      "collected_at": "2026-11-18T16:37:04.246550-03:00",
+      "complete": true,
+      "saved": true,
+      "save_method": "commit (no new configuration introduced)",
+      "bytes": 2430,
+      "sha256": "33abe1c2be9fb5ca1cd2f1f8ce192f499a85e40781499137507fd687a3266e1d",
+      "unchanged": true
+    },
+    {
+      "node": "R1",
+      "port": 32769,
+      "collected_at": "2026-11-18T16:37:09.510234-03:00",
+      "complete": true,
+      "saved": true,
+      "save_method": "write memory; startup compared with running",
+      "bytes": 1293,
+      "sha256": "5f885e589434147cd108cf4ad0db97b1afbbe979d6c645d635a6da4cb5d3bef4",
+      "unchanged": true
+    },
+    {
+      "node": "R2",
+      "port": 32770,
+      "collected_at": "2026-11-18T16:37:14.103822-03:00",
+      "complete": true,
+      "saved": true,
+      "save_method": "write memory; startup compared with running",
+      "bytes": 1016,
+      "sha256": "c7b004088f8d114c17645302bf1381853a8ca4daf93af9368d54f234d27d9ba9",
+      "unchanged": true
+    }
+  ],
+  "failure_tests_repeated": false
+}

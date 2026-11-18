@@ -1,0 +1,43 @@
+RP/0/0/CPU0:XR1#show running-config router bgp 65000
+Wed Nov 18 19:29:33.017 UTC
+router bgp 65000
+ bgp router-id 1.1.1.1
+ bgp bestpath as-path multipath-relax
+ address-family ipv4 unicast
+  additional-paths send
+  additional-paths selection route-policy LAB19-ADDPATH
+ !
+ address-family vpnv4 unicast
+ !
+ neighbor 2.2.2.2
+  remote-as 65000
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy IBGP-XR2-BASE in
+   route-reflector-client
+   route-policy PASS-ALL out
+   next-hop-self
+  !
+  address-family vpnv4 unicast
+   route-policy SRTE-COLOR-VPN in
+   route-policy PASS-ALL out
+  !
+ !
+ neighbor 10.0.13.1
+  remote-as 65101
+  address-family ipv4 unicast
+   route-policy PASS-ALL in
+   route-policy PASS-ALL out
+  !
+ !
+ vrf SRTE-LAB
+  rd 65000:1
+  address-family ipv4 unicast
+   label mode per-vrf
+   redistribute connected
+  !
+ !
+!
+
+RP/0/0/CPU0:XR1#
+

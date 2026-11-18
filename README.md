@@ -24,8 +24,8 @@ I use this repository to document **what I configured, what I tested, what I obs
 | [15 — BFD + IS-IS](07-High-Availability/LAB15-BFD-ISIS-IOSXR.md) | Detection vs forwarding recovery | **Evidence pending:** BFD operational evidence not yet retrieved |
 | [16 — BGP Advanced](06-BGP-Advanced/LAB16-BGP-POLICY-BESTPATH-IOSXR.md) | Communities, LOCAL_PREF and iBGP best path | CLI/RIB validated; MED state captured; prepending evidence pending |
 | [17 — BGP Multipath / ECMP](06-BGP-Advanced/LAB17-BGP-MULTIPATH-ECMP-IOSXR.md) | Multipath vs ADD-PATH; failover recovery | Two multipath BGP/RIB paths after reported recovery; failure-stage/FIB/traffic evidence pending |
-
 | [18 — BGP PIC Edge / Core](06-BGP-Advanced/LAB18-BGP-PIC-EDGE-CORE-IOSXR.md) | BGP exit backup vs transport repair | Core CEF failover captured; four live configs saved; convergence timing unmeasured |
+| [19 — BGP ADD-PATH + Route Reflection](06-BGP-Advanced/LAB19-BGP-ADD-PATH-RR-IOSXR.md) | Additional path visibility vs active forwarding | Send/Receive, Path ID 3, historical failover/recovery and four live saved configs |
 
 [Shared night-lab snapshot and temporal coverage](03-Segment-Routing/evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md). Partial entries describe evidence coverage, not an inferred test failure.
 

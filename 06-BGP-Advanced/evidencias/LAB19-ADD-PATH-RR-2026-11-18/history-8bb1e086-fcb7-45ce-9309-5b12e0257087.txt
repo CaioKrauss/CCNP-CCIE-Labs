@@ -1,0 +1,135 @@
+RP/0/0/CPU0:XR2#show bgp ipv4 unicast 198.51.100.0/24
+Wed Nov 18 19:33:53.469 UTC
+BGP routing table entry for 198.51.100.0/24
+Versions:
+  Process           bRIB/RIB  SendTblVer
+  Speaker                 12          12
+Last Modified: Nov 18 19:33:13.412 for 00:00:40
+Paths: (2 available, best #2)
+  Advertised to peers (in unique update groups):
+    1.1.1.1         
+  Path #1: Received by speaker 0
+  Not advertised to any peer
+  65101
+    1.1.1.1 (metric 10) from 1.1.1.1 (1.1.1.1)
+      Origin IGP, metric 0, localpref 100, valid, internal, group-best
+      Received Path ID 3, Local Path ID 0, version 0
+      Community: 65101:200
+  Path #2: Received by speaker 0
+  Advertised to peers (in unique update groups):
+    1.1.1.1         
+  65102
+    10.0.24.2 from 10.0.24.2 (4.4.4.4)
+      Origin IGP, metric 0, localpref 200, valid, external, best, group-best
+      Received Path ID 0, Local Path ID 0, version 12
+      Origin-AS validity: not-found
+RP/0/0/CPU0:XR2#show bgp neighbors 1.1.1.1
+Wed Nov 18 19:33:53.519 UTC
+
+BGP neighbor is 1.1.1.1
+ Remote AS 65000, local AS 65000, internal link
+ Remote router ID 1.1.1.1
+  BGP state = Established, up for 00:03:42
+  NSR State: None
+  Last read 00:00:39, Last read before reset 00:04:03
+  Hold time is 180, keepalive interval is 60 seconds
+  Configured hold time: 180, keepalive: 60, min acceptable hold time: 3
+  Last write 00:00:39, attempted 67, written 67
+  Second last write 00:01:07, attempted 46, written 46
+  Last write before reset 00:04:35, attempted 19, written 19
+  Second last write before reset 00:05:35, attempted 19, written 19
+  Last write pulse rcvd  Nov 18 19:33:13.582 last full not set pulse count 113
+  Last write pulse rcvd before reset 00:04:35
+  Socket not armed for io, armed for read, armed for write
+  Last write thread event before reset 00:04:08, second last 00:04:08
+  Last KA expiry before reset 00:04:35, second last 00:05:35
+  Last KA error before reset 00:00:00, KA not sent 00:00:00
+  Last KA start before reset 00:04:35, second last 00:05:35
+  Precedence: internet
+  Non-stop routing is enabled
+  Multi-protocol capability received
+  Neighbor capabilities:
+    Route refresh: advertised (old + new) and received (old + new)
+    4-byte AS: advertised and received
+    Address family IPv4 Unicast: advertised and received
+    Address family VPNv4 Unicast: advertised and received
+  Received 72 messages, 1 notifications, 0 in queue
+  Sent 65 messages, 0 notifications, 0 in queue
+  Minimum time between advertisement runs is 0 secs
+  Inbound message logging enabled, 3 messages buffered
+  Outbound message logging enabled, 3 messages buffered
+
+ For Address Family: IPv4 Unicast
+  BGP neighbor version 12
+  Update group: 0.2 Filter-group: 0.2  No Refresh request being processed
+  NEXT_HOP is always this router
+  AF-dependent capabilities:
+    Additional-paths Send: received
+    Additional-paths Receive: advertised
+    Extended Nexthop Encoding: advertised and received
+  Route refresh request: received 0, sent 0
+  Policy for incoming advertisements is PASS-ALL
+  Policy for outgoing advertisements is PASS-ALL
+  1 accepted prefixes, 0 are bestpaths
+  Exact no. of prefixes denied : 0.
+  Cumulative no. of prefixes denied: 0. 
+  Prefix advertised 3, suppressed 0, withdrawn 1
+  Maximum prefixes allowed 1048576
+  Threshold for warning message 75%, restart interval 0 min
+  AIGP is enabled
+  An EoR was received during read-only mode
+  Last ack version 10, Last synced ack version 0
+  Outstanding version objects: current 1, max 2
+  Additional-paths operation: Receive
+  Send Multicast Attributes
+  Advertise routes with local-label via Unicast SAFI
+
+ For Address Family: VPNv4 Unicast
+  BGP neighbor version 17
+  Update group: 0.2 Filter-group: 0.1  No Refresh request being processed
+  Route refresh request: received 0, sent 0
+  Policy for incoming advertisements is PASS-ALL
+  Policy for outgoing advertisements is PASS-ALL
+  1 accepted prefixes, 1 are bestpaths
+  Exact no. of prefixes denied : 0.
+  Cumulative no. of prefixes denied: 0. 
+  Prefix advertised 1, suppressed 0, withdrawn 0
+  Maximum prefixes allowed 2097152
+  Threshold for warning message 75%, restart interval 0 min
+  AIGP is enabled
+  An EoR was received during read-only mode
+  Last ack version 17, Last synced ack version 0
+  Outstanding version objects: current 0, max 1
+  Additional-paths operation: None
+  Send Multicast Attributes
+
+  Connections established 3; dropped 2
+  Local host: 2.2.2.2, Local port: 179, IF Handle: 0x00000000
+  Foreign host: 1.1.1.1, Foreign port: 51316
+  Last reset 00:04:03, due to BGP Notification received: administrative reset
+  Time since last notification received from neighbor: 00:04:03
+  Error Code: administrative reset
+  Notification data received:
+    None
+RP/0/0/CPU0:XR2#show cef ipv4 198.51.100.0/24 detail
+Wed Nov 18 19:33:53.929 UTC
+198.51.100.0/24, version 70, internal 0x5000001 0x0 (ptr 0xa136e174) [1], 0x0 (0x0), 0x0 (0x0)
+ Updated Nov 18 19:33:13.572 
+ local adjacency 10.0.24.2
+ Prefix Len 24, traffic index 0, precedence n/a, priority 4
+  gateway array (0xa12a11d8) reference count 1, flags 0x2010, source rib (7), 0 backups
+                [1 type 3 flags 0x48501 (0xa13056e0) ext 0x0 (0x0)]
+  LW-LDI[type=0, refc=0, ptr=0x0, sh-ldi=0x0]
+  gateway array update type-time 1 Nov 18 19:33:13.572
+ LDI Update time Nov 18 19:33:13.572
+   via 10.0.24.2/32, 2 dependencies, recursive, bgp-ext [flags 0x6020]
+    path-idx 0 NHID 0x0 [0xa136d6d4 0x0]
+    next hop 10.0.24.2/32 via 10.0.24.2/32
+
+
+    Load distribution: 0 (refcount 1)
+
+    Hash  OK  Interface                 Address
+    0     Y   GigabitEthernet0/0/0/1    10.0.24.2      
+RP/0/0/CPU0:XR2#
+
