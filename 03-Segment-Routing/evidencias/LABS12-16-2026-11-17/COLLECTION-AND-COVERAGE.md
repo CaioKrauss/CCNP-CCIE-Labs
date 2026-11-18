@@ -58,8 +58,14 @@ The commit lists retain timestamps from Nov 16 20:40:30 to Nov 17 05:19:36 UTC o
 
 The two ChatGPT history responses exposed no older-page cursor despite returning only recent portions. Other available project chat excerpts did not supply LAB 13–15 operational results; the web fallback required sign-in. The original chats may contain additional evidence. Their links require account access; the published CLI excerpts remain readable in GitHub.
 
-No config was invented and no device was reconfigured or retested during publication. **Fresh XR1/XR2/R1/R2 show runs are requested for the final lab state. Historical LAB 13–15, LAB 16 prepending/baseline and LAB 17 failure-stage outputs remain missing.** Future edits should update these existing guides and indexes.
+No config was invented and no device was reconfigured or retested during publication. **Update: current XR1/XR2/R1/R2 show runs were collected at 05:48–05:49 UTC; see the new collection below. Historical LAB 13–15, LAB 16 prepending/baseline and LAB 17 failure-stage outputs remain unretrieved.** Future edits should update these existing guides and indexes.
 
 ## Update — LAB 17
 
 The [LAB 17 guide](../../../06-BGP-Advanced/LAB17-BGP-MULTIPATH-ECMP-IOSXR.md) preserves the newly retrieved 05:34:22 UTC CLI. No newer attachment was returned. The workspace ZIP hash matches the archive documented above. The raw CFG/transcript/manifest files remain unchanged.
+
+## New collection and owner clarification
+
+[LAB 17 four-router collection](../../../06-BGP-Advanced/configs/LAB17-BGP-MULTIPATH-2026-11-17/README.md) now supplies actual running-configs and hashes. Detailed collection transcripts and the manifest remain local. The older archive and its evidence table above retain their original temporal scope.
+
+The owner confirmed that LAB 13–15 operational evidence is in **Próximo lab SR TE**. A renewed retrieval still returned only five recent turns, no older-page cursor and no attachments; the browser fallback was not signed in. This is a retrieval limitation, not a statement that the source lacks those results. No replacement test was performed.

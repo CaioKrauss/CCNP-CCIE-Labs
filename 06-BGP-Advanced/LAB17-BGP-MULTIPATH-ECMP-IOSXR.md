@@ -15,9 +15,18 @@ The session uses IOS XRv 6.3.1 and the existing LAB 16 topology. XR1 knows both 
 
 ## What I configured
 
-The final multipath configuration commands and complete running-configs were not returned by chat retrieval. I have not reconstructed them from operational flags or copied the older backup as a LAB 17 restore point.
+A new read-only collection at **05:48–05:49 UTC on 2026-11-17** captured all four routers. XR1's actual configuration contains:
 
-The historical ZIP was collected at **02:23:43 -03:00 / 05:23:43 UTC**, before this output. See [configuration status and collection request](configs/LAB17-BGP-MULTIPATH-2026-11-17/README.md).
+```cisco
+router bgp 65000
+ bgp bestpath as-path multipath-relax
+ address-family ipv4 unicast
+  maximum-paths eibgp 2
+```
+
+XR2 applies `EBGP-R2-ECMP-IN` inbound from 10.0.24.2 and sets LOCAL_PREF 200 for 198.51.100.0/24. R1 sends community 65101:200 using LAB16-COMM; its running-config displays the same community as decimal 4266459336.
+
+[Complete running-configs and collection details](configs/LAB17-BGP-MULTIPATH-2026-11-17/README.md) are now available. The older 05:23 UTC backup remains historical. This collection did not repeat the failover or capture new operational forwarding outputs.
 
 ## What I observed
 

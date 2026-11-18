@@ -1,5 +1,12 @@
 # Documentation Changes
 
+## 2026-11-17 — Current LAB 17 running-configs collected
+
+- Collected XR1/XR2/R1/R2 directly at 02:48–02:49 São Paulo; published complete running-configs and hashes; retained transcripts and the detailed manifest locally.
+- Confirmed XR1 mixed eBGP/iBGP multipath configuration and XR2 LOCAL_PREF policy. Replaced the current-config pending notice; kept the earlier export historical.
+- Owner confirms LAB 13–15 operational evidence exists in the source chat. Older-turn access remains blocked by the available retrieval; no result was invented or retested.
+
+
 ## 2026-11-17 — LAB 17 and corrected snapshot scope
 
 - Added original LAB 17 recovery-state CLI, a concise guide and a configuration-gap README, preserving the existing folder scheme.

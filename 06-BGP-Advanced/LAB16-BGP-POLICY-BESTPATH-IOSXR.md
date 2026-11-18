@@ -11,7 +11,7 @@ R1 AS 65101 ----- XR1 AS 65000 ===== iBGP ===== XR2 AS 65000 ----- R2 AS 65102
   10.0.13.1    10.0.13.2 / 1.1.1.1          2.2.2.2 / 10.0.24.1    10.0.24.2
 ```
 
-The tested prefix is **198.51.100.0/24**. The XRs run IOS XR 6.3.1. Their iBGP sessions use Loopback0 and next-hop-self; R1/R2 full running configs are missing.
+The tested prefix is **198.51.100.0/24**. The XRs run IOS XR 6.3.1. Their iBGP sessions use Loopback0 and next-hop-self; R1/R2 running-configs were subsequently collected in the LAB 17 state.
 
 ## What I configured
 
@@ -57,4 +57,4 @@ The chat attributes the earlier MED result to cross-AS MED comparison. The outpu
 
 **Evidence:** [Chronological CLI captures](evidencias/LAB16-BGP-2026-11-17/CLI-OBSERVED.md) · [Historical shared XR configs](../03-Segment-Routing/configs/LABS12-16-2026-11-17/README.md) · [Temporal coverage](../03-Segment-Routing/evidencias/LABS12-16-2026-11-17/COLLECTION-AND-COVERAGE.md).
 
-**Snapshot status (2026-11-17 update):** the linked 05:23 UTC backup is historical, not a verified final/current restore point. Updated running-configs are requested; missing intermediate operational evidence remains pending.
+**Snapshot status (2026-11-17 update):** the linked 05:23 UTC backup is historical, not a verified final/current restore point. [Current four-router configs](configs/LAB17-BGP-MULTIPATH-2026-11-17/README.md) were collected at 05:48–05:49 UTC. R1 retains MED/prepend route-map definitions but only LAB16-COMM is attached outbound. Historical before/after operational evidence remains pending.
