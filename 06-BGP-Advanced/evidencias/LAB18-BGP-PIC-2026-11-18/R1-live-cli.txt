@@ -1,0 +1,287 @@
+===== terminal length 0 =====
+terminal length 0
+R1#
+
+===== terminal width 512 =====
+terminal width 512
+R1#
+
+===== show running-config =====
+show running-config
+Building configuration...
+
+Current configuration : 1358 bytes
+!
+! Last configuration change at 18:52:35 UTC Wed Nov 18 2026
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+mpls label protocol ldp
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 3.3.3.3 255.255.255.255
+!
+interface FastEthernet0/0
+ description LINK-TO-XR1
+ ip address 10.0.13.1 255.255.255.252
+ ip router isis CORE
+ duplex full
+ mpls ip
+ isis network point-to-point 
+ isis metric 10 level-2
+!
+router isis CORE
+ net 49.0001.0000.0003.0003.00
+ is-type level-2-only
+ metric-style wide
+ passive-interface Loopback0
+!
+router bgp 65101
+ bgp log-neighbor-changes
+ network 198.51.100.0
+ neighbor 10.0.13.2 remote-as 65000
+ neighbor 10.0.13.2 send-community
+ neighbor 10.0.13.2 route-map LAB16-COMM out
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 198.51.100.0 255.255.255.0 Null0
+!
+!
+ip prefix-list LAB16-PFX seq 5 permit 198.51.100.0/24
+!
+route-map LAB16-COMM permit 10
+ match ip address prefix-list LAB16-PFX
+ set community 4266459336 additive
+!
+route-map LAB16-COMM permit 20
+!
+mpls ldp router-id Loopback0 force
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+R1#
+
+===== write memory =====
+write memory
+Building configuration...
+[OK]
+R1#
+
+===== show startup-config =====
+show startup-config
+Using 1358 out of 129016 bytes
+!
+! Last configuration change at 18:52:35 UTC Wed Nov 18 2026
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+mpls label protocol ldp
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 3.3.3.3 255.255.255.255
+!
+interface FastEthernet0/0
+ description LINK-TO-XR1
+ ip address 10.0.13.1 255.255.255.252
+ ip router isis CORE
+ duplex full
+ mpls ip
+ isis network point-to-point 
+ isis metric 10 level-2
+!
+router isis CORE
+ net 49.0001.0000.0003.0003.00
+ is-type level-2-only
+ metric-style wide
+ passive-interface Loopback0
+!
+router bgp 65101
+ bgp log-neighbor-changes
+ network 198.51.100.0
+ neighbor 10.0.13.2 remote-as 65000
+ neighbor 10.0.13.2 send-community
+ neighbor 10.0.13.2 route-map LAB16-COMM out
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 198.51.100.0 255.255.255.0 Null0
+!
+!
+ip prefix-list LAB16-PFX seq 5 permit 198.51.100.0/24
+!
+route-map LAB16-COMM permit 10
+ match ip address prefix-list LAB16-PFX
+ set community 4266459336 additive
+!
+route-map LAB16-COMM permit 20
+!
+mpls ldp router-id Loopback0 force
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+R1#
+
+===== show ip bgp summary =====
+show ip bgp summary
+BGP router identifier 3.3.3.3, local AS number 65101
+BGP table version is 5, main routing table version 5
+2 network entries using 288 bytes of memory
+3 path entries using 240 bytes of memory
+3/2 BGP path/bestpath attribute entries using 408 bytes of memory
+2 BGP AS-PATH entries using 48 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 984 total bytes of memory
+BGP activity 3/1 prefixes, 5/2 paths, scan interval 60 secs
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.0.13.2       4        65000      17      14        5    0    0 00:08:12        2
+R1#
+
+===== show ip bgp 198.51.100.0 =====
+show ip bgp 198.51.100.0
+BGP routing table entry for 198.51.100.0/24, version 2
+Paths: (2 available, best #2, table default)
+  Advertised to update-groups:
+     3         
+  Refresh Epoch 1
+  65000 65102
+    10.0.13.2 from 10.0.13.2 (1.1.1.1)
+      Origin IGP, localpref 100, valid, external
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  Local
+    0.0.0.0 from 0.0.0.0 (3.3.3.3)
+      Origin IGP, metric 0, localpref 100, weight 32768, valid, sourced, local, best
+      rx pathid: 0, tx pathid: 0x0
+R1#
+
+===== show ip route 198.51.100.0 =====
+show ip route 198.51.100.0
+Routing entry for 198.51.100.0/24
+  Known via "static", distance 1, metric 0 (connected)
+  Advertised by bgp 65101
+  Routing Descriptor Blocks:
+  * directly connected, via Null0
+      Route metric is 0, traffic share count is 1
+R1#
+
+===== show ip interface brief =====
+show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+FastEthernet0/0        10.0.13.1       YES NVRAM  up                    up      
+Loopback0              3.3.3.3         YES NVRAM  up                    up      
+R1#

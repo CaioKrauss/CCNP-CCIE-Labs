@@ -1,0 +1,48 @@
+{
+  "lab": "LAB 18 — BGP PIC Edge/Core",
+  "collection_date": "2026-11-18",
+  "timezone": "America/Sao_Paulo",
+  "devices": [
+    {
+      "node": "XR1",
+      "collected_at": "2026-11-18T16:13:50.965186-03:00",
+      "complete": true,
+      "saved": true,
+      "save_method": "commit (no new configuration introduced)",
+      "bytes": 3690,
+      "sha256": "dd11ad3b949e78e96507ea45f4773824bd3b969973af41a1ac379829b48d6e4b",
+      "unchanged": true
+    },
+    {
+      "node": "R1",
+      "collected_at": "2026-11-18T16:13:56.093261-03:00",
+      "complete": true,
+      "saved": true,
+      "save_method": "write memory; startup compared with running",
+      "bytes": 1293,
+      "sha256": "5f885e589434147cd108cf4ad0db97b1afbbe979d6c645d635a6da4cb5d3bef4",
+      "unchanged": true
+    },
+    {
+      "node": "R2",
+      "collected_at": "2026-11-18T16:14:00.346518-03:00",
+      "complete": true,
+      "saved": true,
+      "save_method": "write memory; startup compared with running",
+      "bytes": 1016,
+      "sha256": "c7b004088f8d114c17645302bf1381853a8ca4daf93af9368d54f234d27d9ba9",
+      "unchanged": true
+    },
+    {
+      "node": "XR2",
+      "collected_at": "2026-11-18T16:14:27.852989-03:00",
+      "complete": true,
+      "saved": true,
+      "save_method": "commit (no new configuration introduced)",
+      "bytes": 2403,
+      "sha256": "938df47fd45021c7b5fcc045acb3807ed254eef860e0e5d1d60a007e582e3881",
+      "unchanged": true
+    }
+  ],
+  "note": "Direct live Telnet collection. XR commit returned no configuration changes; IOS write memory returned OK and startup matched running. No failure injection or reboot performed."
+}

@@ -1,5 +1,11 @@
 # Documentation Changes
 
+## 2026-11-18 — LAB 18 BGP PIC Edge / Core
+
+- Collected complete XR1/XR2/R1/R2 running configurations live; executed XR commit (no pending changes) and IOS write memory (OK), comparing IOS startup with running.
+- Published six configuration files, hashes, persistence manifest and live CLI; preserved prior snapshots.
+- Recovered historical Core failure-stage CLI: unchanged BGP next-hop with alternate CEF adjacency. Earlier Edge failure-stage raw CLI remains unretrieved; no timing or packet-loss claim is made.
+
 ## 2026-11-17 — Current LAB 17 running-configs collected
 
 - Collected XR1/XR2/R1/R2 directly at 02:48–02:49 São Paulo; published complete running-configs and hashes; retained transcripts and the detailed manifest locally.
